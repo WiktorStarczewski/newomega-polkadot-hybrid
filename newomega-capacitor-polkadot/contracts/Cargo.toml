@@ -1,0 +1,63 @@
+[package]
+name = "newomegadelegator"
+version = "1.0.0"
+authors = ["Wiktor Starczewski <celrisen@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+ink_primitives = { version = "3.0.0-rc3", default-features = false }
+ink_metadata = { version = "3.0.0-rc3", default-features = false, features = ["derive"], optional = true }
+ink_env = { version = "3.0.0-rc3", default-features = false }
+ink_storage = { version = "3.0.0-rc3", default-features = false }
+ink_storage_derive = { version = "3.0.0-rc3", default-features = false }
+ink_lang = { version = "3.0.0-rc3", default-features = false }
+ink_prelude = { version = "3.0.0-rc3", default-features = false }
+
+scale = { package = "parity-scale-codec", version = "2.0.1", default-features = false, features = ["derive"] }
+
+newomega = { version = "1.0.0", path = "newomega", default-features = false, features = ["ink-as-dependency"] }
+newomegastorage = { version = "1.0.0", path = "newomegastorage", default-features = false, features = ["ink-as-dependency"] }
+newomegagame = { version = "1.0.0", path = "newomegagame", default-features = false, features = ["ink-as-dependency"] }
+newomegaranked = { version = "1.0.0", path = "newomegaranked", default-features = false, features = ["ink-as-dependency"] }
+newomegauniverse = { version = "1.0.0", path = "newomegauniverse", default-features = false, features = ["ink-as-dependency"] }
+newomegaindustrial = { version = "1.0.0", path = "newomegaindustrial", default-features = false, features = ["ink-as-dependency"] }
+scale-info = { version = "0.6.0", default-features = false, features = ["derive"], optional = true }
+
+[lib]
+name = "newomegadelegator"
+path = "facade.rs"
+crate-type = [
+    "cdylib",
+    "rlib",
+]
+
+[features]
+default = ["std"]
+std = [
+    "ink_primitives/std",
+    "ink_metadata",
+    "ink_metadata/std",
+    "ink_env/std",
+    "ink_storage/std",
+    "ink_lang/std",
+    "scale/std",
+    "scale-info",
+    "scale-info/std",
+    "newomega/std",
+    "newomegagame/std",
+    "newomegaranked/std",
+    "newomegauniverse/std",
+    "newomegaindustrial/std",
+    "newomegastorage/std",
+]
+ink-as-dependency = []
+
+[workspace]
+members = [
+    "newomega",
+    "newomegagame",
+    "newomegaranked",
+    "newomegastorage",
+    "newomegauniverse",
+    "newomegaindustrial",
+]

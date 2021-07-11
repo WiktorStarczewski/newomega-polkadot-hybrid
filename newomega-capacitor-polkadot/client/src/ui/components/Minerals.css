@@ -1,0 +1,136 @@
+.Minerals {
+    width: 100%;
+    height: 35%;
+}
+
+.Minerals.expanded {
+    height: 80%;
+}
+
+.Minerals:not(.LoadingMask).expanded {
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.Minerals:not(.LoadingMask):not(.expanded) {
+    background-color: rgba(0, 0, 0, 0.0);
+}
+
+.Minerals .minerals {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    user-select: none;
+}
+
+.Minerals .mineral {
+    flex: 1;
+    height: 100%;
+    cursor: pointer;
+    transition: opacity 0.5s ease-out;
+    position: relative;
+}
+
+.Minerals .mineral img {
+    width: 70%;
+}
+
+.Minerals .mineral.unselected {
+    opacity: 0.2;
+}
+
+.Minerals .moreDetails {
+    position: absolute;
+    top: 0.5rem;
+    left: 0;
+    width: 100%;
+    cursor: pointer;
+    color: white;
+}
+
+.Minerals .grade.common {
+    color: white;
+}
+
+.Minerals .grade.rare {
+    color: #1e88e5;
+}
+
+.Minerals .grade.epic {
+    color: #8e24aa;    
+}
+
+.Minerals .grade.legendary {
+    color: #fdd835;
+}
+
+.Minerals .grade.primal {
+    color: #f4511e;
+}
+
+.Minerals .closeDetailPanel {
+    position: absolute;
+    bottom: -2.5rem;
+    left: calc(50% - 3rem);
+    cursor: pointer;
+}
+
+.Minerals .closeDetailPanel .MuiSvgIcon-root {
+    font-size: 6rem;
+    color: white;
+}
+
+.Minerals .picture img {
+    height: 100%;
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.Minerals .mineralDetail {
+    display: flex;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    transition: opacity 0.5s ease-out;
+    overflow: hidden;
+    opacity: 0;
+}
+
+.Minerals.expanded .mineralDetail {
+    height: 65%;
+    opacity: 1;
+    justify-content: center;
+    padding-bottom: 1rem;
+}
+
+.Minerals .closeMinerals {
+    position: absolute;
+    top: 0;
+    right: 0.5rem;
+}
+
+.Minerals .closeMinerals svg {
+    cursor: pointer;
+    color: white;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 50%;
+    margin-left: 0.5rem;
+}
+
+.Minerals .mineralName {
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 1rem;
+    padding: 0 0.5rem;
+    transition: background-color 0.3s ease-out;
+    font-size: 0.75rem;
+}
+
+.Minerals.expanded .mineralName {
+    background-color: rgba(0, 0, 0, 0.0);
+}
+
+.Minerals .MineralsOffer,
+.Minerals .MineralsTrade {
+    z-index: 1;
+}

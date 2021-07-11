@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">New Omega</string>
+    <string name="title_activity_main">New Omega</string>
+    <string name="package_name">org.celrisen.newomega</string>
+    <string name="custom_url_scheme">org.celrisen.newomega</string>
+</resources>

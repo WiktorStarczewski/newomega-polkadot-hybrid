@@ -1,0 +1,112 @@
+.LoginScreen {
+    height: 100%;
+    background: url("../images/szpieg_01.jpeg") no-repeat center center;
+    background-size: cover;
+}
+
+.LoginScreen .loginDetails {
+    position: absolute;
+    top: 40%;
+    left: 0;
+    width: 100%;
+    height: 30%;
+}
+
+.LoginScreen .mnemonicInput {
+    font: 500 1rem "Exo 2";
+    height: 100%;
+    width: 50%;
+}
+
+.LoginScreen .nameInput {
+    font: 500 1rem "Exo 2";
+    height: 50%;
+    width: 100%;
+    font-size: 2rem;
+    text-align: center;
+    border: none;
+    color: white;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.LoginScreen .nameInput:focus {
+    outline: none;
+}
+
+.LoginScreen .nameInput:focus::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.LoginScreen .nameInput::placeholder {
+    color: white;
+}
+
+.App .LoginScreen .mainMenuItem {
+    flex-direction: column;
+}
+
+.LoginScreen .explain {
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.LoginScreen .styledInput {
+    background: rgba(0, 0, 0, 0.4);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    text-align: center;
+    padding: 1rem 0;
+}
+
+.LoginScreen .styledInput::placeholder {
+    color: white;
+}
+
+.LoginScreen .styledInput::-webkit-input-placeholder {
+   text-align: center;
+}
+
+.LoginScreen .styledInput:focus {
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    outline: none;
+}
+
+.LoginScreen .doneBox.disabled {
+    background: white;
+}
+
+.LoginScreen .gameExplanation {
+    position: absolute;
+    bottom: 0.5rem;
+    color: white;
+    font-size: 0.5rem;
+    padding: 0.5rem;
+    width: 50%;
+    left: 25%;
+}
+
+.LoginScreen .gameExplanationBlock:not(:last-child) {
+    margin-bottom: 0.5rem;
+}
+
+.LoginScreen .inputWrapper {
+    position: absolute;
+    top: 40%;
+    left: 0;
+    height: 20%;
+    width: 100%;
+    background: transparent;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.LoginScreen .newPlayerNameInput {
+    width: 90%;
+    font-size: 2.5rem;
+}
+
+.LoginScreen .inputWrapper:focus-within ~ .gameExplanation {
+    display: none;
+}

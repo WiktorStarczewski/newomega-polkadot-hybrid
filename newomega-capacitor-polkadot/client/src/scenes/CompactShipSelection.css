@@ -1,0 +1,252 @@
+.CompactShipSelection {
+    height: 100%;
+    background: url("../images/bgr_ship_selection_ver2.jpg") no-repeat center center;
+    background-size: cover;
+}
+
+.CompactShipSelection .selection {
+    height: 20%;
+    width: 100%;
+    position: absolute;
+}
+
+.CompactShipSelection .selectionInner {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.CompactShipSelection .ownSelection {
+    bottom: 4rem;
+    background:rgba(0, 0, 0, 0.4);
+}
+
+.CompactShipSelection .enemySelection {
+    top: 4rem;
+    background: rgba(251, 140, 0, 0.2);
+    height: 4rem;
+}
+
+.CompactShipSelection .ownSelection .modules {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+}
+
+.CompactShipSelection .ownSelection .modules svg {
+    margin-left: 0.1rem;
+}
+
+.MuiDrawer-modal .moduleDescription {
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+}
+
+.MuiDrawer-modal .drawerModules {
+    background: url("../images/green-pattern.jpg") no-repeat center center;
+    background-size: cover;
+    height: auto;
+}
+
+.MuiDrawer-modal .targetings {
+    background: url("../images/green-pattern.jpg") no-repeat center center;
+    background-size: cover;
+    height: auto;
+}
+
+.MuiDrawer-modal .module {
+    width: 20rem;
+    padding: 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    font-family: "Exo 2", sans-serif;
+    margin: 0.5rem;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 0.5rem;
+    border: 3px solid transparent;
+}
+
+.MuiDrawer-modal .module.selected {
+    border-color: black;
+}
+
+.MuiDrawer-modal .moduleName {
+    font-weight: 600;
+}
+
+.MuiDrawer-modal .module:hover {
+    background: rgba(115, 255, 190, 0.2);
+}
+
+.MuiDrawer-modal .moduleIcon {
+    float: right;
+}
+
+.MuiDrawer-modal .moduleIcon svg {
+    font-size: 2rem;
+    color: #73ffbe;
+    border-radius: 50%;
+    background: black;
+}
+
+.CompactShipSelection .shipSelectionBox {
+    flex: 1;
+    color: white;
+    position: relative;
+}
+
+.CompactShipSelection .enemyPointer {
+    position: absolute;
+    left: calc(50% - 1rem);
+    bottom: -2.5rem;
+}
+
+.CompactShipSelection .infoPanel {
+    position: absolute;
+    top: calc(20% + 4.5rem);
+    width: 100%;
+    height: 35%;
+}
+
+.CompactShipSelection .helpWrapper {
+    position: absolute;
+    top: calc(20% + 7.5rem);
+    right: 0.5rem;
+    color: white;
+}
+
+.CompactShipSelection .helpWrapper svg {
+    cursor: pointer;
+    font-size: 3rem;
+}
+
+.CompactShipSelection .infoPanel svg {
+    position: absolute;
+    color: white;
+    left: 0.5rem;
+    top: 3rem;
+    font-size: 3rem;
+    cursor: pointer;
+}
+
+.CompactShipSelection .infoInner {
+    color: white;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    padding: 0.5rem 0;
+    height: calc(100% - 1.5rem);
+}
+
+.CompactShipSelection .currentCp {
+}
+
+.CompactShipSelection .targetingInfo {
+    position: absolute;
+    bottom: 1.25rem;
+    width: 20rem;
+    left: calc(50% - 10rem);
+    font-size: 1.5rem;
+    color: #73ffbe;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.CompactShipSelection .targetingInfo svg {
+    margin-left: 0.1rem;
+}
+
+.CompactShipSelection .targetingInfo span {
+    height: 2rem;
+}
+
+.CompactShipSelection .infoShip {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.CompactShipSelection .shipName {
+    color: #73ffbe;
+}
+
+.CompactShipSelection .shipSelectorShipName {
+    color: #73ffbe;
+    position: absolute;
+    bottom: 0.5rem;
+    left: 0;
+    width: 100%;
+}
+
+.CompactShipSelection .shipSelectorShipCount {
+    color: #73ffbe;
+    position: absolute;
+    top: 0.5rem;
+    left: 0;
+    width: 100%;
+    font-size: 0.5rem;
+}
+
+.CompactShipSelection .counter {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.CompactShipSelection .counter svg {
+    cursor: pointer;
+}
+
+.CompactShipSelection .shipCount {
+    width: 2rem;
+    font-size: 1.5rem;
+}
+
+.CompactShipSelection .owner {
+    position: absolute;
+    top: 0;
+    left: 0.5rem;
+    height: 100%;
+    transform: rotate(180deg);
+    writing-mode: vertical-lr;
+    color: white;
+}
+
+.CompactShipSelection .shipSelector {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 20%;
+    display: flex;
+}
+
+.CompactShipSelection .shipSelectorShip {
+    flex: 1;
+    cursor: pointer;
+    position: relative;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 1rem;
+    border: 4px solid transparent;
+    margin: 0.5rem;
+    user-select: none;
+}
+
+.CompactShipSelection .shipSelectorShip img {
+    height: 100%;
+    width: 40%;
+}
+
+.CompactShipSelection .shipSelectorShip.selected {
+    border: 4px solid #73ffbe;
+}
+
+.CompactShipSelection .BetSelector {
+    position: absolute;
+    top: 20%;
+    left: 0;
+    width: 100%;
+    height: 4rem;
+}

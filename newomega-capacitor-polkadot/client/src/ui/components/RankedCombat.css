@@ -1,0 +1,10 @@
+.RankedCombat {
+    text-align: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: url("../../images/szpieg_ranked_01.jpeg") no-repeat center center;
+    background-size: cover;
+}

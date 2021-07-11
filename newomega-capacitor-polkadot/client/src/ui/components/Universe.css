@@ -1,0 +1,133 @@
+.Universe {
+    text-align: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.Universe.loading {
+    background: transparent;
+}
+
+.Universe:not(.loading) {
+    background: url("../../images/szpieg_04.jpeg") no-repeat center center;
+    background-size: cover;
+}
+
+.Universe .System {
+    position: absolute;
+    top: 15%;
+    left: 0;
+    transition: left 0.3s ease-out, height 0.3s ease-out, background-color 0.3s ease-out;
+}
+
+.Universe .Minerals {
+    position: absolute;
+    top: 15%;
+    left: 100%;
+    transition: left 0.3s ease-out, height 0.3s ease-out, background-color 0.3s ease-out;
+}
+
+.Universe .ShipProduction {
+    position: absolute;
+    top: 15%;
+    left: -100%;
+    transition: left 0.3s ease-out, height 0.3s ease-out, background-color 0.3s ease-out;
+}
+
+.Universe.withMinerals .System {
+    left: -100%;
+}
+
+.Universe.withMinerals .ShipProduction {
+    left: -200%;
+}
+
+.Universe.withMinerals .Minerals {
+    left: 0;
+}
+
+.Universe.withShipProduction .System {
+    left: 100%;
+}
+
+.Universe.withShipProduction .ShipProduction {
+    left: 0;
+}
+
+.Universe.withShipProduction .Minerals {
+    left: 200%;
+}
+
+.Universe .UniverseMap {
+    position: absolute;
+    top: 55%;
+    left: 0;
+    transition: top 0.3s ease-out;
+}
+
+.Universe .UniverseMap.shrank {
+    top: 100%;
+}
+
+.Universe .SystemActions {
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transition: top 0.3s ease-out;
+}
+
+.Universe .SystemActions.shrank {
+    top: 100%;
+}
+
+.Universe .SystemInfo {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.Universe .loadableComponent.loading {
+}
+
+.Universe .CompactShipSelection {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+.Universe .Combat {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+.Universe .universeModes {
+    position: absolute;
+    top: 0.5rem;
+    font-size: 2.18rem;
+    color: white;
+    width: 30%;
+    left: 35%;
+    height: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.Universe .universeModes svg {
+    margin: 0 0.25rem;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 0.25rem;
+    cursor: pointer;
+}
+
+.Universe .universeModes svg.active {
+    background: rgba(115, 255, 190, 1);
+    color: black;
+}

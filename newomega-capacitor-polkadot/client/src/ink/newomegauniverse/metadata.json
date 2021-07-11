@@ -1,0 +1,1544 @@
+{
+  "metadataVersion": "0.1.0",
+  "source": {
+    "hash": "0x3d20221187ec07a18a083220f7ce472fdd2bd3fe49c8255bd1cc893aad5e9e14",
+    "language": "ink! 3.0.0-rc3",
+    "compiler": "rustc 1.55.0-nightly"
+  },
+  "contract": {
+    "name": "newomegauniverse",
+    "version": "1.0.0",
+    "authors": [
+      "Wiktor Starczewski <celrisen@gmail.com>"
+    ]
+  },
+  "spec": {
+    "constructors": [
+      {
+        "args": [
+          {
+            "name": "new_omega_game",
+            "type": {
+              "displayName": [
+                "NewOmegaGame"
+              ],
+              "type": 25
+            }
+          },
+          {
+            "name": "new_omega_storage",
+            "type": {
+              "displayName": [
+                "NewOmegaStorage"
+              ],
+              "type": 26
+            }
+          }
+        ],
+        "docs": [],
+        "name": [
+          "new"
+        ],
+        "selector": "0x9bae9d5e"
+      },
+      {
+        "args": [],
+        "docs": [],
+        "name": [
+          "default"
+        ],
+        "selector": "0xed4b9d1b"
+      }
+    ],
+    "docs": [],
+    "events": [],
+    "messages": [
+      {
+        "args": [
+          {
+            "name": "delegator_address",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "authorise_delegator"
+        ],
+        "payable": false,
+        "returnType": null,
+        "selector": "0xdd9c74d2"
+      },
+      {
+        "args": [
+          {
+            "name": "caller",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          },
+          {
+            "name": "coord",
+            "type": {
+              "displayName": [
+                "SystemCoordinate"
+              ],
+              "type": 11
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": false,
+        "name": [
+          "get_system_check"
+        ],
+        "payable": false,
+        "returnType": {
+          "displayName": [],
+          "type": 27
+        },
+        "selector": "0xd40ead8d"
+      },
+      {
+        "args": [
+          {
+            "name": "caller",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          },
+          {
+            "name": "name",
+            "type": {
+              "displayName": [
+                "String"
+              ],
+              "type": 22
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "register_player"
+        ],
+        "payable": false,
+        "returnType": null,
+        "selector": "0x44c9d826"
+      },
+      {
+        "args": [
+          {
+            "name": "players",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 29
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": false,
+        "name": [
+          "get_player_names"
+        ],
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "Vec"
+          ],
+          "type": 30
+        },
+        "selector": "0x67a63ab4"
+      },
+      {
+        "args": [
+          {
+            "name": "caller",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          },
+          {
+            "name": "target",
+            "type": {
+              "displayName": [
+                "SystemCoordinate"
+              ],
+              "type": 11
+            }
+          },
+          {
+            "name": "planet_id",
+            "type": {
+              "displayName": [
+                "u8"
+              ],
+              "type": 3
+            }
+          },
+          {
+            "name": "selection",
+            "type": {
+              "displayName": [],
+              "type": 17
+            }
+          },
+          {
+            "name": "modules",
+            "type": {
+              "displayName": [],
+              "type": 18
+            }
+          },
+          {
+            "name": "targeting",
+            "type": {
+              "displayName": [
+                "TargetingType"
+              ],
+              "type": 20
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "reinforce_planet"
+        ],
+        "payable": false,
+        "returnType": null,
+        "selector": "0x507e6059"
+      },
+      {
+        "args": [
+          {
+            "name": "caller",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          },
+          {
+            "name": "target",
+            "type": {
+              "displayName": [
+                "SystemCoordinate"
+              ],
+              "type": 11
+            }
+          },
+          {
+            "name": "planet_id",
+            "type": {
+              "displayName": [
+                "u8"
+              ],
+              "type": 3
+            }
+          },
+          {
+            "name": "name",
+            "type": {
+              "displayName": [
+                "String"
+              ],
+              "type": 22
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "rename_planet"
+        ],
+        "payable": false,
+        "returnType": null,
+        "selector": "0xa02b6292"
+      },
+      {
+        "args": [
+          {
+            "name": "caller",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          },
+          {
+            "name": "target",
+            "type": {
+              "displayName": [
+                "SystemCoordinate"
+              ],
+              "type": 11
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "discover_system"
+        ],
+        "payable": false,
+        "returnType": null,
+        "selector": "0x9966c534"
+      },
+      {
+        "args": [
+          {
+            "name": "caller",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          },
+          {
+            "name": "source",
+            "type": {
+              "displayName": [
+                "SystemCoordinate"
+              ],
+              "type": 11
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "build_gateway"
+        ],
+        "payable": false,
+        "returnType": null,
+        "selector": "0x00d75f68"
+      },
+      {
+        "args": [],
+        "docs": [],
+        "mutates": false,
+        "name": [
+          "get_game_stats"
+        ],
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "GameStats"
+          ],
+          "type": 31
+        },
+        "selector": "0xc5ab1911"
+      },
+      {
+        "args": [
+          {
+            "name": "caller",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": false,
+        "name": [
+          "get_player_assets"
+        ],
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "PlayerAssets"
+          ],
+          "type": 24
+        },
+        "selector": "0xd3cb40e7"
+      },
+      {
+        "args": [
+          {
+            "name": "root",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": false,
+        "name": [
+          "get_universe_map"
+        ],
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "Vec"
+          ],
+          "type": 9
+        },
+        "selector": "0xf6a850b7"
+      },
+      {
+        "args": [
+          {
+            "name": "caller",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "harvest"
+        ],
+        "payable": false,
+        "returnType": null,
+        "selector": "0xbdef407b"
+      },
+      {
+        "args": [
+          {
+            "name": "caller",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          },
+          {
+            "name": "target",
+            "type": {
+              "displayName": [
+                "SystemCoordinate"
+              ],
+              "type": 11
+            }
+          },
+          {
+            "name": "planet_id",
+            "type": {
+              "displayName": [
+                "u8"
+              ],
+              "type": 3
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "harvest_planet"
+        ],
+        "payable": false,
+        "returnType": null,
+        "selector": "0x07e316a9"
+      },
+      {
+        "args": [
+          {
+            "name": "caller",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          },
+          {
+            "name": "target",
+            "type": {
+              "displayName": [
+                "SystemCoordinate"
+              ],
+              "type": 11
+            }
+          },
+          {
+            "name": "planet_id",
+            "type": {
+              "displayName": [
+                "u8"
+              ],
+              "type": 3
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "upgrade_planet"
+        ],
+        "payable": false,
+        "returnType": null,
+        "selector": "0x1363e094"
+      },
+      {
+        "args": [
+          {
+            "name": "caller",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          },
+          {
+            "name": "target",
+            "type": {
+              "displayName": [
+                "SystemCoordinate"
+              ],
+              "type": 11
+            }
+          },
+          {
+            "name": "planet_id",
+            "type": {
+              "displayName": [
+                "u8"
+              ],
+              "type": 3
+            }
+          },
+          {
+            "name": "selection",
+            "type": {
+              "displayName": [],
+              "type": 17
+            }
+          },
+          {
+            "name": "modules",
+            "type": {
+              "displayName": [],
+              "type": 18
+            }
+          },
+          {
+            "name": "targeting",
+            "type": {
+              "displayName": [
+                "TargetingType"
+              ],
+              "type": 20
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "attack_planet"
+        ],
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "FightResult"
+          ],
+          "type": 33
+        },
+        "selector": "0x74f8152b"
+      }
+    ]
+  },
+  "storage": {
+    "struct": {
+      "fields": [
+        {
+          "layout": {
+            "cell": {
+              "key": "0x0000000000000000000000000000000000000000000000000000000000000000",
+              "ty": 1
+            }
+          },
+          "name": "creator"
+        },
+        {
+          "layout": {
+            "enum": {
+              "dispatchKey": "0x0100000000000000000000000000000000000000000000000000000000000000",
+              "variants": {
+                "0": {
+                  "fields": [
+                    {
+                      "layout": {
+                        "cell": {
+                          "key": "0x0200000000000000000000000000000000000000000000000000000000000000",
+                          "ty": 1
+                        }
+                      },
+                      "name": null
+                    }
+                  ]
+                },
+                "1": {
+                  "fields": []
+                }
+              }
+            }
+          },
+          "name": "owner"
+        },
+        {
+          "layout": {
+            "enum": {
+              "dispatchKey": "0x0200000000000000000000000000000000000000000000000000000000000000",
+              "variants": {
+                "0": {
+                  "fields": [
+                    {
+                      "layout": {
+                        "struct": {
+                          "fields": [
+                            {
+                              "layout": {
+                                "cell": {
+                                  "key": "0x0300000000000000000000000000000000000000000000000000000000000000",
+                                  "ty": 1
+                                }
+                              },
+                              "name": "account_id"
+                            }
+                          ]
+                        }
+                      },
+                      "name": null
+                    }
+                  ]
+                },
+                "1": {
+                  "fields": []
+                }
+              }
+            }
+          },
+          "name": "new_omega_game"
+        },
+        {
+          "layout": {
+            "enum": {
+              "dispatchKey": "0x0300000000000000000000000000000000000000000000000000000000000000",
+              "variants": {
+                "0": {
+                  "fields": [
+                    {
+                      "layout": {
+                        "struct": {
+                          "fields": [
+                            {
+                              "layout": {
+                                "cell": {
+                                  "key": "0x0400000000000000000000000000000000000000000000000000000000000000",
+                                  "ty": 1
+                                }
+                              },
+                              "name": "account_id"
+                            }
+                          ]
+                        }
+                      },
+                      "name": null
+                    }
+                  ]
+                },
+                "1": {
+                  "fields": []
+                }
+              }
+            }
+          },
+          "name": "new_omega_storage"
+        },
+        {
+          "layout": {
+            "struct": {
+              "fields": [
+                {
+                  "layout": {
+                    "struct": {
+                      "fields": [
+                        {
+                          "layout": {
+                            "cell": {
+                              "key": "0x0400000000000000000000000000000000000000000000000000000000000000",
+                              "ty": 4
+                            }
+                          },
+                          "name": "header"
+                        },
+                        {
+                          "layout": {
+                            "struct": {
+                              "fields": [
+                                {
+                                  "layout": {
+                                    "cell": {
+                                      "key": "0x0500000000000000000000000000000000000000000000000000000000000000",
+                                      "ty": 5
+                                    }
+                                  },
+                                  "name": "len"
+                                },
+                                {
+                                  "layout": {
+                                    "array": {
+                                      "cellsPerElem": 1,
+                                      "layout": {
+                                        "cell": {
+                                          "key": "0x0500000001000000000000000000000000000000000000000000000000000000",
+                                          "ty": 6
+                                        }
+                                      },
+                                      "len": 4294967295,
+                                      "offset": "0x0600000000000000000000000000000000000000000000000000000000000000"
+                                    }
+                                  },
+                                  "name": "elems"
+                                }
+                              ]
+                            }
+                          },
+                          "name": "entries"
+                        }
+                      ]
+                    }
+                  },
+                  "name": "keys"
+                },
+                {
+                  "layout": {
+                    "hash": {
+                      "layout": {
+                        "cell": {
+                          "key": "0x0600000001000000000000000000000000000000000000000000000000000000",
+                          "ty": 8
+                        }
+                      },
+                      "offset": "0x0500000001000000000000000000000000000000000000000000000000000000",
+                      "strategy": {
+                        "hasher": "Blake2x256",
+                        "postfix": "",
+                        "prefix": "0x696e6b20686173686d6170"
+                      }
+                    }
+                  },
+                  "name": "values"
+                }
+              ]
+            }
+          },
+          "name": "systems"
+        },
+        {
+          "layout": {
+            "struct": {
+              "fields": [
+                {
+                  "layout": {
+                    "struct": {
+                      "fields": [
+                        {
+                          "layout": {
+                            "cell": {
+                              "key": "0x0600000001000000000000000000000000000000000000000000000000000000",
+                              "ty": 4
+                            }
+                          },
+                          "name": "header"
+                        },
+                        {
+                          "layout": {
+                            "struct": {
+                              "fields": [
+                                {
+                                  "layout": {
+                                    "cell": {
+                                      "key": "0x0700000001000000000000000000000000000000000000000000000000000000",
+                                      "ty": 5
+                                    }
+                                  },
+                                  "name": "len"
+                                },
+                                {
+                                  "layout": {
+                                    "array": {
+                                      "cellsPerElem": 1,
+                                      "layout": {
+                                        "cell": {
+                                          "key": "0x0700000002000000000000000000000000000000000000000000000000000000",
+                                          "ty": 6
+                                        }
+                                      },
+                                      "len": 4294967295,
+                                      "offset": "0x0800000001000000000000000000000000000000000000000000000000000000"
+                                    }
+                                  },
+                                  "name": "elems"
+                                }
+                              ]
+                            }
+                          },
+                          "name": "entries"
+                        }
+                      ]
+                    }
+                  },
+                  "name": "keys"
+                },
+                {
+                  "layout": {
+                    "hash": {
+                      "layout": {
+                        "cell": {
+                          "key": "0x0800000002000000000000000000000000000000000000000000000000000000",
+                          "ty": 23
+                        }
+                      },
+                      "offset": "0x0700000002000000000000000000000000000000000000000000000000000000",
+                      "strategy": {
+                        "hasher": "Blake2x256",
+                        "postfix": "",
+                        "prefix": "0x696e6b20686173686d6170"
+                      }
+                    }
+                  },
+                  "name": "values"
+                }
+              ]
+            }
+          },
+          "name": "assets"
+        }
+      ]
+    }
+  },
+  "types": [
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "type": 2,
+              "typeName": "[u8; 32]"
+            }
+          ]
+        }
+      },
+      "path": [
+        "ink_env",
+        "types",
+        "AccountId"
+      ]
+    },
+    {
+      "def": {
+        "array": {
+          "len": 32,
+          "type": 3
+        }
+      }
+    },
+    {
+      "def": {
+        "primitive": "u8"
+      }
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "last_vacant",
+              "type": 5,
+              "typeName": "Index"
+            },
+            {
+              "name": "len",
+              "type": 5,
+              "typeName": "u32"
+            },
+            {
+              "name": "len_entries",
+              "type": 5,
+              "typeName": "u32"
+            }
+          ]
+        }
+      },
+      "path": [
+        "ink_storage",
+        "collections",
+        "stash",
+        "Header"
+      ]
+    },
+    {
+      "def": {
+        "primitive": "u32"
+      }
+    },
+    {
+      "def": {
+        "variant": {
+          "variants": [
+            {
+              "fields": [
+                {
+                  "type": 7,
+                  "typeName": "VacantEntry"
+                }
+              ],
+              "name": "Vacant"
+            },
+            {
+              "fields": [
+                {
+                  "type": 1,
+                  "typeName": "T"
+                }
+              ],
+              "name": "Occupied"
+            }
+          ]
+        }
+      },
+      "params": [
+        1
+      ],
+      "path": [
+        "ink_storage",
+        "collections",
+        "stash",
+        "Entry"
+      ]
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "next",
+              "type": 5,
+              "typeName": "Index"
+            },
+            {
+              "name": "prev",
+              "type": 5,
+              "typeName": "Index"
+            }
+          ]
+        }
+      },
+      "path": [
+        "ink_storage",
+        "collections",
+        "stash",
+        "VacantEntry"
+      ]
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "value",
+              "type": 9,
+              "typeName": "V"
+            },
+            {
+              "name": "key_index",
+              "type": 5,
+              "typeName": "KeyIndex"
+            }
+          ]
+        }
+      },
+      "params": [
+        9
+      ],
+      "path": [
+        "ink_storage",
+        "collections",
+        "hashmap",
+        "ValueEntry"
+      ]
+    },
+    {
+      "def": {
+        "sequence": {
+          "type": 10
+        }
+      }
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "position",
+              "type": 11,
+              "typeName": "SystemCoordinate"
+            },
+            {
+              "name": "gateway_in",
+              "type": 13,
+              "typeName": "Gateway"
+            },
+            {
+              "name": "gateway_out",
+              "type": 13,
+              "typeName": "Gateway"
+            },
+            {
+              "name": "planets",
+              "type": 15,
+              "typeName": "Vec<Planet>"
+            },
+            {
+              "name": "discoverer",
+              "type": 1,
+              "typeName": "AccountId"
+            }
+          ]
+        }
+      },
+      "path": [
+        "newomegauniverse",
+        "newomegauniverse",
+        "System"
+      ]
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "root",
+              "type": 1,
+              "typeName": "AccountId"
+            },
+            {
+              "name": "position_x",
+              "type": 12,
+              "typeName": "i32"
+            },
+            {
+              "name": "position_y",
+              "type": 12,
+              "typeName": "i32"
+            }
+          ]
+        }
+      },
+      "path": [
+        "newomegauniverse",
+        "newomegauniverse",
+        "SystemCoordinate"
+      ]
+    },
+    {
+      "def": {
+        "primitive": "i32"
+      }
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "built",
+              "type": 14,
+              "typeName": "bool"
+            },
+            {
+              "name": "target",
+              "type": 11,
+              "typeName": "SystemCoordinate"
+            }
+          ]
+        }
+      },
+      "path": [
+        "newomegauniverse",
+        "newomegauniverse",
+        "Gateway"
+      ]
+    },
+    {
+      "def": {
+        "primitive": "bool"
+      }
+    },
+    {
+      "def": {
+        "sequence": {
+          "type": 16
+        }
+      }
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "selection",
+              "type": 17,
+              "typeName": "[u8; MAX_SHIPS]"
+            },
+            {
+              "name": "modules",
+              "type": 18,
+              "typeName": "[ShipModule; MAX_SHIPS]"
+            },
+            {
+              "name": "targeting",
+              "type": 20,
+              "typeName": "TargetingType"
+            },
+            {
+              "name": "level",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "owner",
+              "type": 1,
+              "typeName": "AccountId"
+            },
+            {
+              "name": "planet_type",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "mineral_type",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "mineral_proof",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "last_harvested",
+              "type": 5,
+              "typeName": "BlockNumber"
+            },
+            {
+              "name": "name",
+              "type": 21,
+              "typeName": "Option<String>"
+            }
+          ]
+        }
+      },
+      "path": [
+        "newomegauniverse",
+        "newomegauniverse",
+        "Planet"
+      ]
+    },
+    {
+      "def": {
+        "array": {
+          "len": 4,
+          "type": 3
+        }
+      }
+    },
+    {
+      "def": {
+        "array": {
+          "len": 4,
+          "type": 19
+        }
+      }
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "snare",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "root",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "blind",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "attack_debuff",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "defence_debuff",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "range_debuff",
+              "type": 3,
+              "typeName": "u8"
+            }
+          ]
+        }
+      },
+      "path": [
+        "newomega",
+        "newomega",
+        "ShipModule"
+      ]
+    },
+    {
+      "def": {
+        "variant": {
+          "variants": [
+            {
+              "discriminant": 0,
+              "name": "Furthest"
+            },
+            {
+              "discriminant": 1,
+              "name": "Closest"
+            },
+            {
+              "discriminant": 2,
+              "name": "HighestHp"
+            },
+            {
+              "discriminant": 3,
+              "name": "LowestHp"
+            },
+            {
+              "discriminant": 4,
+              "name": "HighestSpeed"
+            },
+            {
+              "discriminant": 5,
+              "name": "LowestSpeed"
+            },
+            {
+              "discriminant": 6,
+              "name": "HighestDefence"
+            },
+            {
+              "discriminant": 7,
+              "name": "LowestDefence"
+            },
+            {
+              "discriminant": 8,
+              "name": "HighestAttack"
+            },
+            {
+              "discriminant": 9,
+              "name": "LowestAttack"
+            }
+          ]
+        }
+      },
+      "path": [
+        "newomega",
+        "newomega",
+        "TargetingType"
+      ]
+    },
+    {
+      "def": {
+        "variant": {
+          "variants": [
+            {
+              "name": "None"
+            },
+            {
+              "fields": [
+                {
+                  "type": 22,
+                  "typeName": "T"
+                }
+              ],
+              "name": "Some"
+            }
+          ]
+        }
+      },
+      "params": [
+        22
+      ],
+      "path": [
+        "Option"
+      ]
+    },
+    {
+      "def": {
+        "primitive": "str"
+      }
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "value",
+              "type": 24,
+              "typeName": "V"
+            },
+            {
+              "name": "key_index",
+              "type": 5,
+              "typeName": "KeyIndex"
+            }
+          ]
+        }
+      },
+      "params": [
+        24
+      ],
+      "path": [
+        "ink_storage",
+        "collections",
+        "hashmap",
+        "ValueEntry"
+      ]
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "name",
+              "type": 22,
+              "typeName": "String"
+            }
+          ]
+        }
+      },
+      "path": [
+        "newomegauniverse",
+        "newomegauniverse",
+        "PlayerAssets"
+      ]
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "account_id",
+              "type": 1,
+              "typeName": "AccountId"
+            }
+          ]
+        }
+      },
+      "path": [
+        "newomegagame",
+        "newomegagame",
+        "NewOmegaGame"
+      ]
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "account_id",
+              "type": 1,
+              "typeName": "AccountId"
+            }
+          ]
+        }
+      },
+      "path": [
+        "newomegastorage",
+        "newomegastorage",
+        "NewOmegaStorage"
+      ]
+    },
+    {
+      "def": {
+        "tuple": [
+          28,
+          14
+        ]
+      }
+    },
+    {
+      "def": {
+        "variant": {
+          "variants": [
+            {
+              "name": "None"
+            },
+            {
+              "fields": [
+                {
+                  "type": 10,
+                  "typeName": "T"
+                }
+              ],
+              "name": "Some"
+            }
+          ]
+        }
+      },
+      "params": [
+        10
+      ],
+      "path": [
+        "Option"
+      ]
+    },
+    {
+      "def": {
+        "sequence": {
+          "type": 1
+        }
+      }
+    },
+    {
+      "def": {
+        "sequence": {
+          "type": 22
+        }
+      }
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "no_players",
+              "type": 32,
+              "typeName": "u64"
+            },
+            {
+              "name": "no_systems",
+              "type": 32,
+              "typeName": "u64"
+            }
+          ]
+        }
+      },
+      "path": [
+        "newomegauniverse",
+        "newomegauniverse",
+        "GameStats"
+      ]
+    },
+    {
+      "def": {
+        "primitive": "u64"
+      }
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "selection_lhs",
+              "type": 17,
+              "typeName": "[u8; MAX_SHIPS]"
+            },
+            {
+              "name": "selection_rhs",
+              "type": 17,
+              "typeName": "[u8; MAX_SHIPS]"
+            },
+            {
+              "name": "modules_lhs",
+              "type": 18,
+              "typeName": "[ShipModule; MAX_SHIPS]"
+            },
+            {
+              "name": "modules_rhs",
+              "type": 18,
+              "typeName": "[ShipModule; MAX_SHIPS]"
+            },
+            {
+              "name": "targeting_lhs",
+              "type": 20,
+              "typeName": "TargetingType"
+            },
+            {
+              "name": "targeting_rhs",
+              "type": 20,
+              "typeName": "TargetingType"
+            },
+            {
+              "name": "lhs_dead",
+              "type": 14,
+              "typeName": "bool"
+            },
+            {
+              "name": "rhs_dead",
+              "type": 14,
+              "typeName": "bool"
+            },
+            {
+              "name": "rounds",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "seed",
+              "type": 32,
+              "typeName": "u64"
+            },
+            {
+              "name": "ships_lost_lhs",
+              "type": 17,
+              "typeName": "[u8; MAX_SHIPS]"
+            },
+            {
+              "name": "ships_lost_rhs",
+              "type": 17,
+              "typeName": "[u8; MAX_SHIPS]"
+            }
+          ]
+        }
+      },
+      "path": [
+        "newomega",
+        "newomega",
+        "FightResult"
+      ]
+    }
+  ]
+}

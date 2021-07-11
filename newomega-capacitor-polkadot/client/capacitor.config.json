@@ -1,0 +1,14 @@
+{
+  "appId": "org.celrisen.newomega",
+  "appName": "New Omega",
+  "bundledWebRuntime": false,
+  "npmClient": "yarn",
+  "webDir": "build",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "cordova": {},
+  "linuxAndroidStudioPath": "/snap/android-studio/113/android-studio/bin/studio.sh"
+}

@@ -1,0 +1,102 @@
+.AttackFleet {
+    position: absolute;
+    top: 55%;
+    height: 30%;
+    width: 100%;
+    color: white;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.AttackFleet .attackIcon {
+    position: absolute;
+    left: 0.5rem;
+    top: 1.5rem;
+    color: #73ffbe;
+    font-size: 5rem;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 50%;
+    border: 1px solid #73ffbe;
+}
+
+.AttackFleet .iconTitle {
+    position: absolute;
+    left: 0.5rem;
+    top: 6.5rem;
+    width: 5rem;
+}
+
+.AttackFleet .defenders {
+    position: absolute;
+    top: 0;
+    left: 6rem;
+    width: calc(100% - 12rem);
+    height: 100%;
+}
+
+.AttackFleet .defender {
+    cursor: pointer;
+}
+
+.AttackFleet .defenderInnerReady {
+    filter: blur(1px);
+}
+
+.AttackFleet .defenderInner {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.AttackFleet .slick-slide:not(:last-child) .defenderInner {
+    border-right: 1px solid white;
+}
+
+.AttackFleet .defenderValue {
+    font-size: 2rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.AttackFleet .valueExplain {
+    font-size: 0.5rem;
+}
+
+.AttackFleet .registerFirst {
+    text-transform: uppercase;
+    background: #73ffbe;
+    width: 80%;
+    margin-left: 10%;
+    margin-bottom: 0.5rem;
+    color: black;
+    font-size: 1rem;
+    line-height: 1rem;
+}
+
+.AttackFleet .slick-prev:before, 
+.AttackFleet .slick-next:before {
+    font-size: 3rem;
+}
+
+.AttackFleet .slick-prev,
+.AttackFleet .slick-next {
+    width: 3rem;
+    height: 3rem;
+}
+
+.AttackFleet .slick-next {
+    right: -3.5rem;
+}
+
+.AttackFleet .slick-prev {
+    left: -3.5rem;
+}
+
+.AttackFleet .progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+}

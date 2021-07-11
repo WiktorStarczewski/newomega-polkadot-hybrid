@@ -1,0 +1,218 @@
+.ShipProduction {
+    width: 100%;
+    height: 35%;
+}
+
+.ShipProduction.expanded {
+    height: 80%;
+}
+
+.ShipProduction:not(.LoadingMask).expanded {
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.ShipProduction:not(.LoadingMask):not(.expanded) {
+    background-color: rgba(0, 0, 0, 0.0);
+}
+
+.ShipProduction .ships {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    user-select: none;
+}
+
+.ShipProduction .ship {
+    flex: 1;
+    height: 100%;
+    cursor: pointer;
+    transition: opacity 0.5s ease-out;
+    position: relative;
+}
+
+.ShipProduction .ship img {
+    width: 80%;
+}
+
+.ShipProduction .ship.unselected {
+    opacity: 0.2;
+}
+
+.ShipProduction .moreDetails {
+    position: absolute;
+    top: 0.5rem;
+    left: 0;
+    width: 100%;
+    cursor: pointer;
+    color: white;
+}
+
+.ShipProduction .grade.common {
+    color: white;
+}
+
+.ShipProduction .grade.rare {
+    color: #1e88e5;
+}
+
+.ShipProduction .grade.epic {
+    color: #8e24aa;    
+}
+
+.ShipProduction .grade.legendary {
+    color: #fdd835;
+}
+
+.ShipProduction .grade.primal {
+    color: #f4511e;
+}
+
+.ShipProduction .closeDetailPanel {
+    position: absolute;
+    bottom: -2.5rem;
+    left: calc(50% - 3rem);
+    cursor: pointer;
+}
+
+.ShipProduction .closeDetailPanel .MuiSvgIcon-root {
+    font-size: 6rem;
+    color: white;
+}
+
+.ShipProduction .picture img {
+    height: 100%;
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.ShipProduction .shipDetail {
+    display: flex;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    transition: opacity 0.5s ease-out;
+    overflow: hidden;
+    opacity: 0;
+}
+
+.ShipProduction.expanded .shipDetail {
+    height: 65%;
+    opacity: 1;
+    justify-content: center;
+    padding-bottom: 1rem;
+}
+
+.ShipProduction .closeShips {
+    position: absolute;
+    top: 0;
+    right: 0.5rem;
+}
+
+.ShipProduction .closeShips svg {
+    cursor: pointer;
+    color: white;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 50%;
+    margin-left: 0.5rem;
+}
+
+.ShipProduction .shipName {
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 1rem;
+    padding: 0 0.5rem;
+    transition: background-color 0.3s ease-out;
+    font-size: 0.75rem;
+}
+
+.ShipProduction.expanded .shipName {
+    background-color: rgba(0, 0, 0, 0.0);
+}
+
+.ShipProduction .shipDetail .shipDetailPanel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: white;
+}
+
+.ShipProduction .shipActions {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.ShipProduction .shipAction {
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 0.5rem;
+    border: 2px solid #73ffbe;
+    color: #73ffbe;
+    display: flex;
+    justify-content: center;
+    font-size: 1rem;
+    cursor: pointer;
+    flex-direction: column;
+    width: 50%;
+    text-transform: uppercase;
+    height: 2rem;
+    line-height: 2rem;
+    margin: 1rem 0;
+}
+
+.ShipProduction .shipAction.disabled {
+    filter: blur(2px);
+}
+
+.ShipProduction .tradeTrack {
+    height: 2rem;
+}
+
+.ShipProduction .infoText {
+    height: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: absolute;
+    width: 100%;
+}
+
+.ShipProduction .tradeThumb {
+    height: 2rem;
+    width: 2rem;
+    line-height: 2rem;
+    background: #73ffbe;
+    color: black;
+    font-size: 0.75rem;
+}
+
+.ShipProduction .tradeTrack {
+    position: absolute;
+    top: 0;
+    left: 0%;
+    height: 100%;
+    width: 100%;
+    border: 1px solid white;
+}
+
+.ShipProduction .tradeValueSelector {
+    position: relative;
+    height: 2rem;
+    margin: 0 auto;
+    width: 75%;
+}
+
+.ShipProduction .tradeBreak {
+    height: 1rem;
+}
+
+.ShipProduction .shipProductionInner {
+    display: flex;
+    flex-direction: column;
+    align-self: flex-end;
+    width: 50%;
+    z-index: 1;
+}

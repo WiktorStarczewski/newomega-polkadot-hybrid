@@ -1,0 +1,198 @@
+.ShipSelection {
+    height: 100%;
+    background: url("../images/szpieg_01.jpeg") no-repeat center center;
+    background-size: cover;
+}
+
+.ShipSelection .ui .shipName {
+    left: 0;
+    bottom: 3.5rem;
+    width: 100%;
+    height: 3rem;
+    text-align: center;
+    font-size: 2.5rem;
+}
+
+.ShipSelection .ui .sideBox {
+    top: calc(50% - 6rem);
+    height: 12rem;
+    width: 8rem;
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.4);
+    font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.ShipSelection .ui .shipStats {
+    left: 4rem;
+}
+
+.ShipSelection .ui .shipControls {
+    right: 4rem;
+}
+
+.ShipSelection .ui .shipControls .maxCp {
+    color: #73ffbe;
+}
+
+.ShipSelection .ui .shipControls .addOrRemoveShip {
+    user-select: none;
+    font-size: 3rem;
+    line-height: 1.5rem;
+    cursor: pointer;
+    height: 2rem;
+}
+
+.ShipSelection .ui .shipControls .addShip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.ShipSelection .ui .shipControls .removeShip {
+    margin-top: 0.5rem;
+}
+
+.ShipSelection .ui .shipDescription {
+    bottom: 0.5rem;
+    width: 50%;
+    left: 25%;
+    font-size: 0.75rem;
+}
+
+.ShipSelection .ui .chevron {
+    position: absolute;
+    top: calc(50% - 2rem);
+    font-size: 3rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.ShipSelection .ui .chevron.left {
+    left: -0.5rem;
+}
+
+.ShipSelection .ui .chevron .MuiSvgIcon-root {
+    font-size: 5rem;
+}
+
+.ShipSelection .ui .chevron.right {
+    right: -0.5rem;
+}
+
+.ShipSelection .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    color: white;
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.ShipSelection .modal .modal-popup {
+    position: fixed;
+    top: 10%;
+    left: 10%;
+    height: 80%;
+    width: 80%;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.ShipSelection .modal .modal-popup .modal-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.ShipSelection .modal .modal-popup .modal-buttons {
+    position: absolute;
+    left: 0.5rem;
+    bottom: 0.5rem;
+    width: calc(100% - 1rem);
+    padding: 0;
+}
+
+.ShipSelection .modal .modal-popup .modal-buttons .modal-button {
+    background: #73ffbe;
+    color: black;
+    display: flex;
+    justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    flex-direction: column;
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    text-transform: uppercase;
+    padding: 0.5rem;
+}
+
+.ShipSelection .modal .modal-body {
+    position: absolute;
+    top: 40%;
+    left: 0;
+    width: 100%;
+    height: 20%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.ShipSelection .modal .modal-popup .modal-buttons .modal-button.left {
+    float: left;
+}
+
+.ShipSelection .modal .modal-popup .modal-buttons .modal-button.right {
+    float: right;
+}
+
+.ShipSelection .highlightOverModal {
+    z-index: 1;
+    color: #73ffbe;
+    transform: scale(1);
+    animation: pulse 1s infinite;
+}
+
+.ShipSelection .ui .vsBonus {
+    color: #73ffbe;
+}
+
+.ShipSelection .ui .fittingsOuter {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    bottom: 0.5rem;
+    left: 0;
+    width: 100%;
+}
+
+.ShipSelection .ui .statBox {
+    position: absolute;
+    top: 0.5rem;
+    left: 0;
+    width: 100%;
+}
+
+.ShipSelection .ui .fitting {
+    flex: 1;
+    cursor: pointer;
+}
+
+.ShipSelection .ui .fitting svg {
+    font-size: 1.5rem;
+}
+
+.ShipSelection .ui .fitting.active {
+    color: #73ffbe;
+}
+
+.ShipSelection .ui .boostedStat {
+    color: #73ffbe;
+}

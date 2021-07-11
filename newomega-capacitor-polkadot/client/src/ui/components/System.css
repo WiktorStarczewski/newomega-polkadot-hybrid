@@ -1,0 +1,257 @@
+.System {
+    width: 100%;
+    height: 35%;
+}
+
+.System.expanded {
+    height: 80%;
+}
+
+.System:not(.LoadingMask).expanded {
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.System:not(.LoadingMask):not(.expanded) {
+    background-color: rgba(0, 0, 0, 0.0);
+}
+
+.System .planets {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    user-select: none;
+}
+
+.System .planet {
+    flex: 1;
+    height: 100%;
+    cursor: pointer;
+    transition: opacity 0.5s ease-out;
+    position: relative;
+}
+
+.System .planet img {
+    width: 100%;
+}
+
+.System .planet.unselected {
+    opacity: 0.2;
+}
+
+.System .moreDetails {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    cursor: pointer;
+    color: white;
+}
+
+.System .grade.common {
+    color: white;
+}
+
+.System .grade.rare {
+    color: #1e88e5;
+}
+
+.System .grade.epic {
+    color: #8e24aa;    
+}
+
+.System .grade.legendary {
+    color: #fdd835;
+}
+
+.System .grade.primal {
+    color: #f4511e;
+}
+
+.System .closeDetailPanel {
+    position: absolute;
+    bottom: -2.5rem;
+    left: calc(50% - 3rem);
+    cursor: pointer;
+}
+
+.System .closeDetailPanel .MuiSvgIcon-root {
+    font-size: 6rem;
+    color: white;
+}
+
+.System .picture img {
+    height: 100%;
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.System .planetLevel {
+    color: white;
+}
+
+.System .owner {
+    color: white;
+    font-size: 0.75rem;
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 1rem;
+    padding: 0 0.5rem;
+    transition: background-color 0.3s ease-out;
+}
+
+.System.expanded .owner {
+    background-color: rgba(0, 0, 0, 0.0);
+}
+
+.System .owner.own {
+    color: #73ffbe;
+}
+
+.System .planetLevel.own {
+    color: #73ffbe;
+}
+
+.System .planetDetail {
+    display: flex;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0;
+    transition: opacity 0.5s ease-out;
+    overflow: hidden;
+    opacity: 0;
+}
+
+.System .planetDetail .planetDetailPanel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: white;
+}
+
+.System.expanded .planetDetail {
+    height: 50%;
+    opacity: 1;
+}
+
+.System .planetDetailPanel.planetActions {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    flex: 2;
+    margin-right: 0.5rem;
+}
+
+.System .planetAction {
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 0.5rem;
+    border: 2px solid #73ffbe;
+    color: #73ffbe;
+    display: flex;
+    justify-content: center;
+    font-size: 1rem;
+    cursor: pointer;
+    flex-direction: column;
+    width: 20%;
+    text-transform: uppercase;
+    height: 50%;
+    margin: 0.25rem;
+    position: relative;
+}
+
+.System .planetAction .iconWrapper {
+    position: absolute;
+    top: 0.25rem;
+    left: 0.2rem;
+    display: flex;
+    flex-direction: row;
+    line-height: 1.5rem;
+}
+
+.System .planetAction .iconWrapper svg {
+    margin-right: 0.1rem;
+}
+
+.System .planetAction.disabled {
+    filter: blur(2px);
+}
+
+.System .cantAttackExplain {
+    margin-top: 0.5rem;
+    font-size: 0.5rem;
+    width: 25%;
+    margin-right: 0.5rem;
+}
+
+.System .planetNameEntryModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    opacity: 1;
+    transition: top 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.System .planetNameEntryModal.disabled {
+    top: -100%;
+    opacity: 0;
+}
+
+.System .planetNameEntryModal .buttonBox {
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 0.5rem;
+    border: 2px solid #73ffbe;
+    color: #73ffbe;
+    display: flex;
+    justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    flex-direction: column;
+    text-transform: uppercase;
+    text-align: center;
+    width: 8rem;
+    height: 3rem;
+    position: absolute;
+    bottom: 0.5rem;
+}
+
+.System .planetNameEntryModal .centeredBox {
+    position: absolute;
+    top: calc(50% - 6rem);
+    left: 0;
+    padding-top: 2rem;
+    background: rgba(255, 255, 255, 0.8);
+    width: 100%;
+    height: 12rem;
+    
+}
+
+.System .planetNameEntryModal .planetNameInput {
+    width: 100%;
+    height: 5rem;
+    font-size: 2rem;
+    border: none;
+    outline: none;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    font: 500 2rem "Exo 2";
+    color: white;
+}
+
+.System .planetNameEntryModal .buttonBox.doneBox {
+    right: 0.5rem;
+}
+
+.System .planetNameEntryModal .buttonBox.cancelBox {
+    left: 0.5rem;
+}
+
+.System .planetName {
+    font-weight: 600;
+}

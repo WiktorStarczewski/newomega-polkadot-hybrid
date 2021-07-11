@@ -1,0 +1,42 @@
+.Settings {
+    height: 100%;
+    background: url("../images/szpieg_01.jpeg") no-repeat center center;
+    background-size: cover;
+}
+
+.Settings .mainMenu {
+    color: white;
+}
+
+.Settings .qr {
+    width: 128px;
+    height: 128px;
+}
+
+.Settings .mnemonic {
+    margin-top: 1rem;
+}
+
+.Settings .address .guid {
+    user-select: all;
+}
+
+.Settings .mnemonic .mnemonic-content {
+    user-select: all;
+}
+
+.Settings .info {
+    margin-left: 1.5rem;
+    height: 7rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0.5rem;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    width: 80%;
+}
+
+.Settings .ui .bottomBox {
+    width: 10rem;
+}

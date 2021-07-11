@@ -1,0 +1,56 @@
+.SystemActions {
+    width: 50%;
+    height: 40%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.SystemActions:not(.LoadingMask) {
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.SystemActions .gateway {
+    width: 25%;
+    color: white;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.SystemActions .gateway img {
+    width: 55%;
+}
+
+@media (min-width:961px) {
+    .SystemActions .gateway img {
+        width: 75%;
+    }
+}
+
+.SystemActions .gatewayTarget {
+    font-size: 0.5rem;
+}
+
+.SystemActions .gatewayAction {
+    margin-top: 0.5rem;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 0.5rem;
+    border: 2px solid #73ffbe;
+    color: #73ffbe;
+    display: flex;
+    justify-content: center;
+    cursor: pointer;
+    flex-direction: column;
+    text-transform: uppercase;
+    height: 1.5rem;
+    line-height: 1.5rem;
+    padding: 0 0.5rem;
+}
+
+.SystemActions .gatewayAction.disabled {
+    filter: blur(1px);
+}

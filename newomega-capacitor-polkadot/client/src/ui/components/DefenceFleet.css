@@ -1,0 +1,72 @@
+.DefenceFleet {
+    position: absolute;
+    top: 15%;
+    height: 30%;
+    width: 100%;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.DefenceFleet .registerFleet {
+    cursor: pointer;
+    text-transform: uppercase;
+    flex: 1;
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+}
+
+.DefenceFleet .fleetStatus {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.DefenceFleet .registerButton {
+    border: 2px solid #73ffbe;
+    color: #73ffbe;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.DefenceFleet .defenceIcon {
+    position: absolute;
+    left: 0.5rem;
+    color: #73ffbe;
+    font-size: 5rem;
+    top: 1.5rem;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 50%;
+    border: 1px solid #73ffbe;
+}
+
+.DefenceFleet .iconTitle {
+    position: absolute;
+    left: 0.5rem;
+    top: 6.5rem;
+    width: 5rem;
+}
+
+.DefenceFleet .unregisterFleet {
+    position: absolute;
+    top: 0;
+    right: 0.5rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.DefenceFleet .fleetBalance {
+    font-size: 2rem;
+}

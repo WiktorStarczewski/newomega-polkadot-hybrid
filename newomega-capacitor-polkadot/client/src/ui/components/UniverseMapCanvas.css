@@ -1,0 +1,7 @@
+.UniverseMapCanvas {
+    height: calc(100% - 1rem);
+}
+
+.UniverseMapCanvas .canvasInner {
+    height: 100%;
+}

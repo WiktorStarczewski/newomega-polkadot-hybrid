@@ -3,8 +3,6 @@ import { Modules } from './definitions/Modules';
 import { Targeting } from './definitions/Ships';
 
 
-const BLOCK_LENGTH = 8000;
-
 const { ContractFacade } = require('./facades/ContractFacade');
 const MNEMONIC = '//Alice';
 
@@ -12,17 +10,16 @@ jest.setTimeout(50000);
 
 let delegatorAddress;
 
-// const { Deployer } = require('./facades/Deployer');
-// test('Deploy', async () => {
-//     const deployer = new Deployer();
-//     await deployer.initialize();
+const { Deployer } = require('./facades/Deployer');
+test('Deploy', async () => {
+    const deployer = new Deployer();
+    await deployer.initialize();
 
-//     return deployer.deployDelegator().then((contract) => {
-//         console.log('Delegator address ', contract.address.toHuman());
-//         delegatorAddress = contract.address.toHuman();
-//         expect(contract).toBeDefined();
-//     });
-// });
+    const contract = await deployer.deployDelegator();
+    console.log('Delegator address ', contract.address.toHuman());
+    delegatorAddress = contract.address.toHuman();
+    expect(contract).toBeDefined();
+});
 
 test('Initialize', async () => {
     const facade = new ContractFacade();
@@ -32,6 +29,60 @@ test('Initialize', async () => {
     expect(facade.keyring).toBeDefined();
     expect(facade.alice).toBeDefined();
     expect(facade.contracts).toBeDefined();
+});
+
+test('Universe', async () => {
+    const facade = new ContractFacade();
+    await facade.initialize(MNEMONIC, delegatorAddress);
+    const aliceName = 'Alice';
+    await facade.universeRegisterPlayer(aliceName);
+    const assets = await facade.getPlayerAssets();
+
+    expect(assets.name).toEqual(aliceName);
+
+    const aliceMap = await facade.getUniverseMap(facade.alice.address);
+    const aliceRootCoords = {
+        root: facade.alice.address,
+        position_x: 0,
+        position_y: 0,
+    };
+
+    const planetIndex = 0;
+    const renamedPlanetName = 'TestAlice';
+    await facade.renamePlanet(aliceRootCoords, planetIndex, renamedPlanetName);
+    const aliceRootSystemResult = await facade.getSystem(aliceRootCoords);
+    const aliceRootSystem = aliceRootSystemResult[0];
+
+    expect(aliceRootSystem.planets[planetIndex].name).toEqual(renamedPlanetName);
+
+    const furthestEastSystem = _.last(_.sortBy(aliceMap, (system) => {
+        return system.position.position_x;
+    }));
+    const coordToDiscover = {
+        ...furthestEastSystem.position,
+        position_x: furthestEastSystem.position.position_x + 1,
+    };
+
+    await facade.discoverSystem(coordToDiscover);
+    const discoveredSystemResult = await facade.getSystem(coordToDiscover);
+    const discoveredSystem = discoveredSystemResult[0];
+
+    expect(discoveredSystem).toBeTruthy();
+    expect(discoveredSystem.gateway_out.built).toBeFalsy();
+    expect(discoveredSystem.gateway_in.built).toBeFalsy();
+
+    const facadeBob = new ContractFacade();
+    await facadeBob.initialize('//Bob', delegatorAddress);
+    const bobName = 'Bob';
+    await facadeBob.universeRegisterPlayer(bobName);
+
+    await facade.buildGateway(coordToDiscover);
+    const discoveredSystemAfterBuildGatewayResult = await facade.getSystem(coordToDiscover);
+    const discoveredSystemAfterBuildGateway = discoveredSystemAfterBuildGatewayResult[0];
+
+    expect(discoveredSystemAfterBuildGateway.gateway_out.built).toBeTruthy();
+    expect(discoveredSystemAfterBuildGateway.gateway_in.built).toBeFalsy();
+    expect(discoveredSystemAfterBuildGateway.gateway_out.target.root).toEqual(facadeBob.alice.address);
 });
 
 test('RegisterDefence', async () => {
@@ -46,7 +97,6 @@ test('RegisterDefence', async () => {
     const targeting = Targeting.Closest;
     const value = 1000;
     await facadeAlice.registerDefence(selection, modules, name, value, targeting);
-    await new Promise((r) => setTimeout(r, BLOCK_LENGTH));
 
     const defence = await facadeAlice.getOwnDefence();
 
@@ -67,7 +117,6 @@ test('RegisterDefence', async () => {
     const valueBob = 1000;
     await facadeBob.unregisterDefence();
     await facadeBob.registerDefence(selectionBob, modulesBob, nameBob, valueBob, targetingBob);
-    await new Promise((r) => setTimeout(r, BLOCK_LENGTH));
 
     const defenceBob = await facadeBob.getOwnDefence();
 
@@ -113,8 +162,6 @@ test('Attack', async () => {
     expect(attackResult.targeting_lhs.toHuman()).toEqual(targeting);
     expect(payout).toEqual(value);
 
-    await new Promise((r) => setTimeout(r, BLOCK_LENGTH));
-
     const leaderboardPost = await facadeAlice.getLeaderboard();
     const alicePost = _.findWhere(leaderboardPost, {
         address: facadeAlice.alice.address,
@@ -159,52 +206,3 @@ test('Replay', async () => {
     expect(result.rhs_dead).toBeFalsy();
 });
 
-test('Universe', async () => {
-    const facade = new ContractFacade();
-    await facade.initialize('//Alice', delegatorAddress);
-    const aliceName = 'Alice';
-    await facade.universeRegisterPlayer(aliceName);
-    const assets = await facade.getPlayerAssets();
-
-    expect(assets.name).toEqual(aliceName);
-
-    const aliceMap = await facade.getUniverseMap(facade.alice.address);
-    const aliceRootCoords = {
-        root: facade.alice.address,
-        position_x: 0,
-        position_y: 0,
-    };
-    
-    const planetIndex = 0;
-    const renamedPlanetName = 'TestAlice';
-    await facade.renamePlanet(aliceRootCoords, planetIndex, renamedPlanetName);
-    const aliceRootSystemResult = await facade.getSystem(aliceRootCoords);
-    const aliceRootSystem = aliceRootSystemResult[0];
-
-    console.log(aliceRootSystem);
-
-    expect(aliceRootSystem.planets[planetIndex].name).toEqual(renamedPlanetName);
-
-    const furthestEastSystem = _.last(_.sortBy(aliceMap, (system) => {
-        return system.position.position_x;
-    }));
-    const coordToDiscover = {
-        ...furthestEastSystem.position,
-        position_x: furthestEastSystem.position.position_x + 1,
-    };
-
-    await facade.discoverSystem(coordToDiscover);
-    const discoveredSystemResult = await facade.getSystem(coordToDiscover);
-    const discoveredSystem = discoveredSystemResult[0];
-
-    expect(discoveredSystem).toBeTruthy();
-    expect(discoverSystem.gateway_out.built).toBeFalsy();
-    expect(discoverSystem.gateway_in.built).toBeFalsy();
-
-    await facade.buildGateway(coordToDiscover);
-    const discoveredSystemAfterBuildGatewayResult = await facade.getSystem(coordToDiscover);
-    const discoveredSystemAfterBuildGateway = discoveredSystemAfterBuildGatewayResult[0];
-    
-    expect(discoveredSystemAfterBuildGateway.gateway_out.built).toBeTruthy();
-    expect(discoveredSystemAfterBuildGateway.gateway_in.built).toBeFalsy();
-});

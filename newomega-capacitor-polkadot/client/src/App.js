@@ -1,7 +1,7 @@
 import * as Sentry from "@sentry/react";
 import { Integrations } from "@sentry/tracing";
 import './App.css';
-import OmegaApp from './OmegaApp';
+import { OmegaApp } from './OmegaApp';
 
 
 window.oncontextmenu = function() { return false; }

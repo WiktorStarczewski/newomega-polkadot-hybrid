@@ -1,0 +1,45 @@
+.ModuleInfo {
+    height: 100%;
+    width: 100%;
+    text-align: center;
+}
+
+.ModuleInfo .rarity {
+    width: 100%;
+    height: 10%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.ModuleInfo .stats {
+    height: calc(70% - 0.5rem);
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.ModuleInfo .stats canvas {
+    pointer-events: none;
+}
+
+.ModuleInfo .name {
+    height: 20%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    font-weight: 600;
+    background-color: rgba(0, 0, 0, 0.4);
+    position: relative;
+}
+
+.ModuleInfo .nftId {
+    position: absolute;
+    bottom: 0.5rem;
+    right: 0.5rem;
+    font-size: 0.5rem;
+    color: white;
+}

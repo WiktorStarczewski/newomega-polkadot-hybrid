@@ -121,13 +121,15 @@ export const Embassy = {
     asset: 'assets/images/embassy.png',
 };
 
-export const proofToClassName = (proof) => {
+export const proofToClassName = (proof, max) => {
+    max = max || 100;
+
     const lookup = {
-        100: 'primal',
-        85: 'legendary',
-        75: 'epic',
-        50: 'rare',
-        30: 'common',
+        [Math.floor(100 * max / 100)]: 'primal',
+        [Math.floor(85 * max / 100)]: 'legendary',
+        [Math.floor(70 * max / 100)]: 'epic',
+        [Math.floor(50 * max / 100)]: 'rare',
+        [Math.floor(30 * max / 100)]: 'common',
     };
 
     let clName = '';

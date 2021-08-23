@@ -8,7 +8,7 @@
 }
 
 .ShipProduction:not(.LoadingMask).expanded {
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 .ShipProduction:not(.LoadingMask):not(.expanded) {
@@ -164,7 +164,7 @@
 }
 
 .ShipProduction .shipAction.disabled {
-    filter: blur(2px);
+    filter: blur(1px);
 }
 
 .ShipProduction .tradeTrack {

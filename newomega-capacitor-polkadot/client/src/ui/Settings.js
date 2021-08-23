@@ -1,12 +1,34 @@
 import './Settings.css';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Plugins } from '@capacitor/core';
 import { OmegaDefaults } from '../definitions/OmegaDefaults';
 import Snackbar from '@material-ui/core/Snackbar';
 import QRCode from 'react-qr-code';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Slide from '@material-ui/core/Slide';
+
+const { Storage } = Plugins;
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
 
 
 export const Settings = (props) => {
     const [toastOpen, setToastOpen] = useState(false);
+    const [mnemonic, setMnemonic] = useState('');
+    const [confirmOpen, setConfirmOpen] = useState(false);
+
+    const handleConfirmOpen = () => {
+        setConfirmOpen(true);
+    };
+    
+    const handleConfirmClose = () => {
+        setConfirmOpen(false);
+    };
 
     /**
      * Copies the address to clipboard.
@@ -24,7 +46,16 @@ export const Settings = (props) => {
         setToastOpen(false);
     }
 
-    const qrCodeValue = `${props.address}`;
+    useEffect(() => {
+        const asyncHandler = async () => {
+            const result = await Storage.get({ key: 'OmegaMnemonic' });
+            setMnemonic(result.value);
+        };
+
+        asyncHandler();
+    }, []);
+
+    const qrCodeValue = `substrate://${props.address}`;
 
     return (
         <div className="Settings">
@@ -46,12 +77,15 @@ export const Settings = (props) => {
                             Balance: {props.balance}
                         </div>
                         <div className="mnemonic">
-                            Mnemonic: <span className="mnemonic-content">{localStorage.getItem('OmegaMnemonic')}</span>
+                            Mnemonic: <span className="mnemonic-content">{mnemonic}</span>
                         </div>
                     </div>
                 </div>
                 <div className="uiElement doneBox bottomBox" onClick={props.onCancel}>
                     BACK
+                </div>
+                <div className="uiElement cancelBox bottomBox" onClick={handleConfirmOpen}>
+                    LOGOUT
                 </div>
             </div>
             <Snackbar
@@ -64,6 +98,29 @@ export const Settings = (props) => {
                 }}
                 message="Address copied to clipboard."
             />
+            <Dialog
+                open={confirmOpen}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={handleConfirmClose}
+                aria-labelledby="alert-dialog-slide-title"
+                aria-describedby="alert-dialog-slide-description"
+            >
+                <DialogTitle id="alert-dialog-slide-title">{"Are you sure?"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-slide-description">
+                    Make sure you backed up your mnemonic phrase, it is the ONLY way to access your account. If it is lost, it can not be recovered.
+                </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <div onClick={handleConfirmClose} className="dialogButton">
+                        Cancel
+                    </div>
+                    <div onClick={props.onLogout} className="dialogButton">
+                        Log Out
+                    </div>
+                </DialogActions>
+            </Dialog>        
         </div>
     );
 };

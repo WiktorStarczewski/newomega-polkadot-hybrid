@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import { Minerals } from './ui/components/Minerals';
 import { ShipProduction } from './ui/components/ShipProduction';
 import { System } from './ui/components/System';
@@ -11,20 +11,27 @@ import { Settings } from './ui/Settings';
 jest.setTimeout(25000);
 
 test('LoginScreen - Signup', async () => {
-    const onLoginDone = (options) => {
-        const mnemonic = options.finisher()[0];
+    const onLoginDone = async (options) => {
+        const loginResult = await options.finisher();
+        const mnemonic = loginResult[0];
         expect(mnemonic).toBeDefined();
         const words = mnemonic.split(' ');
         expect(words.length).toBe(12);
         expect(mnemonic).toEqual(localStorage.getItem('OmegaMnemonic'));
     };
 
-    render(<LoginScreen onDone={onLoginDone}/>);
+    act(() => {
+        render(<LoginScreen onDone={onLoginDone}/>);
+    });
 
+    await new Promise((r) => setTimeout(r, 1000));
     const signupButton = screen.getByText(/sign up/i);
     expect(signupButton).toBeInTheDocument();
 
-    signupButton.click();
+    act(() => {
+        signupButton.click();
+    });
+
     await new Promise((r) => setTimeout(r, 1000));
 });
 
@@ -33,25 +40,35 @@ test('LoginScreen - Login', async () => {
 
     const dummyMnemonic = 'word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 word11 word12';
 
-    const onLoginDone = (options) => {
-        const mnemonic = options.finisher()[0];
+    const onLoginDone = async (options) => {
+        const loginResult = await options.finisher();
+        const mnemonic = loginResult[0];
         expect(mnemonic).toEqual(dummyMnemonic);
     };
 
-    render(<LoginScreen onDone={onLoginDone}/>);
+    act(() => {
+        render(<LoginScreen onDone={onLoginDone}/>);
+    });
 
+    await new Promise((r) => setTimeout(r, 1000));
     const loginButton = screen.getByText(/log in/i);
     expect(loginButton).toBeInTheDocument();
 
-    loginButton.click();
+    act(() => {
+        loginButton.click();
+    });
 
     const mnemonicInput = screen.getByPlaceholderText(/mnemonic/i);
-    fireEvent.change(mnemonicInput, { target: { value: dummyMnemonic }});
+    act(() => {
+        fireEvent.change(mnemonicInput, { target: { value: dummyMnemonic }});
+    });
 
     const loginAfterEntryButton = screen.getByText(/log in/i);
     expect(loginAfterEntryButton).toBeInTheDocument();
 
-    loginAfterEntryButton.click();
+    act(() => {
+        loginAfterEntryButton.click();
+    });
 
     await new Promise((r) => setTimeout(r, 1000));
 });
@@ -359,7 +376,7 @@ test('SystemInfo', async () => {
         minerals={ownMinerals}
         playerShips={playerShips}/>);
 
-    const position = screen.getByText(/0:0/i);
+    const position = screen.getByText(/System ID:/i);
     expect(position).toBeInTheDocument();
 
     const resources = screen.getByText(/Resources: Clesium 1.5k | Debrine 1.0k | Meclese 1.0k | Jeblite 1.0k/i);

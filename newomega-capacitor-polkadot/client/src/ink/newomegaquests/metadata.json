@@ -1,0 +1,641 @@
+{
+  "metadataVersion": "0.1.0",
+  "source": {
+    "hash": "0x0547b3e98b7cadde75ff291d0e97ab272d4a414152df6307df07c0eaf38ae499",
+    "language": "ink! 3.0.0-rc4",
+    "compiler": "rustc 1.55.0-nightly"
+  },
+  "contract": {
+    "name": "newomegaquests",
+    "version": "1.0.0",
+    "authors": [
+      "Wiktor Starczewski <celrisen@gmail.com>"
+    ]
+  },
+  "spec": {
+    "constructors": [
+      {
+        "args": [],
+        "docs": [],
+        "name": [
+          "new"
+        ],
+        "selector": "0x9bae9d5e"
+      },
+      {
+        "args": [],
+        "docs": [],
+        "name": [
+          "default"
+        ],
+        "selector": "0xed4b9d1b"
+      }
+    ],
+    "docs": [],
+    "events": [],
+    "messages": [
+      {
+        "args": [
+          {
+            "name": "delegator_address",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          }
+        ],
+        "docs": [
+          " Authorises the Delegator contract to fire methods on this one.",
+          "",
+          " # Arguments",
+          "",
+          " * `delegator_address` - AccountId of the Delegator contract"
+        ],
+        "mutates": true,
+        "name": [
+          "authorise_delegator"
+        ],
+        "payable": false,
+        "returnType": null,
+        "selector": "0xdd9c74d2"
+      },
+      {
+        "args": [
+          {
+            "name": "caller",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": false,
+        "name": [
+          "get_player_progress"
+        ],
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "QuestProgress"
+          ],
+          "type": 9
+        },
+        "selector": "0x9f6332d3"
+      },
+      {
+        "args": [
+          {
+            "name": "caller",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "claim_quest"
+        ],
+        "payable": false,
+        "returnType": null,
+        "selector": "0x0292d669"
+      },
+      {
+        "args": [
+          {
+            "name": "caller",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "mark_planet_capture"
+        ],
+        "payable": false,
+        "returnType": null,
+        "selector": "0xc969f8c9"
+      },
+      {
+        "args": [
+          {
+            "name": "caller",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "mark_ranked_win"
+        ],
+        "payable": false,
+        "returnType": null,
+        "selector": "0x82084e89"
+      },
+      {
+        "args": [
+          {
+            "name": "caller",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "mark_module_craft"
+        ],
+        "payable": false,
+        "returnType": null,
+        "selector": "0x5e789132"
+      },
+      {
+        "args": [
+          {
+            "name": "caller",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "mark_planet_harvest"
+        ],
+        "payable": false,
+        "returnType": null,
+        "selector": "0xe9d5c3ae"
+      },
+      {
+        "args": [
+          {
+            "name": "caller",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "mark_produce_ships"
+        ],
+        "payable": false,
+        "returnType": null,
+        "selector": "0x10e63023"
+      },
+      {
+        "args": [
+          {
+            "name": "caller",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "mark_discover"
+        ],
+        "payable": false,
+        "returnType": null,
+        "selector": "0x10ff4a41"
+      },
+      {
+        "args": [
+          {
+            "name": "caller",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "mark_build_gateway"
+        ],
+        "payable": false,
+        "returnType": null,
+        "selector": "0x2e485748"
+      },
+      {
+        "args": [
+          {
+            "name": "caller",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "mark_register_mineral_trade"
+        ],
+        "payable": false,
+        "returnType": null,
+        "selector": "0xeee5052a"
+      },
+      {
+        "args": [
+          {
+            "name": "caller",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "mark_upgrade_planet"
+        ],
+        "payable": false,
+        "returnType": null,
+        "selector": "0x804ca0df"
+      }
+    ]
+  },
+  "storage": {
+    "struct": {
+      "fields": [
+        {
+          "layout": {
+            "cell": {
+              "key": "0x0000000000000000000000000000000000000000000000000000000000000000",
+              "ty": 1
+            }
+          },
+          "name": "creator"
+        },
+        {
+          "layout": {
+            "struct": {
+              "fields": [
+                {
+                  "layout": {
+                    "cell": {
+                      "key": "0x0100000000000000000000000000000000000000000000000000000000000000",
+                      "ty": 4
+                    }
+                  },
+                  "name": "len"
+                },
+                {
+                  "layout": {
+                    "array": {
+                      "cellsPerElem": 1,
+                      "layout": {
+                        "cell": {
+                          "key": "0x0100000001000000000000000000000000000000000000000000000000000000",
+                          "ty": 1
+                        }
+                      },
+                      "len": 4294967295,
+                      "offset": "0x0200000000000000000000000000000000000000000000000000000000000000"
+                    }
+                  },
+                  "name": "elems"
+                }
+              ]
+            }
+          },
+          "name": "owners"
+        },
+        {
+          "layout": {
+            "struct": {
+              "fields": [
+                {
+                  "layout": {
+                    "struct": {
+                      "fields": [
+                        {
+                          "layout": {
+                            "cell": {
+                              "key": "0x0100000001000000000000000000000000000000000000000000000000000000",
+                              "ty": 5
+                            }
+                          },
+                          "name": "header"
+                        },
+                        {
+                          "layout": {
+                            "struct": {
+                              "fields": [
+                                {
+                                  "layout": {
+                                    "cell": {
+                                      "key": "0x0200000001000000000000000000000000000000000000000000000000000000",
+                                      "ty": 4
+                                    }
+                                  },
+                                  "name": "len"
+                                },
+                                {
+                                  "layout": {
+                                    "array": {
+                                      "cellsPerElem": 1,
+                                      "layout": {
+                                        "cell": {
+                                          "key": "0x0200000002000000000000000000000000000000000000000000000000000000",
+                                          "ty": 6
+                                        }
+                                      },
+                                      "len": 4294967295,
+                                      "offset": "0x0300000001000000000000000000000000000000000000000000000000000000"
+                                    }
+                                  },
+                                  "name": "elems"
+                                }
+                              ]
+                            }
+                          },
+                          "name": "entries"
+                        }
+                      ]
+                    }
+                  },
+                  "name": "keys"
+                },
+                {
+                  "layout": {
+                    "hash": {
+                      "layout": {
+                        "cell": {
+                          "key": "0x0300000002000000000000000000000000000000000000000000000000000000",
+                          "ty": 8
+                        }
+                      },
+                      "offset": "0x0200000002000000000000000000000000000000000000000000000000000000",
+                      "strategy": {
+                        "hasher": "Blake2x256",
+                        "postfix": "",
+                        "prefix": "0x696e6b20686173686d6170"
+                      }
+                    }
+                  },
+                  "name": "values"
+                }
+              ]
+            }
+          },
+          "name": "progress"
+        }
+      ]
+    }
+  },
+  "types": [
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "type": 2,
+              "typeName": "[u8; 32]"
+            }
+          ]
+        }
+      },
+      "path": [
+        "ink_env",
+        "types",
+        "AccountId"
+      ]
+    },
+    {
+      "def": {
+        "array": {
+          "len": 32,
+          "type": 3
+        }
+      }
+    },
+    {
+      "def": {
+        "primitive": "u8"
+      }
+    },
+    {
+      "def": {
+        "primitive": "u32"
+      }
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "last_vacant",
+              "type": 4,
+              "typeName": "Index"
+            },
+            {
+              "name": "len",
+              "type": 4,
+              "typeName": "u32"
+            },
+            {
+              "name": "len_entries",
+              "type": 4,
+              "typeName": "u32"
+            }
+          ]
+        }
+      },
+      "path": [
+        "ink_storage",
+        "collections",
+        "stash",
+        "Header"
+      ]
+    },
+    {
+      "def": {
+        "variant": {
+          "variants": [
+            {
+              "fields": [
+                {
+                  "type": 7,
+                  "typeName": "VacantEntry"
+                }
+              ],
+              "name": "Vacant"
+            },
+            {
+              "fields": [
+                {
+                  "type": 1,
+                  "typeName": "T"
+                }
+              ],
+              "name": "Occupied"
+            }
+          ]
+        }
+      },
+      "params": [
+        1
+      ],
+      "path": [
+        "ink_storage",
+        "collections",
+        "stash",
+        "Entry"
+      ]
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "next",
+              "type": 4,
+              "typeName": "Index"
+            },
+            {
+              "name": "prev",
+              "type": 4,
+              "typeName": "Index"
+            }
+          ]
+        }
+      },
+      "path": [
+        "ink_storage",
+        "collections",
+        "stash",
+        "VacantEntry"
+      ]
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "value",
+              "type": 9,
+              "typeName": "V"
+            },
+            {
+              "name": "key_index",
+              "type": 4,
+              "typeName": "KeyIndex"
+            }
+          ]
+        }
+      },
+      "params": [
+        9
+      ],
+      "path": [
+        "ink_storage",
+        "collections",
+        "hashmap",
+        "ValueEntry"
+      ]
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "planet_capture",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "ranked_wins",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "module_craft",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "planet_harvest",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "produce_ships",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "discover",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "build_gateway",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "register_mineral_trade",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "upgrade_planet",
+              "type": 3,
+              "typeName": "u8"
+            }
+          ]
+        }
+      },
+      "path": [
+        "newomegaquests",
+        "newomegaquests",
+        "QuestProgress"
+      ]
+    }
+  ]
+}

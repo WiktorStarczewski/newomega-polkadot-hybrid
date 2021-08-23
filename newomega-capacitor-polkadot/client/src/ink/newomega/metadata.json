@@ -1,8 +1,8 @@
 {
   "metadataVersion": "0.1.0",
   "source": {
-    "hash": "0x50d3ca886d3803e3ed7aa586fc8002f80fdac785bec0886e85e0cbe0bb3df9c5",
-    "language": "ink! 3.0.0-rc3",
+    "hash": "0xde0312420c41575430d450c969b08d48bff343ec99958d37ab289f4ceae833a0",
+    "language": "ink! 3.0.0-rc4",
     "compiler": "rustc 1.55.0-nightly"
   },
   "contract": {
@@ -140,13 +140,13 @@
           " * `moves_rhs` - Logged moves of the defender, if requested. None if not.",
           "",
           " # Algorithm rules:",
-          "     A fight is divided into rounds.",
-          "     Each round, ships perform moves in turns, starting from smallest ships.",
-          "     In each round, the same type of ship, of both the attacker and defender,",
-          "        attacks at the same time.",
-          "     Ships can move, shoot, or both, depending on their Range and Speed.",
-          "     The winner is declared when one player is dead, or when the fight is still not finished",
-          "        after maximum number of rounds."
+          "   1. A fight is divided into rounds.",
+          "   2. Each round, ships perform moves in turns, starting from smallest ships.",
+          "   3. In each round, the same type of ship, of both the attacker and defender,",
+          "   attacks at the same time.",
+          "   4. Ships can move, shoot, or both, depending on their Range and Speed.",
+          "   5. The winner is declared when one player is dead, or when the fight is still not finished",
+          "   after maximum number of rounds."
         ],
         "mutates": false,
         "name": [

@@ -57,13 +57,29 @@ export class Deployer {
             hashes['newomega'] = contracts['newomega'].address.toHuman();
             console.log('address.newomega ', hashes['newomega']);
 
+            contracts['newomegatokens'] = await this.deployInnerContract('newomegatokens');
+            hashes['newomegatokens'] = contracts['newomegatokens'].address.toHuman();
+            console.log('address.newomegatokens ', hashes['newomegatokens']);
+
+            contracts['newomegaquests'] = await this.deployInnerContract('newomegaquests');
+            hashes['newomegaquests'] = contracts['newomegaquests'].address.toHuman();
+            console.log('address.newomegaquests ', hashes['newomegaquests']);
+
+            contracts['newomegamarket'] = await this.deployInnerContract('newomegamarket');
+            hashes['newomegamarket'] = contracts['newomegamarket'].address.toHuman();
+            console.log('address.newomegamarket ', hashes['newomegamarket']);
+
             contracts['newomegagame'] = await this.deployInnerContract('newomegagame', [contracts.newomega.address]);
             hashes['newomegagame'] = contracts['newomegagame'].address.toHuman();
             console.log('address.newomegagame ', hashes['newomegagame']);
 
-            contracts['newomegastorage'] = await this.deployInnerContract('newomegastorage');
+            contracts['newomegastorage'] = await this.deployInnerContract('newomegastorage', [contracts.newomegatokens.address]);
             hashes['newomegastorage'] = contracts['newomegastorage'].address.toHuman();
             console.log('address.newomegastorage ', hashes['newomegastorage']);
+
+            contracts['newomegauniversestorage'] = await this.deployInnerContract('newomegauniversestorage');
+            hashes['newomegauniversestorage'] = contracts['newomegauniversestorage'].address.toHuman();
+            console.log('address.newomegauniversestorage ', hashes['newomegauniversestorage']);
 
             contracts['newomegaranked'] = await this.deployInnerContract('newomegaranked',
                 [contracts.newomegagame.address, contracts.newomegastorage.address]);
@@ -71,12 +87,13 @@ export class Deployer {
             console.log('address.newomegaranked ', hashes['newomegaranked']);
 
             contracts['newomegauniverse'] = await this.deployInnerContract('newomegauniverse',
-                [contracts.newomegagame.address, contracts.newomegastorage.address]);
+                [contracts.newomegagame.address, contracts.newomegastorage.address, contracts.newomegauniversestorage.address]);
             hashes['newomegauniverse'] = contracts['newomegauniverse'].address.toHuman();
             console.log('address.newomegauniverse ', hashes['newomegauniverse']);
 
             contracts['newomegaindustrial'] = await this.deployInnerContract('newomegaindustrial',
-                [contracts.newomegagame.address, contracts.newomegastorage.address]);
+                [contracts.newomegagame.address, contracts.newomegastorage.address, contracts.newomegatokens.address,
+                contracts.newomegamarket.address]);
             hashes['newomegaindustrial'] = contracts['newomegaindustrial'].address.toHuman();
             console.log('address.newomegaindustrial ', hashes['newomegaindustrial']);
 
@@ -93,7 +110,9 @@ export class Deployer {
                         contracts.newomegagame.address,
                         contracts.newomegaranked.address,
                         contracts.newomegauniverse.address,
-                        contracts.newomegaindustrial.address)
+                        contracts.newomegaindustrial.address,
+                        contracts.newomegamarket.address,
+                        contracts.newomegaquests.address)
                     .signAndSend(this.contractFacade.alice, ({status, dispatchError, contract}) => {
                         if (dispatchError) {
                             rejectInner(dispatchError);
@@ -113,7 +132,7 @@ export class Deployer {
                         delegator.address)
                     .signAndSend(this.contractFacade.alice, ({status, dispatchError}) => {
                         if (dispatchError) {
-                            reject(dispatchError);
+                            rejectInner(dispatchError);
                         }
                         if (status.isInBlock || status.isFinalized) {
                             resolveInner();
@@ -124,12 +143,28 @@ export class Deployer {
             console.log('authorised delegator for newomegagame');
 
             await new Promise(async (resolveInner, rejectInner) => {
+                contracts.newomegaquests.tx
+                    .authoriseDelegator({ value: 0, gasLimit: GAS_LIMIT },
+                        delegator.address)
+                    .signAndSend(this.contractFacade.alice, ({status, dispatchError}) => {
+                        if (dispatchError) {
+                            rejectInner(dispatchError);
+                        }
+                        if (status.isInBlock || status.isFinalized) {
+                            resolveInner();
+                        }
+                    });
+            });
+
+            console.log('authorised delegator for newomegaquests');
+
+            await new Promise(async (resolveInner, rejectInner) => {
                 contracts.newomegaranked.tx
                     .authoriseDelegator({ value: 0, gasLimit: GAS_LIMIT },
                         delegator.address)
                     .signAndSend(this.contractFacade.alice, ({status, dispatchError}) => {
                         if (dispatchError) {
-                            reject(dispatchError);
+                            rejectInner(dispatchError);
                         }
                         if (status.isInBlock || status.isFinalized) {
                             resolveInner();
@@ -145,7 +180,7 @@ export class Deployer {
                         delegator.address)
                     .signAndSend(this.contractFacade.alice, ({status, dispatchError}) => {
                         if (dispatchError) {
-                            reject(dispatchError);
+                            rejectInner(dispatchError);
                         }
                         if (status.isInBlock || status.isFinalized) {
                             resolveInner();
@@ -161,7 +196,7 @@ export class Deployer {
                         delegator.address)
                     .signAndSend(this.contractFacade.alice, ({status, dispatchError}) => {
                         if (dispatchError) {
-                            reject(dispatchError);
+                            rejectInner(dispatchError);
                         }
                         if (status.isInBlock || status.isFinalized) {
                             resolveInner();
@@ -177,7 +212,7 @@ export class Deployer {
                         delegator.address)
                     .signAndSend(this.contractFacade.alice, ({status, dispatchError}) => {
                         if (dispatchError) {
-                            reject(dispatchError);
+                            rejectInner(dispatchError);
                         }
                         if (status.isInBlock || status.isFinalized) {
                             resolveInner();
@@ -187,6 +222,69 @@ export class Deployer {
 
             console.log('authorised delegator for newomegastorage');
 
+            await new Promise(async (resolveInner, rejectInner) => {
+                contracts.newomegauniversestorage.tx
+                    .authoriseDelegator({ value: 0, gasLimit: GAS_LIMIT },
+                        delegator.address)
+                    .signAndSend(this.contractFacade.alice, ({status, dispatchError}) => {
+                        if (dispatchError) {
+                            rejectInner(dispatchError);
+                        }
+                        if (status.isInBlock || status.isFinalized) {
+                            resolveInner();
+                        }
+                    });
+            });
+
+            console.log('authorised delegator for newomegauniversestorage');
+
+            await new Promise(async (resolveInner, rejectInner) => {
+                contracts.newomegamarket.tx
+                    .authoriseDelegator({ value: 0, gasLimit: GAS_LIMIT },
+                        delegator.address)
+                    .signAndSend(this.contractFacade.alice, ({status, dispatchError}) => {
+                        if (dispatchError) {
+                            rejectInner(dispatchError);
+                        }
+                        if (status.isInBlock || status.isFinalized) {
+                            resolveInner();
+                        }
+                    });
+            });
+
+            console.log('authorised delegator for newomegamarket');
+
+            await new Promise(async (resolveInner, rejectInner) => {
+                contracts.newomegatokens.tx
+                    .authoriseStorageContract({ value: 0, gasLimit: GAS_LIMIT },
+                        contracts.newomegastorage.address)
+                    .signAndSend(this.contractFacade.alice, ({status, dispatchError}) => {
+                        if (dispatchError) {
+                            rejectInner(dispatchError);
+                        }
+                        if (status.isInBlock || status.isFinalized) {
+                            resolveInner();
+                        }
+                    });
+            });
+
+            console.log('authorised storage for newomegatokens');
+
+            await new Promise(async (resolveInner, rejectInner) => {
+                contracts.newomegatokens.tx
+                    .authoriseIndustrialContract({ value: 0, gasLimit: GAS_LIMIT },
+                        contracts.newomegaindustrial.address)
+                    .signAndSend(this.contractFacade.alice, ({status, dispatchError}) => {
+                        if (dispatchError) {
+                            rejectInner(dispatchError);
+                        }
+                        if (status.isInBlock || status.isFinalized) {
+                            resolveInner();
+                        }
+                    });
+            });
+
+            console.log('authorised industrial for newomegatokens');
 
             await new Promise(async (resolveInner, rejectInner) => {
                 contracts.newomegastorage.tx
@@ -194,7 +292,7 @@ export class Deployer {
                         contracts.newomegaranked.address)
                     .signAndSend(this.contractFacade.alice, ({status, dispatchError}) => {
                         if (dispatchError) {
-                            reject(dispatchError);
+                            rejectInner(dispatchError);
                         }
                         if (status.isInBlock || status.isFinalized) {
                             resolveInner();
@@ -210,7 +308,7 @@ export class Deployer {
                         contracts.newomegauniverse.address)
                     .signAndSend(this.contractFacade.alice, ({status, dispatchError}) => {
                         if (dispatchError) {
-                            reject(dispatchError);
+                            rejectInner(dispatchError);
                         }
                         if (status.isInBlock || status.isFinalized) {
                             resolveInner();
@@ -226,7 +324,7 @@ export class Deployer {
                         contracts.newomegaindustrial.address)
                     .signAndSend(this.contractFacade.alice, ({status, dispatchError}) => {
                         if (dispatchError) {
-                            reject(dispatchError);
+                            rejectInner(dispatchError);
                         }
                         if (status.isInBlock || status.isFinalized) {
                             resolveInner();
@@ -235,6 +333,53 @@ export class Deployer {
             });
 
             console.log('authorised industrial for newomegastorage');
+
+            await new Promise(async (resolveInner, rejectInner) => {
+                contracts.newomegauniversestorage.tx
+                    .authoriseUniverseContract({ value: 0, gasLimit: GAS_LIMIT },
+                        contracts.newomegauniverse.address)
+                    .signAndSend(this.contractFacade.alice, ({status, dispatchError}) => {
+                        if (dispatchError) {
+                            rejectInner(dispatchError);
+                        }
+                        if (status.isInBlock || status.isFinalized) {
+                            resolveInner();
+                        }
+                    });
+            });
+
+            console.log('authorised universe for newomegauniversestorage');
+
+            await new Promise(async (resolveInner, rejectInner) => {
+                contracts.newomegamarket.tx
+                    .authoriseIndustrialContract({ value: 0, gasLimit: GAS_LIMIT },
+                        contracts.newomegaindustrial.address)
+                    .signAndSend(this.contractFacade.alice, ({status, dispatchError}) => {
+                        if (dispatchError) {
+                            rejectInner(dispatchError);
+                        }
+                        if (status.isInBlock || status.isFinalized) {
+                            resolveInner();
+                        }
+                    });
+            });
+
+            console.log('authorised industrial for newomegamarket');
+
+            await new Promise(async (resolveInner, rejectInner) => {
+                contracts.newomegastorage.tx
+                    .createNewomegaTokens({ value: 0, gasLimit: GAS_LIMIT })
+                    .signAndSend(this.contractFacade.alice, ({status, dispatchError}) => {
+                        if (dispatchError) {
+                            rejectInner(dispatchError);
+                        }
+                        if (status.isInBlock || status.isFinalized) {
+                            resolveInner();
+                        }
+                    });
+            });
+
+            console.log('created tokens');
 
             resolve(delegator);
         });

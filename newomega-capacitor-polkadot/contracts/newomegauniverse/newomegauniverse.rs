@@ -3,13 +3,8 @@
 
 use ink_lang as ink;
 pub use self::newomegauniverse::NewOmegaUniverse;
-pub use self::newomegauniverse::Planet;
-pub use self::newomegauniverse::System;
-pub use self::newomegauniverse::SystemCoordinate;
-pub use self::newomegauniverse::PlayerAssets;
-pub use self::newomegauniverse::GameStats;
 
-#[ink::contract]
+#[ink::contract(dynamic_storage_allocator = true)]
 mod newomegauniverse {
     use newomegagame::NewOmegaGame;
     use newomega::MAX_SHIPS;
@@ -18,9 +13,20 @@ mod newomegauniverse {
     use newomega::TargetingType;
     use newomegastorage::NewOmegaStorage;
     use newomegastorage::MAX_MINERALS;
+    use newomegauniversestorage::NewOmegaUniverseStorage;
+    use newomegauniversestorage::SystemCoordinate;
+    use newomegauniversestorage::Gateway;
+    use newomegauniversestorage::System;
+    use newomegauniversestorage::SystemId;
+    use newomegauniversestorage::Planet;
+    use newomegauniversestorage::PlayerAssets;
+    use newomegauniversestorage::GameStats;
+    use newomegatokens::TokenId;
     use ink_prelude::vec::Vec;
     use ink_prelude::string::String;
     use ink_storage::{
+        Box as StorageBox,
+        Vec as StorageVec,
         collections::{
             HashMap as StorageHashMap,
         },
@@ -29,165 +35,14 @@ mod newomegauniverse {
             SpreadLayout,
         },
     };
+    use byteorder::{ByteOrder, LittleEndian};
 
     pub const MAX_PLANETS: usize = 5;
     pub const MAX_PLANET_TYPES: usize = 20;
     pub const PLANETS_FOR_CONTROL: usize = 3;
     pub const MAX_HARVESTABLE_BLOCKS: BlockNumber = 24000;
     pub const MINERAL_GENERATION_BLOCKS: BlockNumber = 100;
-    pub const START_WITH_PLANETS: u8 = 3;
-    pub const MAX_PLANET_LEVEL: u8 = 100;
-
-    /// Describes a registered defence of a player
-    #[derive(scale::Encode, scale::Decode, SpreadLayout, PackedLayout, Clone)]
-    #[cfg_attr(
-        feature = "std",
-        derive(
-            Debug,
-            PartialEq,
-            Eq,
-            scale_info::TypeInfo,
-            ink_storage::traits::StorageLayout
-        )
-    )]
-    pub struct Planet {
-        /// Fleet composition
-        selection: [u8; MAX_SHIPS],
-        /// Fleet modules
-        modules: [ShipModule; MAX_SHIPS],
-        /// Targeting
-        targeting: TargetingType,
-        /// Level
-        level: u8,
-        /// Owner
-        owner: AccountId,
-        /// Type (0-MAX_PLANET_TYPES)
-        planet_type: u8,
-        /// Mineral type (0-MAX_MINERALS)
-        mineral_type: u8,
-        /// Mineral proof (0-100)
-        mineral_proof: u8,
-        /// Last harvested
-        last_harvested: BlockNumber,
-        /// Name
-        name: Option<String>,
-    }
-
-    impl Default for Planet {
-        fn default() -> Self {
-            Planet {
-                selection: [10; MAX_SHIPS],
-                modules: [ShipModule::default(); MAX_SHIPS],
-                targeting: TargetingType::default(),
-                level: 1,
-                planet_type: 0,
-                mineral_type: 0,
-                mineral_proof: 0,
-                owner: AccountId::default(),
-                last_harvested: 0,
-                name: None,
-            }
-        }
-    }
-
-    #[derive(scale::Encode, scale::Decode, SpreadLayout, PackedLayout, Clone, Copy)]
-    #[cfg_attr(
-        feature = "std",
-        derive(
-            Debug,
-            PartialEq,
-            Eq,
-            scale_info::TypeInfo,
-            ink_storage::traits::StorageLayout
-        )
-    )]
-    pub struct GameStats {
-        /// Number of players
-        no_players: u64,
-        /// Number of systems
-        no_systems: u64,
-    }
-
-    /// Describes a registered defence of a player
-    #[derive(scale::Encode, scale::Decode, SpreadLayout, PackedLayout, Clone, Default, Copy)]
-    #[cfg_attr(
-        feature = "std",
-        derive(
-            Debug,
-            PartialEq,
-            Eq,
-            scale_info::TypeInfo,
-            ink_storage::traits::StorageLayout
-        )
-    )]
-    pub struct SystemCoordinate {
-        pub root: AccountId,
-        position_x: i32,
-        position_y: i32,
-    }
-
-    #[derive(scale::Encode, scale::Decode, SpreadLayout, PackedLayout, Clone, Default)]
-    #[cfg_attr(
-        feature = "std",
-        derive(
-            Debug,
-            PartialEq,
-            Eq,
-            scale_info::TypeInfo,
-            ink_storage::traits::StorageLayout
-        )
-    )]
-    pub struct Gateway {
-        built: bool,
-        target: SystemCoordinate,
-    }
-
-    #[derive(scale::Encode, scale::Decode, SpreadLayout, PackedLayout, Clone)]
-    #[cfg_attr(
-        feature = "std",
-        derive(
-            Debug,
-            PartialEq,
-            Eq,
-            scale_info::TypeInfo,
-            ink_storage::traits::StorageLayout
-        )
-    )]
-    pub struct System {
-        /// Position of the system
-        position: SystemCoordinate,
-        /// Gateway in
-        gateway_in: Gateway,
-        /// Gateway out
-        gateway_out: Gateway,
-        /// Planets
-        planets: Vec<Planet>,
-        /// Discoverer
-        discoverer: AccountId,
-    }
-
-    #[derive(scale::Encode, scale::Decode, SpreadLayout, PackedLayout)]
-    #[cfg_attr(
-        feature = "std",
-        derive(
-            Debug,
-            PartialEq,
-            Eq,
-            scale_info::TypeInfo,
-            ink_storage::traits::StorageLayout
-        )
-    )]
-    pub struct PlayerAssets {
-        name: String,
-    }
-
-    impl PlayerAssets {
-        fn new(name: String) -> Self {
-            PlayerAssets {
-                name,
-            }
-        }
-    }
+    pub const START_WITH_PLANETS: usize = 3;
 
     #[ink(storage)]
     pub struct NewOmegaUniverse {
@@ -195,20 +50,20 @@ mod newomegauniverse {
         owner: Option<AccountId>,
         new_omega_game: Option<newomegagame::NewOmegaGame>,
         new_omega_storage: Option<newomegastorage::NewOmegaStorage>,
-        systems: StorageHashMap<AccountId, Vec<System>>,
-        assets: StorageHashMap<AccountId, PlayerAssets>,
+        new_omega_universe_storage: Option<newomegauniversestorage::NewOmegaUniverseStorage>,
     }
 
     impl NewOmegaUniverse {
         #[ink(constructor)]
-        pub fn new(new_omega_game: NewOmegaGame, new_omega_storage: NewOmegaStorage) -> Self {
+        pub fn new(new_omega_game: NewOmegaGame, new_omega_storage: NewOmegaStorage, 
+            new_omega_universe_storage: NewOmegaUniverseStorage) -> Self {
+
             Self {
                 creator: Self::env().caller(),
                 owner: None,
                 new_omega_game: Some(new_omega_game),
                 new_omega_storage: Some(new_omega_storage),
-                systems: StorageHashMap::default(),
-                assets: StorageHashMap::default(),
+                new_omega_universe_storage: Some(new_omega_universe_storage),
             }
         }
 
@@ -219,8 +74,7 @@ mod newomegauniverse {
                 owner: None,
                 new_omega_game: None,
                 new_omega_storage: None,
-                systems: StorageHashMap::default(),
-                assets: StorageHashMap::default(),
+                new_omega_universe_storage: None,
             }
         }
 
@@ -235,6 +89,13 @@ mod newomegauniverse {
             self.owner = Some(delegator_address);
         }
 
+        pub fn is_registered(&self, caller: AccountId) -> bool {
+            self.new_omega_universe_storage
+                .as_ref()
+                .unwrap()
+                .is_registered(caller)
+        }
+
         /// Gets a System according to its coordinate
         ///
         /// # Arguments
@@ -245,20 +106,10 @@ mod newomegauniverse {
         ///
         /// * `system` - An Option containing the System, or None
         pub fn get_system(&self, coord: SystemCoordinate) -> Option<System> {
-            assert!(self.systems.get(&coord.root).is_some());
-
-            let systems: Vec<System> =
-                self.systems
-                    .get(&coord.root)
-                    .unwrap()
-                    .to_vec();
-
-            systems
-                .iter()
-                .filter(|system| system.position.position_x == coord.position_x &&
-                    system.position.position_y == coord.position_y)
-                .cloned()
-                .last()
+            self.new_omega_universe_storage
+                .as_ref()
+                .unwrap()
+                .get_system(coord)
         }
 
         /// Gets a System according to its coordinate and check whether its attackable by a given player
@@ -286,31 +137,6 @@ mod newomegauniverse {
             (system, can_attack)
         }
 
-        /// Gets a mutable reference to a System, according to its coordinate
-        ///
-        /// # Arguments
-        ///
-        /// * `coord` - The SystemCoordinate of the system to get
-        ///
-        /// # Returns
-        ///
-        /// * `system` - A mutable reference to the System
-        pub fn get_system_mut(&mut self, coord: SystemCoordinate) -> &mut System {
-            assert!(self.systems.get_mut(&coord.root).is_some());
-
-            let systems: &mut Vec<System> =
-                self.systems
-                    .get_mut(&coord.root)
-                    .unwrap();
-
-            systems
-                .iter_mut()
-                .filter(|system| system.position.position_x == coord.position_x &&
-                    system.position.position_y == coord.position_y)
-                .last()
-                .unwrap()
-        }
-
         /// Generates a random planet type
         ///
         /// # Arguments
@@ -321,9 +147,9 @@ mod newomegauniverse {
         /// # Returns
         ///
         /// * `u8` - Planet type
-        pub fn generate_planet_type(&self, seed: u64, sub_seed: u64) -> u8 {
-            let final_seed: u64 = seed / (sub_seed + 1);
-            (final_seed % MAX_PLANET_TYPES as u64) as u8
+        pub fn generate_planet_type(&self, sub_seed: u8) -> u8 {
+            let seed: u64 = self.generate_random_seed(sub_seed);
+            (seed % MAX_PLANET_TYPES as u64) as u8
         }
 
         /// Generates a random mineral type
@@ -336,9 +162,9 @@ mod newomegauniverse {
         /// # Returns
         ///
         /// * `u8` - Mineral type
-        pub fn generate_mineral_type(&self, seed: u64, sub_seed: u64) -> u8 {
-            let final_seed: u64 = seed / (sub_seed + 1);
-            (final_seed % MAX_MINERALS as u64) as u8
+        pub fn generate_mineral_type(&self, sub_seed: u8) -> u8 {
+            let seed: u64 = self.generate_random_seed(sub_seed);
+            (seed % MAX_MINERALS as u64) as u8
         }
 
         /// Generates a random mineral proof
@@ -351,9 +177,9 @@ mod newomegauniverse {
         /// # Returns
         ///
         /// * `u8` - Mineral proof
-        pub fn generate_mineral_proof(&self, seed: u64, sub_seed: u64) -> u8 {
-            let final_seed: u64 = seed / (sub_seed + 1);
-            (final_seed % 100 as u64) as u8
+        pub fn generate_mineral_proof(&self, sub_seed: u8) -> u8 {
+            let seed: u64 = self.generate_random_seed(sub_seed);
+            (seed % 100 as u64) as u8
         }
 
         /// Generates a random seed
@@ -361,8 +187,9 @@ mod newomegauniverse {
         /// # Returns
         ///
         /// * `u64` - The random seed
-        pub fn generate_random_seed(&self) -> u64 {
-            self.env().block_timestamp() + self.env().block_number() as u64
+        pub fn generate_random_seed(&self, sub_seed: u8) -> u64 {
+            let (hash, _block_number) = self.env().random(&[sub_seed]);
+            LittleEndian::read_u64(hash.as_ref())
         }
 
         /// Registers a player in the Universe module. 
@@ -375,42 +202,37 @@ mod newomegauniverse {
         #[ink(message)]
         pub fn register_player(&mut self, caller: AccountId, name: String) {
             if self.owner.is_some() {
-                assert_eq!(self.env().caller(), self.owner.unwrap());
+                assert_eq!(self.env().caller(), self.owner.unwrap(), "Caller not owner");
             }
-            assert!(self.systems.get(&caller).is_none());
+            assert!(!self.is_registered(caller), "Already registered");
 
             let new_position = SystemCoordinate {
                 root: caller,
-                position_x: 0,
-                position_y: 0,
+                system_id: 0,
             };
-            let new_planets: Vec<Planet> = self.generate_planets(new_position, START_WITH_PLANETS, Some(caller));
-            let mut new_systems: Vec<System> = Vec::default();
-            new_systems.push(System {
-                position: new_position,
-                discoverer: caller,
-                planets: new_planets,
-                gateway_in: Gateway::default(),
-                gateway_out: Gateway::default(),
-            });
+            let new_system = self.generate_new_system(new_position, caller, true);
 
-            self.systems
-                .insert(caller, new_systems);
-            self.assets
-                .insert(caller, PlayerAssets::new(name));
+            self.new_omega_universe_storage
+                .as_mut()
+                .unwrap()
+                .add_system(caller, 0, new_system);
+            self.new_omega_universe_storage
+                .as_mut()
+                .unwrap()
+                .add_asset(caller, PlayerAssets {
+                    name: name.clone(),
+                    last_system: 0,
+                });
+
             if self.new_omega_storage.is_some() {
-                self.new_omega_storage
+                self.new_omega_storage  
                     .as_mut()
                     .unwrap()
-                    .ensure_minerals(caller);
+                    .mint_initial_assets(caller);
                 self.new_omega_storage
                     .as_mut()
                     .unwrap()
                     .ensure_trades(caller);
-                self.new_omega_storage
-                    .as_mut()
-                    .unwrap()
-                    .ensure_ships(caller);
             }
         }
 
@@ -430,7 +252,10 @@ mod newomegauniverse {
                 if player == AccountId::default() {
                     translated.push(String::from("None"));
                 } else {
-                    let asset: &PlayerAssets = self.assets.get(&player).unwrap();
+                    let asset = self.new_omega_universe_storage
+                        .as_ref()
+                        .unwrap()
+                        .get_asset(player);
                     translated.push(asset.name.clone());
                 }
             }
@@ -450,7 +275,7 @@ mod newomegauniverse {
         /// * `targeting` - The targeting to register with the fleet
         #[ink(message)]
         pub fn reinforce_planet(&mut self, caller: AccountId, target: SystemCoordinate,
-            planet_id: u8, selection: [u8; MAX_SHIPS], modules: [ShipModule; MAX_SHIPS],
+            planet_id: u8, selection: [u8; MAX_SHIPS], modules: [Option<TokenId>; MAX_SHIPS],
             targeting: TargetingType) {
 
             if self.owner.is_some() {
@@ -462,40 +287,46 @@ mod newomegauniverse {
 
             assert_eq!(planet.owner, caller);
 
-            let mut planet_selection: [u32; MAX_SHIPS] = [0; MAX_SHIPS];
+            let mut planet_selection: [Balance; MAX_SHIPS] = [0; MAX_SHIPS];
             for i in 0..MAX_SHIPS {
-                planet_selection[i] = planet.selection[i] as u32;
+                planet_selection[i] = Balance::from(planet.selection[i]);
             }
-            let mut selection_u32: [u32; MAX_SHIPS] = [0; MAX_SHIPS];
+            let mut selection_bal: [Balance; MAX_SHIPS] = [0; MAX_SHIPS];
             for i in 0..MAX_SHIPS {
-                selection_u32[i] = selection[i] as u32;
+                selection_bal[i] = Balance::from(selection[i]);
             }
+            let mut selection_needed: [u8; MAX_SHIPS] = [0; MAX_SHIPS];
+            for i in 0..MAX_SHIPS {
+                if selection[i] < planet.selection[i] {
+                    selection_needed[i] = 0;
+                } else {
+                    selection_needed[i] = selection[i] - planet.selection[i];
+                }
+            }
+
+            let has_enough = self
+                .new_omega_storage
+                .as_ref()
+                .unwrap()
+                .has_enough_ships(caller, selection_needed);
+
+            assert!(has_enough, "Not enough ships");
 
             self    
                 .new_omega_storage
                 .as_mut()
                 .unwrap()
                 .add_ships(caller, planet_selection);
-
-            let has_enough = self
-                .new_omega_storage
-                .as_ref()
-                .unwrap()
-                .has_enough_ships(caller, selection);
-
-            assert!(has_enough);
-
             self    
                 .new_omega_storage
                 .as_mut()
                 .unwrap()
-                .remove_ships(caller, selection_u32);
-
-            let system = self.get_system_mut(target);
-            let mut planet_mut = &mut system.planets[planet_id as usize];
-            planet_mut.selection = selection;
-            planet_mut.modules = modules;
-            planet_mut.targeting = targeting;
+                .remove_ships(caller, selection_bal);
+            self
+                .new_omega_universe_storage
+                .as_mut()
+                .unwrap()
+                .update_planet_fleet(target, planet_id, selection, modules, targeting);
         }
 
         /// Generates a new set of planets
@@ -509,22 +340,18 @@ mod newomegauniverse {
         /// # Returns
         ///
         /// * `planets` - Vec of newly generated Planets
-        pub fn generate_planets(&self, target: SystemCoordinate, start_ownership: u8, owner: Option<AccountId>) -> Vec<Planet> {
-            let seed: u64 = self.generate_random_seed();
+        pub fn generate_planets(&self, target: SystemCoordinate, start_ownership: bool, owner: AccountId) -> Vec<Planet> {
             let block_number = self.env().block_number();
             let mut new_planets: Vec<Planet> = Vec::default();
             for i in 0..MAX_PLANETS {
                 let mut new_planet = Planet::default();
-                let sub_seed: u64 =
-                    (i as u64) +
-                    (target.position_x as u64) +
-                    (target.position_y as u64);
-                new_planet.planet_type = self.generate_planet_type(seed, sub_seed);
-                new_planet.mineral_type = self.generate_mineral_type(seed, sub_seed);
-                new_planet.mineral_proof = self.generate_mineral_proof(seed, sub_seed);
+                let sub_seed = i as u8;
+                new_planet.planet_type = self.generate_planet_type(sub_seed);
+                new_planet.mineral_type = self.generate_mineral_type(sub_seed);
+                new_planet.mineral_proof = self.generate_mineral_proof(sub_seed);
                 new_planet.last_harvested = block_number;
-                if start_ownership > 0 && i < (start_ownership as usize) {
-                    new_planet.owner = owner.unwrap();
+                if start_ownership && i < START_WITH_PLANETS {
+                    new_planet.owner = owner;
                 }
                 new_planets.push(new_planet);
             }
@@ -545,14 +372,31 @@ mod newomegauniverse {
             if self.owner.is_some() {
                 assert_eq!(self.env().caller(), self.owner.unwrap());
             }
-            assert!(self.get_system(target).is_some());
+            let system = self.new_omega_universe_storage
+                .as_ref()
+                .unwrap()
+                .get_system(target)
+                .unwrap();
+            let planet = &system.planets[planet_id as usize];
 
-            let system = self.get_system_mut(target);
-            let mut planet_mut = &mut system.planets[planet_id as usize];
+            assert_eq!(planet.owner, caller);
 
-            assert_eq!(planet_mut.owner, caller);
+            self.new_omega_universe_storage
+                .as_mut()
+                .unwrap()
+                .rename_planet(target, planet_id, name);
+        }
 
-            planet_mut.name = Some(name);
+        pub fn generate_new_system(&self, target: SystemCoordinate, caller: AccountId, start_ownership: bool) -> System {
+            let new_planets = self.generate_planets(target, start_ownership, caller);
+
+            System {
+                position: target,
+                discoverer: caller,
+                planets: new_planets,
+                gateway_in: Gateway::default(),
+                gateway_out: Gateway::default(),
+            }
         }
 
         /// Discovers a given system for a player
@@ -562,84 +406,32 @@ mod newomegauniverse {
         /// * `caller` - AccountId of the player making the discovery request
         /// * `target` - SystemCoordinate to discover a System in
         #[ink(message)]
-        pub fn discover_system(&mut self, caller: AccountId, target: SystemCoordinate) {
+        pub fn discover_system(&mut self, caller: AccountId) {
             if self.owner.is_some() {
                 assert_eq!(self.env().caller(), self.owner.unwrap());
             }
-            assert!(self.systems.get(&target.root).is_some());
-            assert!(self.get_system(target).is_none());
+            assert!(self.is_registered(caller));
 
-            // TODO verify if player owns an adjacent system
+            let new_system_id = self.new_omega_universe_storage
+                .as_ref()
+                .unwrap()
+                .get_asset(caller)
+                .last_system + 1;
+            let new_system_coord = SystemCoordinate {
+                root: caller,
+                system_id: new_system_id,
+            };
+            let new_system = self.generate_new_system(new_system_coord, caller, false);
 
-            let new_planets = self.generate_planets(target, 0, None);
-            let systems = self.systems.get_mut(&target.root).unwrap();
-            systems.push(System {
-                position: target,
-                discoverer: caller,
-                planets: new_planets,
-                gateway_in: Gateway::default(),
-                gateway_out: Gateway::default(),
-            });
-        }
+            self.new_omega_universe_storage
+                .as_mut()
+                .unwrap()
+                .add_system(caller, new_system_id, new_system);
 
-        /// Gets a random discoverable system for a given player
-        ///
-        /// # Arguments
-        ///
-        /// * `root` - AccountId of the player in whos Universe to find a discoverable system
-        ///
-        /// # Returns
-        ///
-        /// * `coord` - The coordinate of the system, or None
-        pub fn get_random_discoverable_system(&self, root: AccountId) -> Option<SystemCoordinate> {
-            let systems = self.systems.get(&root).unwrap();
-            for system in systems {
-                let adjacent_systems_coords: [SystemCoordinate; 4] =
-                    self.get_adjacent_system_coords(&system.position);
-                for adjacent_system_coords in adjacent_systems_coords.iter() {
-                    if adjacent_system_coords.position_x >= 0 &&
-                        adjacent_system_coords.position_y >= 0 {
-
-                        match self.get_system(*adjacent_system_coords) {
-                            None => return Some(*adjacent_system_coords),
-                            _ => (),
-                        }
-                    }
-                }
-            }
-
-            None
-        }
-
-        /// Gets a target for a new gateway in a players territory
-        ///
-        /// # Arguments
-        ///
-        /// * `root` - AccountId of the player in whos Universe to find a gateway target
-        /// * `seed` - The random seed
-        ///
-        /// # Returns
-        ///
-        /// * `coord` - The coordinate of the system, or None
-        pub fn get_player_gateway_target(&self, root: AccountId, seed: u64) -> Option<SystemCoordinate> {
-            let systems = self.systems.get(&root).unwrap();
-            let avail_systems = systems
-                .iter()
-                .filter(|system| !system.gateway_in.built);
-
-            let no_systems: usize = avail_systems.clone().count();
-            if no_systems > 0 {
-                let random_system = seed % no_systems as u64;
-                let system = avail_systems
-                    .enumerate()
-                    .filter(|&(i, _)| i == random_system as usize)
-                    .map(|(_, e)| e)
-                    .last();
-
-                return Some(system.unwrap().position);
-            }
-
-            self.get_random_discoverable_system(root)
+            self.new_omega_universe_storage
+                .as_mut()
+                .unwrap()
+                .increment_last_system(caller, 1);
         }
 
         /// Gets a random target for a players gateway
@@ -651,20 +443,42 @@ mod newomegauniverse {
         /// # Returns
         ///
         /// * `coord` - The coordinate of the system, or None
-        pub fn get_random_gateway_target(&self, caller: AccountId) -> Option<SystemCoordinate> {
-            let players = self.systems.keys();
-            let no_players = players.len() - 1; // Without caller
-            let seed: u64 = self.generate_random_seed();
-            let random = seed % no_players as u64;
-            let root_vec: Vec<&AccountId> = players
-                .filter(|&account| *account != caller)
-                .enumerate()
-                .filter(|&(i, _)| i == random as usize)
-                .map(|(_, e)| e)
-                .collect();
-            let root: AccountId = *root_vec[0];
+        pub fn get_random_gateway_target(&self, caller: AccountId) -> Option<AccountId> {
+            let stats = self.new_omega_universe_storage
+                .as_ref()
+                .unwrap()
+                .get_game_stats();
+            let no_players = stats.no_players;
 
-            self.get_player_gateway_target(root, seed)
+            if no_players < 2 {
+                return None;
+            }
+
+            let seed: u64 = self.generate_random_seed((no_players % 100) as u8);
+            let random = seed % no_players as u64;
+
+            // One of (random, random - 1, random + 1) cant be the caller
+            let mut account = self.new_omega_universe_storage
+                .as_ref()
+                .unwrap()
+                .get_player(random);
+
+            if account == caller {
+                if random + 1 < no_players {
+                    account = self.new_omega_universe_storage
+                        .as_ref()
+                        .unwrap()
+                        .get_player(random + 1);
+                } else {
+                    // random - 1 is safe because we asserted there is at least 2 players
+                    account = self.new_omega_universe_storage
+                        .as_ref()
+                        .unwrap()
+                        .get_player(random - 1);
+                }
+            }
+
+            Some(account)
         }
 
         /// Worker function for gateway out building
@@ -676,9 +490,10 @@ mod newomegauniverse {
         pub fn build_gateway_out_worker(&mut self,
             target: SystemCoordinate, position: SystemCoordinate) {
 
-            let mut system = self.get_system_mut(target);
-            system.gateway_out.built = true;
-            system.gateway_out.target = position;
+            self.new_omega_universe_storage
+                .as_mut()
+                .unwrap()
+                .build_gateway_out(target, position);
         }
 
         /// Worker function for gateway in building
@@ -688,27 +503,13 @@ mod newomegauniverse {
         /// * `caller` - AccountId of the connecting player (building gateway out)
         /// * `target` - SystemCoordinate of the System to build gateway in
         /// * `position` - The target of the gateway
-        pub fn build_gateway_in_worker(&mut self, caller: AccountId,
+        pub fn build_gateway_in_worker(&mut self,
             target: SystemCoordinate, position: SystemCoordinate) {
 
-            if self.get_system(target).is_none() {
-                let new_planets = self.generate_planets(target, 0, None);
-                let systems = self.systems.get_mut(&target.root).unwrap();
-                systems.push(System {
-                    position: target,
-                    discoverer: caller,
-                    planets: new_planets,
-                    gateway_in: Gateway {
-                        built: true,
-                        target: position,
-                    },
-                    gateway_out: Gateway::default(),
-                });
-            } else {
-                let mut system = self.get_system_mut(target);
-                system.gateway_in.built = true;
-                system.gateway_in.target = position;
-            }
+            self.new_omega_universe_storage
+                .as_mut()
+                .unwrap()
+                .build_gateway_in(target, position);
         }
 
         /// Builds a gateway (out) in a System in players universe
@@ -723,16 +524,36 @@ mod newomegauniverse {
                 assert_eq!(self.env().caller(), self.owner.unwrap());
             }
             assert_eq!(caller, source.root);
-            assert!(self.systems.get(&source.root).is_some());
-            assert!(self.get_system(source).is_some());
+            assert!(self.new_omega_universe_storage
+                .as_ref()
+                .unwrap()
+                .get_system(source)
+                .is_some());
 
-            let gateway_target_coord = self.get_random_gateway_target(source.root);
-            if gateway_target_coord.is_some() {
-                self.build_gateway_out_worker(source, gateway_target_coord.unwrap());
-                self.build_gateway_in_worker(caller, gateway_target_coord.unwrap(), source);
-            } else {
-                // Should not happen unless the user is the lone player
-            }
+            let gateway_target = self.get_random_gateway_target(source.root).unwrap();
+            let asset = self.new_omega_universe_storage
+                .as_ref()
+                .unwrap()
+                .get_asset(gateway_target);
+            let new_system_id = asset.last_system + 1;
+            let new_system_coord = SystemCoordinate {
+                root: gateway_target,
+                system_id: new_system_id,
+            };
+            let new_system = self.generate_new_system(new_system_coord, gateway_target, false);
+
+            self.new_omega_universe_storage
+                .as_mut()
+                .unwrap()
+                .increment_last_system(gateway_target, 1);
+
+            self.new_omega_universe_storage
+                .as_mut()
+                .unwrap()
+                .add_system(gateway_target, new_system_id, new_system);
+
+            self.build_gateway_out_worker(source, new_system_coord);
+            self.build_gateway_in_worker(new_system_coord, source);
         }
 
         /// Gets general game statistics
@@ -742,10 +563,10 @@ mod newomegauniverse {
         /// * `stats` - The game statistics
         #[ink(message)]
         pub fn get_game_stats(&self) -> GameStats {
-            GameStats {
-                no_players: self.systems.keys().len() as u64,
-                no_systems: self.systems.iter().len() as u64, // TODO this doesnt work
-            }
+            self.new_omega_universe_storage 
+                .as_ref()
+                .unwrap()
+                .get_game_stats()
         }
 
         /// Checks whether a player is owner of a system
@@ -778,29 +599,22 @@ mod newomegauniverse {
         /// # Returns
         ///
         /// * `coords` - The list of adjacent coordinates
-        pub fn get_adjacent_system_coords(&self, system: &SystemCoordinate) -> [SystemCoordinate; 4] {
-            [
-                SystemCoordinate {
+        pub fn get_adjacent_system_coords(&self, system: &SystemCoordinate) -> Vec<SystemCoordinate> {
+            let mut coords: Vec<SystemCoordinate> = Vec::default();
+
+            coords.push(SystemCoordinate {
+                root: system.root,
+                system_id: system.system_id + 1,
+            });
+
+            if system.system_id > 0 {
+                coords.push(SystemCoordinate {
                     root: system.root,
-                    position_x: system.position_x - 1,
-                    position_y: system.position_y,
-                },
-                SystemCoordinate {
-                    root: system.root,
-                    position_x: system.position_x + 1,
-                    position_y: system.position_y,
-                },
-                SystemCoordinate {
-                    root: system.root,
-                    position_x: system.position_x,
-                    position_y: system.position_y - 1,
-                },
-                SystemCoordinate {
-                    root: system.root,
-                    position_x: system.position_x,
-                    position_y: system.position_y + 1,
-                },
-            ]
+                    system_id: system.system_id - 1,
+                });
+            }
+
+            coords
         }
 
         /// Checks whether a player can attack a planet in a given system
@@ -824,25 +638,25 @@ mod newomegauniverse {
             }
 
             let mut owner_found: bool = false;
-            let adjacent_systems_coords: [SystemCoordinate; 4] = self.get_adjacent_system_coords(&target);
-            for adjacent_system_coords in adjacent_systems_coords.iter() {
-                match self.get_system(*adjacent_system_coords) {
+            let adjacent_systems_coords: Vec<SystemCoordinate> = self.get_adjacent_system_coords(&target);
+            for adjacent_system_coords in adjacent_systems_coords {
+                match self.get_system(adjacent_system_coords) {
                     Some(ref adjacent_system) =>
                         owner_found |= self.is_owner_of_system(caller, &adjacent_system),
                     _ => ()
                 }
+            }
 
-                if !owner_found {
-                    // check if the system has a gateway, and does it point to a system owned by caller
-                    if system.gateway_in.built {
-                        let gateway_in_system: System = self.get_system(system.gateway_in.target).unwrap();
-                        owner_found |= self.is_owner_of_system(caller, &gateway_in_system);
-                    }
+            if !owner_found {
+                // check if the system has a gateway, and does it point to a system owned by caller
+                if system.gateway_in.built {
+                    let gateway_in_system: System = self.get_system(system.gateway_in.target).unwrap();
+                    owner_found |= self.is_owner_of_system(caller, &gateway_in_system);
+                }
 
-                    if !owner_found && system.gateway_out.built {
-                        let gateway_out_system: System = self.get_system(system.gateway_out.target).unwrap();
-                        owner_found |= self.is_owner_of_system(caller, &gateway_out_system);
-                    }
+                if !owner_found && system.gateway_out.built {
+                    let gateway_out_system: System = self.get_system(system.gateway_out.target).unwrap();
+                    owner_found |= self.is_owner_of_system(caller, &gateway_out_system);
                 }
             }
 
@@ -868,29 +682,18 @@ mod newomegauniverse {
         /// * `assets` - The Assets
         #[ink(message)]
         pub fn get_player_assets(&self, caller: AccountId) -> PlayerAssets {
-            assert!(self.assets.get(&caller).is_some());
-            let asset: &PlayerAssets = self.assets.get(&caller).unwrap();
-
-            PlayerAssets {
-                name: asset.name.clone(),
-            }
+            self.new_omega_universe_storage 
+                .as_ref()
+                .unwrap()
+                .get_asset(caller)
         }
 
-        /// Gets the Universe Map for a given player
-        ///
-        /// # Arguments
-        ///
-        /// * `root` - The player to get the Map for
-        ///
-        /// # Returns
-        ///
-        /// * `map` - Vec of Systems comprising the Universe Map of a player
         #[ink(message)]
-        pub fn get_universe_map(&self, root: AccountId) -> Vec<System> {
-            self.systems
-                .get(&root)
+        pub fn get_universe_map(&self, caller: AccountId) -> Vec<System> {
+            self.new_omega_universe_storage 
+                .as_ref()
                 .unwrap()
-                .to_vec()
+                .get_universe_map(caller)
         }
 
         /// Harvest all planets in a players Universe, which the player owns
@@ -901,18 +704,36 @@ mod newomegauniverse {
         #[ink(message)]
         pub fn harvest(&mut self, caller: AccountId) {
             assert_eq!(self.env().caller(), self.owner.unwrap());
-            assert!(self.systems.get(&caller).is_some());
+            assert!(self.is_registered(caller));
 
             let block_number = self.env().block_number();
-            let mut harvested: [u32; MAX_MINERALS] = [0; MAX_MINERALS];
-            let systems = self.systems.get_mut(&caller).unwrap();
-            for system in systems.iter_mut() {
-                for mut planet in system.planets.iter_mut() {
+            let mut harvested: [Balance; MAX_MINERALS] = [0; MAX_MINERALS];
+
+            let last_system = (self.new_omega_universe_storage
+                .as_ref()
+                .unwrap()
+                .get_asset(caller)
+                .last_system) as usize;
+
+            for i in 0..(last_system + 1) {
+                let system_coord = SystemCoordinate {
+                    root: caller,
+                    system_id: i as SystemId,
+                };
+                let system = self.get_system(system_coord).unwrap();
+
+                for planet_id in 0..MAX_PLANETS {
+                    let planet = &system.planets[planet_id];
+
                     if planet.owner == caller {
                         let block_diff: BlockNumber = NewOmegaUniverse::min(block_number - planet.last_harvested, MAX_HARVESTABLE_BLOCKS);
-                        let amount: u32 = (block_diff / MINERAL_GENERATION_BLOCKS) * planet.level as u32 * planet.mineral_proof as u32;
+                        let amount: Balance = (block_diff / MINERAL_GENERATION_BLOCKS) as Balance * planet.level as Balance * planet.mineral_proof as Balance;
                         harvested[planet.mineral_type as usize] += amount;
-                        planet.last_harvested = block_number;
+
+                        self.new_omega_universe_storage
+                            .as_mut()
+                            .unwrap()
+                            .update_planet_harvested(system_coord, planet_id as u8, block_number);
                     }
                 }
             }
@@ -933,20 +754,24 @@ mod newomegauniverse {
         #[ink(message)]
         pub fn harvest_planet(&mut self, caller: AccountId, target: SystemCoordinate, planet_id: u8) {
             assert_eq!(self.env().caller(), self.owner.unwrap());
-            assert!(self.systems.get(&caller).is_some());
+            assert!(self.is_registered(caller), "Not registered");
 
             let block_number = self.env().block_number();
-            let mut harvested: [u32; MAX_MINERALS] = [0; MAX_MINERALS];
+            let mut harvested: [Balance; MAX_MINERALS] = [0; MAX_MINERALS];
 
-            let system: &mut System = self.get_system_mut(target);
-            let planet: &mut Planet = &mut system.planets[planet_id as usize];
+            let system = self.get_system(target).unwrap();
+            let planet = &system.planets[planet_id as usize];
 
             assert_eq!(planet.owner, caller);
 
             let block_diff: BlockNumber = NewOmegaUniverse::min(block_number - planet.last_harvested, MAX_HARVESTABLE_BLOCKS);
-            let amount: u32 = (block_diff / MINERAL_GENERATION_BLOCKS) * planet.level as u32 * planet.mineral_proof as u32;
+            let amount: Balance = (block_diff / MINERAL_GENERATION_BLOCKS) as Balance * planet.level as Balance * planet.mineral_proof as Balance;
             harvested[planet.mineral_type as usize] += amount;
-            planet.last_harvested = block_number;
+
+            self.new_omega_universe_storage
+                .as_mut()
+                .unwrap()
+                .update_planet_harvested(target, planet_id, block_number);
 
             self.new_omega_storage
                 .as_mut()
@@ -962,17 +787,13 @@ mod newomegauniverse {
         /// * `target`- SystemCoordinate of the system the planet to upgrade is in
         /// * `planet_id` - Which planet to upgrade
         #[ink(message)]
-        pub fn upgrade_planet(&mut self, caller: AccountId, target: SystemCoordinate, planet_id: u8) {
+        pub fn upgrade_planet(&mut self, target: SystemCoordinate, planet_id: u8) {
             assert_eq!(self.env().caller(), self.owner.unwrap());
-            assert!(self.systems.get(&caller).is_some());
-
-            let system: &mut System = self.get_system_mut(target);
-            let planet: &mut Planet = &mut system.planets[planet_id as usize];
-
-            assert_eq!(planet.owner, caller);
-            assert!(planet.level < MAX_PLANET_LEVEL);
-
-            planet.level = planet.level + 1;
+           
+            self.new_omega_universe_storage
+                .as_mut()
+                .unwrap()
+                .update_planet_level(target, planet_id, 1);
         }
 
         /// Attacks a planet
@@ -996,8 +817,8 @@ mod newomegauniverse {
             target: SystemCoordinate,
             planet_id: u8,
             selection: [u8; MAX_SHIPS],
-            modules: [ShipModule; MAX_SHIPS],
-            targeting: TargetingType) -> FightResult {
+            modules: [Option<TokenId>; MAX_SHIPS],
+            targeting: TargetingType) -> (FightResult, AccountId) {
 
             assert_eq!(self.env().caller(), self.owner.unwrap(), "Wrong delegator");
             assert!(self.can_attack_planet(caller, target), "Cant attack planet");
@@ -1007,14 +828,23 @@ mod newomegauniverse {
                 .unwrap()
                 .has_enough_ships(caller, selection), "Not enough ships");
 
-            // Determine the seed, in a naive way -> IMPROVEME: MOVE TO VRF
-            let seed: u64 = self.generate_random_seed();
+            let seed: u64 = self.generate_random_seed(planet_id);
             let target_system_wrapped: Option<System> = self.get_system(target);
 
             assert!(target_system_wrapped.is_some(), "Target doesnt exist");
 
             let target_system: System = target_system_wrapped.unwrap();
             let target_planet = &target_system.planets[planet_id as usize];
+            let previous_owner = target_planet.owner;
+
+            let modules_decode = self.new_omega_storage
+                .as_ref()
+                .unwrap()
+                .decode_modules(caller, modules);
+            let target_modules_decode = self.new_omega_storage
+                .as_ref()
+                .unwrap()
+                .decode_modules(target_planet.owner, target_planet.modules);
 
             // Calculate the fight result
             let (result, _lhs_moves, _rhs_moves) =
@@ -1023,205 +853,190 @@ mod newomegauniverse {
                     false,
                     selection,
                     target_planet.selection,
-                    modules,
-                    target_planet.modules,
+                    modules_decode,
+                    target_modules_decode,
                     targeting,
                     target_planet.targeting);
 
             if result.rhs_dead && !result.lhs_dead {
-                let target_system_mut: &mut System = self.get_system_mut(target);
-                let target_planet_mut: &mut Planet = &mut target_system_mut.planets[planet_id as usize];
-
-                target_planet_mut.owner = caller;
-                target_planet_mut.selection = [0; MAX_SHIPS];
-                target_planet_mut.modules = [ShipModule::default(); MAX_SHIPS];
-                target_planet_mut.targeting = TargetingType::default();
+                self.new_omega_universe_storage
+                    .as_mut()
+                    .unwrap()
+                    .update_planet_owner(target, planet_id, caller);
+                self.new_omega_universe_storage
+                    .as_mut()
+                    .unwrap()
+                    .update_planet_fleet(
+                        target, 
+                        planet_id, 
+                        [0; MAX_SHIPS],
+                        [None; MAX_SHIPS],
+                        TargetingType::default());
             }
 
-            let mut ships_lost_u32: [u32; MAX_SHIPS] = [0; MAX_SHIPS];
+            let mut ships_lost_bal: [Balance; MAX_SHIPS] = [0; MAX_SHIPS];
             for i in 0..MAX_SHIPS {
-                ships_lost_u32[i] = result.ships_lost_lhs[i] as u32;
+                ships_lost_bal[i] = result.ships_lost_lhs[i] as Balance;
             }
 
             self
                 .new_omega_storage
                 .as_mut()
                 .unwrap()
-                .remove_ships(caller, ships_lost_u32);
+                .remove_ships(caller, ships_lost_bal);
 
-            result
+            (result, previous_owner)
         }
     }
-    #[cfg(test)]
-    mod tests {
-        use super::*;
-        use ink_env::{
-            test,
-        };
-        use ink_lang as ink;
-        type Accounts = test::DefaultAccounts<Environment>;
+    
+    // #[cfg(test)]
+    // mod tests {
+    //     use super::*;
+    //     use ink_env::{
+    //         test,
+    //     };
+    //     use ink_lang as ink;
+    //     type Accounts = test::DefaultAccounts<Environment>;
 
-        fn default_accounts() -> Accounts {
-            test::default_accounts()
-                .expect("Test environment is expected to be initialized.")
-        }
+    //     fn default_accounts() -> Accounts {
+    //         test::default_accounts()
+    //             .expect("Test environment is expected to be initialized.")
+    //     }
 
-        #[ink::test]
-        fn test_register() {
-            let mut contract: NewOmegaUniverse = NewOmegaUniverse::default();
-            let accounts = default_accounts();
-            let player: AccountId = accounts.alice;
+    //     #[ink::test]
+    //     fn test_register() {
+    //         let mut contract: NewOmegaUniverse = NewOmegaUniverse::default();
+    //         let accounts = default_accounts();
+    //         let player: AccountId = accounts.alice;
 
-            contract.register_player(player, String::from("Test"));
+    //         contract.register_player(player, String::from("Test"));
 
-            let system: Option<System> = contract.get_system(SystemCoordinate {
-                root: player,
-                position_x: 0,
-                position_y: 0,
-            });
-            assert!(system.is_some());
+    //         let system = contract.get_system(SystemCoordinate {
+    //             root: player,
+    //             system_id: 0,
+    //         });
+    //         assert!(system.is_some());
 
-            let system_unwrapped = system.unwrap();
-            assert_eq!(system_unwrapped.position.root, player);
-            assert_eq!(system_unwrapped.position.position_x, 0);
-            assert_eq!(system_unwrapped.position.position_y, 0);
-            assert_eq!(system_unwrapped.planets[0].selection, [10; 4]);
-            assert_eq!(system_unwrapped.planets[3].selection, [10; 4]);
-            assert_eq!(system_unwrapped.planets[0].owner, accounts.alice);
-            assert_eq!(system_unwrapped.planets[1].owner, accounts.alice);
-            assert_eq!(system_unwrapped.planets[2].owner, accounts.alice);
-            assert_eq!(system_unwrapped.planets[3].owner, AccountId::default());
-            assert_eq!(system_unwrapped.planets[4].owner, AccountId::default());
-        }
+    //         let system_unwrapped = system.unwrap();
+    //         assert_eq!(system_unwrapped.position.root, player);
+    //         assert_eq!(system_unwrapped.position.system_id, 0);
+    //         assert_eq!(system_unwrapped.planets[0].selection, [10; 4]);
+    //         assert_eq!(system_unwrapped.planets[3].selection, [10; 4]);
+    //         assert_eq!(system_unwrapped.planets[0].owner, player);
+    //         assert_eq!(system_unwrapped.planets[1].owner, player);
+    //         assert_eq!(system_unwrapped.planets[2].owner, player);
+    //         assert_eq!(system_unwrapped.planets[3].owner, AccountId::default());
+    //         assert_eq!(system_unwrapped.planets[4].owner, AccountId::default());
+    //     }
 
-        #[ink::test]
-        fn test_systems() {
-            let mut contract: NewOmegaUniverse = NewOmegaUniverse::default();
-            let accounts = default_accounts();
-            let player: AccountId = accounts.alice;
+    //     #[ink::test]
+    //     fn test_systems() {
+    //         let mut contract: NewOmegaUniverse = NewOmegaUniverse::default();
+    //         let accounts = default_accounts();
+    //         let player: AccountId = accounts.alice;
 
-            contract.register_player(player, String::from("Test"));
+    //         contract.register_player(player, String::from("Test"));
 
-            let system: Option<System> = contract.get_system(SystemCoordinate {
-                root: player,
-                position_x: 1,
-                position_y: 1,
-            });
-            assert!(system.is_none());
+    //         let system: Option<System> = contract.get_system(SystemCoordinate {
+    //             root: player,
+    //             system_id: 1,
+    //         });
+    //         assert!(system.is_none());
+    //     }
 
-            let map: Vec<System> = contract.get_universe_map(player);
-            assert_eq!(map.len(), 1);
-            let system_first: &System = &map[0];
-            assert_eq!(system_first.position.root, player);
-            assert_eq!(system_first.position.position_x, 0);
-            assert_eq!(system_first.position.position_y, 0);
-        }
+    //     #[ink::test]
+    //     fn test_discovery() {
+    //         let mut contract: NewOmegaUniverse = NewOmegaUniverse::default();
+    //         let accounts = default_accounts();
+    //         let player: AccountId = accounts.alice;
 
-        #[ink::test]
-        fn test_discovery() {
-            let mut contract: NewOmegaUniverse = NewOmegaUniverse::default();
-            let accounts = default_accounts();
-            let player: AccountId = accounts.alice;
+    //         contract.register_player(player, String::from("Test"));
+    //         contract.discover_system(player);
+    //     }
 
-            contract.register_player(player, String::from("Test"));
+    //     #[ink::test]
+    //     fn test_gateways() {
+    //         let mut contract: NewOmegaUniverse = NewOmegaUniverse::default();
+    //         let accounts = default_accounts();
+    //         let alice: AccountId = accounts.alice;
+    //         let bob: AccountId = accounts.bob;
 
-            contract.discover_system(player, SystemCoordinate {
-                root: player,
-                position_x: 1,
-                position_y: 0,
-            });
-        }
+    //         contract.register_player(alice, String::from("Alice"));
+    //         contract.register_player(bob, String::from("Bob"));
 
-        #[ink::test]
-        fn test_map() {
-            let mut contract: NewOmegaUniverse = NewOmegaUniverse::default();
-            let accounts = default_accounts();
-            let player: AccountId = accounts.alice;
+    //         let alice_root_coord = SystemCoordinate {
+    //             root: alice,
+    //             system_id: 0,
+    //         };
 
-            contract.register_player(player, String::from("Test"));
+    //         let bob_root_coord = SystemCoordinate {
+    //             root: bob,
+    //             system_id: 0,
+    //         };
 
-            let map: Vec<System> = contract.get_universe_map(player);
-            assert_eq!(map.len(), 1);
-            let system: &System = &map[0];
-            assert_eq!(system.position.root, player);
-            assert_eq!(system.position.position_x, 0);
-            assert_eq!(system.position.position_y, 0);
-        }
+    //         let bob_second_coord = SystemCoordinate {
+    //             root: bob,
+    //             system_id: 1,
+    //         };
 
-        #[ink::test]
-        fn test_gateways() {
-            let mut contract: NewOmegaUniverse = NewOmegaUniverse::default();
-            let accounts = default_accounts();
-            let alice: AccountId = accounts.alice;
-            let bob: AccountId = accounts.bob;
+    //         contract.build_gateway(alice, alice_root_coord);
+    //         let alice_root = contract.get_system(alice_root_coord).unwrap();            
+    //         let bob_root = contract.get_system(bob_root_coord).unwrap();
 
-            contract.register_player(alice, String::from("Alice"));
-            contract.register_player(bob, String::from("Bob"));
+    //         let bob_second = contract.get_system(bob_second_coord).unwrap();            
+    //         assert!(alice_root.gateway_out.built);
+    //         assert!(bob_second.gateway_in.built);
 
-            let alice_root_coord = SystemCoordinate {
-                root: alice,
-                position_x: 0,
-                position_y: 0,
-            };
+    //         let alice_second_coord = SystemCoordinate {
+    //             root: alice,
+    //             system_id: 1,
+    //         };
 
-            let bob_root_coord = SystemCoordinate {
-                root: bob,
-                position_x: 0,
-                position_y: 0,
-            };
+    //         contract.discover_system(alice);
+    //         contract.build_gateway(alice, alice_second_coord);
 
-            contract.build_gateway(alice, alice_root_coord);
-            
-            let alice_root = contract.get_system(alice_root_coord).unwrap();            
-            let bob_root = contract.get_system(bob_root_coord).unwrap();
+    //         let alice_second = contract.get_system(alice_second_coord).unwrap();
 
-            assert!(alice_root.gateway_out.built);
-            assert!(bob_root.gateway_in.built);
+    //         assert!(alice_second.gateway_out.built);
 
-            let alice_second_coord = SystemCoordinate {
-                root: alice,
-                position_x: 1,
-                position_y: 0,
-            };
+    //         let bob_second_coord = alice_second.gateway_out.target;
+    //         let bob_second = contract.get_system(bob_second_coord).unwrap();
 
-            contract.discover_system(alice, alice_second_coord);
-            contract.build_gateway(alice, alice_second_coord);
+    //         assert!(alice_second.gateway_out.built);
+    //         assert!(bob_second.gateway_in.built);
+    //     }
 
-            let alice_second = contract.get_system(alice_second_coord).unwrap();
+    //     #[ink::test]
+    //     fn test_attack_planet() {
+    //         let mut contract: NewOmegaUniverse = NewOmegaUniverse::default();
+    //         let accounts = default_accounts();
+    //         let alice: AccountId = accounts.alice;
+    //         let bob: AccountId = accounts.bob;
 
-            assert!(alice_second.gateway_out.built);
+    //         contract.register_player(alice, String::from("Alice"));
+    //         contract.register_player(bob, String::from("Bob"));
 
-            let bob_second_coord = alice_second.gateway_out.target;
-            let bob_second = contract.get_system(bob_second_coord).unwrap();
+    //         let names = &contract.get_player_names(vec![alice, bob]);
+    //         assert_eq!(names, &vec![String::from("Alice"), String::from("Bob")]);
 
-            assert!(alice_second.gateway_out.built);
-            assert!(bob_second.gateway_in.built);
-        }
+    //         let alice_root_coord = SystemCoordinate {
+    //             root: alice,
+    //             system_id: 0,
+    //         };
+    //         let bob_root_coord = SystemCoordinate {
+    //             root: bob,
+    //             system_id: 0,
+    //         };
 
-        #[ink::test]
-        fn test_attack_planet() {
-            let mut contract: NewOmegaUniverse = NewOmegaUniverse::default();
-            let accounts = default_accounts();
-            let alice: AccountId = accounts.alice;
-            let bob: AccountId = accounts.bob;
+    //         assert!(!contract.can_attack_planet(alice, bob_root_coord));
+    //         contract.build_gateway(alice, alice_root_coord);
 
-            contract.register_player(alice, String::from("Alice"));
-            contract.register_player(bob, String::from("Bob"));
-
-            let alice_root_coord = SystemCoordinate {
-                root: alice,
-                position_x: 0,
-                position_y: 0,
-            };
-            let bob_root_coord = SystemCoordinate {
-                root: bob,
-                position_x: 0,
-                position_y: 0,
-            };
-
-            assert!(!contract.can_attack_planet(alice, bob_root_coord));
-            contract.build_gateway(alice, alice_root_coord);
-            assert!(contract.can_attack_planet(alice, bob_root_coord));
-        }
-    }
+    //         let bob_second_coord = SystemCoordinate {
+    //             root: bob,
+    //             system_id: 1,
+    //         };
+    //         let bob_second = contract.get_system(bob_second_coord).unwrap();
+    //         assert!(contract.can_attack_planet(alice, bob_second_coord));
+    //     }
+    // }
 }

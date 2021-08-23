@@ -96,7 +96,7 @@ export const SystemActions = (props) => {
                 </div>
                 {gatewayInAction()}
             </div>
-            {props.system.position.root !== props.alice && 
+            {false && props.system.position.root !== props.alice && 
                 <div className="gateway">
                     <img src={Embassy.asset} draggable={false}/>
                     <div>

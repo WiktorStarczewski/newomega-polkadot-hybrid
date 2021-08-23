@@ -1,0 +1,62 @@
+.ManageModules {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: transparent;
+}
+
+.ManageModules.loaded {
+    background: url("../../images/bgr_crafting.jpg") no-repeat center center;
+    background-size: cover;
+}
+
+.ManageModules .ModuleCraft,
+.ManageModules .ModulesMarket {
+    position: absolute;
+    top: 0;
+    transition: left 0.3s ease-out; 
+}
+
+.ManageModules.craftOpen .ModuleCraft {
+    left: 0;
+}
+
+.ManageModules.craftOpen .ModulesMarket {
+    left: 100%;
+}
+
+.ManageModules.marketOpen .ModuleCraft {
+    left: -100%;
+}
+
+.ManageModules.marketOpen .ModulesMarket {
+    left: 0;
+}
+
+.ManageModules .modulesModes {
+    position: absolute;
+    top: 0.5rem;
+    font-size: 2.18rem;
+    color: white;
+    width: 30%;
+    left: 35%;
+    height: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ManageModules .modulesModes svg {
+    margin: 0 0.25rem;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 0.25rem;
+    cursor: pointer;
+}
+
+.ManageModules .modulesModes svg.active {
+    background: rgba(115, 255, 190, 1);
+    color: black;
+}

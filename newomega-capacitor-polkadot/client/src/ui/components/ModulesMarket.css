@@ -1,0 +1,38 @@
+.ModulesMarket {
+    height: 100%;
+    width: 100%;
+}
+
+.ModulesMarket .playerModules,
+.ModulesMarket .market {
+    position: absolute;
+    top: 4rem;
+    width: calc(50% - 2rem);
+    height: calc(100% - 9rem);
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    overflow-y: auto;
+}
+
+.ModulesMarket .playerModules:not(.LoadingMask),
+.ModulesMarket .market:not(.LoadingMask) {
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.ModulesMarket .playerModules {
+    left: 0.5rem;
+}
+
+.ModulesMarket .market {
+    left: calc(50% + 0.5rem);
+}
+
+.ModulesMarket .ModuleInfo {
+    height: 22rem;
+    background-color: rgba(0, 0, 0, 0.4);
+    margin: 2rem 0;
+}
+
+.ModulesMarket .info {
+    color: #73ffbe;
+}

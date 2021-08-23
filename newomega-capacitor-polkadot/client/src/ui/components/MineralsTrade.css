@@ -41,7 +41,7 @@
 }
 
 .MineralsTrade .mineralAction.disabled {
-    filter: blur(2px);
+    filter: blur(1px);
 }
 
 .MineralsTrade .tradeTrack {

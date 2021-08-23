@@ -4,12 +4,16 @@ export const OmegaDefaults = {
     PLAYER_NAME: 'Anonymous',
     MIN_BET: 0,
     MAX_BET: 10000,
+    MAX_AUCTION_PRICE: 100,
     MAX_PLANET_LEVEL: 100,
     BLOCK_TIME_SECONDS: 3,
     FREE_DISCOVERY_FREQUENCY_BLOCKS: 1000, // facade.rs
+    TASK_CLAIM_FREQUENCY_BLOCKS: 28800, // facade.rs
+    LOGS_LENGTH_BLOCKS: 9600,
     SHIP_COST_PER_CP: 10,
-    //    RPC_PROVIDER: 'ws://127.0.0.1:9944', // wss://rpc.polkadot.io
-    RPC_PROVIDER: 'wss://newomega.network',
+    CRAFT_COST_RESOURCES: 10000,
+    RPC_PROVIDER: 'ws://127.0.0.1:9944', // wss://rpc.polkadot.io
+    // RPC_PROVIDER: 'wss://newomega.network',
 };
 
 //    RPC_PROVIDER: 'wss://beresheet1.edgewa.re',

@@ -1,191 +1,227 @@
 import React, { useRef, useEffect, useState } from 'react'
-import { Stage, Layer, Rect, Group, Text } from 'react-konva';
+import { Stage, Layer, Image, Rect, Group, Text, Line } from 'react-konva';
 import _ from 'underscore';
 import './UniverseMapCanvas.css';
 import { isSystemOwner } from '../../definitions/Planets';
+import useImage from 'use-image';
+
+
+const spiral = (n) => {
+    const r = Math.floor((Math.sqrt(n + 1) - 1) / 2) + 1;
+    const p = (8 * r * (r - 1)) / 2;
+    const en = r * 2;
+    const a = (1 + n - p) % (r * 8);
+    const pos = [0, 0, r];
+    switch (Math.floor(a / (r * 2))) {
+        case 0:
+            {
+                pos[0] = a - r;
+                pos[1] = -r;
+            }
+            break;
+        case 1:
+            {
+                pos[0] = r;
+                pos[1] = (a % en) - r;
+
+            }
+            break;
+        case 2:
+            {
+                pos[0] = r - (a % en);
+                pos[1] = r;
+            }
+            break;
+        case 3:
+            {
+                pos[0] = -r;
+                pos[1] = r - (a % en);
+            }
+            break;
+    }
+    return pos;
+}
+
 
 // props: universe, system, onDiscoverSystem, onLoadSystem, names, alice, canDiscover, blockNumber, freeActions
 export const UniverseMapCanvas = (props) => {
     const childWrap = useRef(null);
     const [height, setHeight] = useState(null);
-    const [discoverable, setDiscoverable] = useState(null);
-    const BOX_WIDTH = 40;
+    const [systemImage] = useImage('assets/images/system_icon.png');
+    const BOX_WIDTH = 100;
+    const INNER_PADDING = 5;
+    const allSystems = useRef(null);
 
-    const getDiscoverable = () => {
-        const discoverable = [];
+    const systemIdToPosition = (systemId) => {
+        if (systemId === 0) {
+            return {
+                x: 0,
+                y: 0,
+            };
+        }
 
-        _.each(props.universe, (system) => {
-            _.each([-1, 0, 1], (offsetX) => {
-                _.each([-1, 0, 1], (offsetY) => {
-                    const proposedX = system.position.position_x + offsetX;
-                    const proposedY = system.position.position_y + offsetY;
-
-                    if (proposedX < 0 || proposedY < 0) {
-                        return;
-                    }
-
-                    if (!_.find(props.universe, (systemIter) => {
-                        return systemIter.position.position_x === proposedX &&
-                            systemIter.position.position_y === proposedY;
-                    })) {
-                        discoverable.push({
-                            position: {
-                                root: system.position.root,
-                                position_x: proposedX,
-                                position_y: proposedY,
-                            },
-                        });
-                    }
-                });
-            });
-        });
-
-        return discoverable;
-    };
-
-    const isRoot = (system) => {
-        return system.position.position_x === 0 &&
-            system.position.position_y === 0;
-    };
-
-    const isCurrent = (system) => {
-        return system.position.position_x === props.system.position.position_x &&
-            system.position.position_y === props.system.position.position_y;
-    }
-
-    const getColor = (system) => {
-        return isSystemOwner(system, props.alice) ? '#73ffbe' : '#FFFFFF';
-    };
-
-    const getStrokeColor = (system) => {
-        return isCurrent(system) ? '#2196F3' : undefined;
-    }
-
-    const getDiscoverableColor = () => {
-        return '#767676';
-    };
-
-    const getDiscoverableFillColor = () => {
-        return props.freeDiscovery ? '#73ffbe' : '#FFFFFF';
-    };
-
-    const dragBound = (pos) => {
-        const positionsX = _.map(props.universe, (system) => {
-            return system.position.position_x;
-        });
-        const positionsY = _.map(props.universe, (system) => {
-            return system.position.position_y;
-        });
-        const maxX = -Math.max(...positionsX) - 1;
-        const maxY = -Math.max(...positionsY) - 1;
+        const pos = spiral(systemId - 1);
 
         return {
-            x: Math.min(pos.x, 0),
-            y: Math.min(pos.y, 0),
-            // TODO add bounds equal to max position of all
+            x: pos[0],
+            y: pos[1],
         };
     };
 
-    const onStageClick = (e) => {
-        const x = !_.isUndefined(e.evt.layerX)
-            ? Math.floor(e.evt.layerX / BOX_WIDTH) // click
-            : Math.floor(e.currentTarget.pointerPos.x / BOX_WIDTH); // tap
-        const y = !_.isUndefined(e.evt.layerY)
-            ? Math.floor(e.evt.layerY / BOX_WIDTH)
-            : Math.floor(e.currentTarget.pointerPos.y / BOX_WIDTH);
+    const getSystems = () => {
+        const lines = [];
+        const images = [];
+        const gatewayMarkers = [];
+        allSystems.current = [];
 
-        const discoverableFound = _.find(discoverable, (disIter) => {
-            return disIter.position.position_x === x &&
-                disIter.position.position_y === y;
+        _.each(_.range(props.universe.length + 1), (systemId) => {
+            const position = systemIdToPosition(systemId);
+            const prevPosition = systemId > 0 && systemIdToPosition(systemId - 1);
+            const isExistingSystem = systemId < props.universe.length;
+            const system = isExistingSystem && props.universe[systemId];
+            const isCurrentSystem = isExistingSystem && props.systemCoords.system_id === systemId;
+            const isRootSystem = isExistingSystem && systemId === 0;
+
+            if (systemId > 0 && isExistingSystem) {
+                lines.push(<Line 
+                    x={prevPosition.x * BOX_WIDTH + BOX_WIDTH / 2}
+                    y={prevPosition.y * BOX_WIDTH + BOX_WIDTH / 2}
+                    points={[0, 0, (position.x - prevPosition.x) * BOX_WIDTH, (position.y - prevPosition.y) * BOX_WIDTH]}
+                    stroke="white"
+                    opacity={1}  
+                    strokeWidth={3}  
+                    key={systemId}                        
+                />);
+            }
+
+            images.push(
+                <Group key={systemId} opacity={isExistingSystem ? 1 : 0.3}>
+                    <Image 
+                        image={systemImage}
+                        shadowColor={isCurrentSystem ? '#FFEE58' : '#FFFFFF'}
+                        shadowBlur={isCurrentSystem || isRootSystem ? 24 : 0}
+                        shadowOpacity={1}
+                        x={position.x * BOX_WIDTH + INNER_PADDING}
+                        y={position.y * BOX_WIDTH + INNER_PADDING}
+                        width={BOX_WIDTH - 2 * INNER_PADDING}
+                        height={BOX_WIDTH - 2 * INNER_PADDING}
+                    />
+                </Group>
+            );
+
+            const GATEWAY_MARKER_FONT_SIZE = 24;
+            if (system && system.gateway_in.built) {
+                gatewayMarkers.push(
+                    <Text 
+                        key={systemId * 2}
+                        x={position.x * BOX_WIDTH + INNER_PADDING}
+                        y={position.y * BOX_WIDTH + INNER_PADDING}
+                        stroke="white"
+                        fontSize={GATEWAY_MARKER_FONT_SIZE}
+                        text="▼"/>
+                );
+            }
+
+            if (system && system.gateway_out.built) {
+                gatewayMarkers.push(
+                    <Text 
+                        key={systemId * 2 + 1}
+                        x={(position.x + 1) * BOX_WIDTH - INNER_PADDING - GATEWAY_MARKER_FONT_SIZE}
+                        y={position.y * BOX_WIDTH + INNER_PADDING}
+                        stroke="white"
+                        fontSize={GATEWAY_MARKER_FONT_SIZE}
+                        text="▲"/>
+                );
+            }
+
+            if (isExistingSystem) {
+                allSystems.current.push({
+                    x: position.x,
+                    y: position.y,
+                    systemId,
+                });
+            }
         });
 
-        if (props.canDiscover && discoverableFound) {
-            return props.onDiscoverSystem(discoverableFound, props.freeDiscovery);
+        return (
+            <React.Fragment>
+                {lines}
+                {images}
+                {gatewayMarkers}
+            </React.Fragment>
+        );
+    }
+
+
+    // const dragBound = (pos) => {
+    //     const positionsX = _.map(props.universe, (system) => {
+    //         return system.position.position_x;
+    //     });
+    //     const positionsY = _.map(props.universe, (system) => {
+    //         return system.position.position_y;
+    //     });
+    //     const maxX = -Math.max(...positionsX) - 1;
+    //     const maxY = -Math.max(...positionsY) - 1;
+
+    //     return {
+    //         x: Math.min(pos.x, 0),
+    //         y: Math.min(pos.y, 0),
+    //         // TODO add bounds equal to max position of all
+    //     };
+    // };
+
+    const onStageClick = (e) => {
+        const applyScrollX = (value) => {
+            return value + e.currentTarget.offsetX() - e.currentTarget.position().x;
+        }
+        const applyScrollY = (value) => {
+            return value + e.currentTarget.offsetY() - e.currentTarget.position().y;
         }
 
-        const systemFound = _.find(props.universe, (sysIter) => {
-            return sysIter.position.position_x === x &&
-                sysIter.position.position_y === y;
+        const x = e.evt.type.indexOf('touch') < 0
+            ? Math.floor(applyScrollX(e.evt.layerX) / BOX_WIDTH) // click
+            : Math.floor(applyScrollX(e.currentTarget.pointerPos.x) / BOX_WIDTH); // tap
+        const y = e.evt.type.indexOf('touch') < 0
+            ? Math.floor(applyScrollY(e.evt.layerY) / BOX_WIDTH) // click
+            : Math.floor(applyScrollY(e.currentTarget.pointerPos.y) / BOX_WIDTH); // tap
+
+        const systemFound = _.findWhere(allSystems.current, {
+            x,
+            y,
         });
 
         if (systemFound) {
-            props.onLoadSystem(systemFound);
+            props.onLoadSystem({
+                root: props.system.position.root,
+                system_id: systemFound.systemId,
+            });
         }
     }
 
-    const HEIGHT = 100;
-
     useEffect(() => {
         setHeight(childWrap.current.clientHeight);
-        setDiscoverable(getDiscoverable());
-    }, [childWrap.current, props.universe]);
+    }, [childWrap.current]);
+
+//                        dragBoundFunc={dragBound}
+//                        onClick={onStageClick}
+//                        onTap={onStageClick}
+
 
     return (
         <div className="UniverseMapCanvas">
             <div ref={childWrap} className="canvasInner">
-                {height && discoverable &&
+                {height &&
                     <Stage
                         draggable={true}
-                        width={window.innerWidth / 2}
+                        width={window.innerWidth}
                         height={height}
-                        dragBoundFunc={dragBound}
+                        offsetX={-window.innerWidth / 2 + (BOX_WIDTH / 2)}
+                        offsetY={-height / 2 + (BOX_WIDTH / 2)}
                         onClick={onStageClick}
                         onTap={onStageClick}
                     >
-                        <Layer>
-                            {_.map(props.universe, (system, index) => {
-                                let statusText = '';
-                                if (system.gateway_out.built) {
-                                    statusText += '⬆';
-                                }
-                                if (system.gateway_in.built) {
-                                    statusText += '⬇';
-                                }
-
-                                return (
-                                    <Group 
-                                        key={index}
-                                    >
-                                        <Rect
-                                            x={system.position.position_x * BOX_WIDTH + 1}
-                                            y={system.position.position_y * BOX_WIDTH + 1}
-                                            width={BOX_WIDTH - 2}
-                                            height={BOX_WIDTH - 2}
-                                            fill={getColor(system)}
-                                            stroke={getStrokeColor(system)}
-                                        />
-                                        {!_.isEmpty(statusText) &&
-                                            <Text
-                                                text={statusText}
-                                                padding={4}
-                                                fontSize={16}
-                                                x={system.position.position_x * BOX_WIDTH + 1}
-                                                y={system.position.position_y * BOX_WIDTH + 1}
-                                            />
-                                        }
-                                    </Group>
-                                );
-                            })}
-                            {props.canDiscover && _.map(discoverable, (system, index) => (
-                                <Group
-                                    key={index}
-                                >
-                                    <Rect
-                                        x={system.position.position_x * BOX_WIDTH + 1}
-                                        y={system.position.position_y * BOX_WIDTH + 1}
-                                        width={BOX_WIDTH - 2}
-                                        height={BOX_WIDTH - 2}
-                                        fill={getDiscoverableColor()}
-                                    />
-                                    <Text
-                                        text="+"
-                                        fill={getDiscoverableFillColor()}
-                                        fontSize={24}
-                                        x={system.position.position_x * BOX_WIDTH + 1 + BOX_WIDTH / 2 - 8}
-                                        y={system.position.position_y * BOX_WIDTH + 1 + BOX_WIDTH / 2 - 12}
-                                    />
-                                </Group>
-                            ))}
+                        <Layer> 
+                            {getSystems()}
                         </Layer>
                     </Stage>
                 }

@@ -3,15 +3,31 @@ import { blocksTillNextFreeDiscovery, blocksToTimeString, isDiscoveryFree, units
 import './UniverseMap.css';
 import { UniverseMapCanvas } from './UniverseMapCanvas';
 import OfflineBoltIcon from '@material-ui/icons/OfflineBolt';
+import HomeIcon from '@material-ui/icons/Home';
+
 
 // props: universe, onDiscoverSystem, onLoadSystem, names, planetExpanded, blockNumber, freeActions, balance
 export const UniverseMap = (props) => {
-    const mainClassName = 'UniverseMap' + (props.planetExpanded ? ' shrank' : '');
+    const mainClassName = 'UniverseMap';
     const freeDiscovery = isDiscoveryFree(props.blockNumber, props.freeActions.discovery);
     const blocksLeftDiscovery = blocksTillNextFreeDiscovery(props.blockNumber, props.freeActions.discovery);
     const blocksLeftTime = !freeDiscovery && blocksToTimeString(blocksLeftDiscovery);
     const canDiscoverOwner = props.alice === props.system.position.root;
     const canDiscoverBalance = freeDiscovery || props.balance >= unitsToPico(1);
+    const canDiscover = canDiscoverBalance && canDiscoverOwner;
+
+    const onDiscover = () => {
+        props.onDiscoverSystem(freeDiscovery);
+    };
+
+    const goHome = () => {
+        props.onLoadSystem({
+            root: props.alice,
+            system_id: 0,
+        });
+    }
+
+    const discoverButtonClassName = 'discoverButton' + (canDiscover ? '' : ' disabled');
 
     return (
         <div className={mainClassName}>
@@ -19,7 +35,7 @@ export const UniverseMap = (props) => {
                 <div className="title">
                     <span className="titleMain">Universe Map</span>
                     {canDiscoverOwner && canDiscoverBalance
-                        ? <span>&nbsp;&nbsp;|&nbsp;&nbsp;Tap + to discover new Systems</span>
+                        ? <span>&nbsp;&nbsp;|&nbsp;&nbsp;Tap a System to open it</span>
                         : !canDiscoverOwner
                             ? <span>&nbsp;&nbsp;|&nbsp;&nbsp;No System discovery allowed in foreign Universe</span>
                             : <span>&nbsp;&nbsp;|&nbsp;&nbsp;Balance too low for Discovery</span>
@@ -36,16 +52,27 @@ export const UniverseMap = (props) => {
                         </React.Fragment>
                     }
                 </div>
-                <UniverseMapCanvas
-                    universe={props.universe}
+                <UniverseMapCanvas 
                     system={props.system}
-                    names={props.names}
                     alice={props.alice}
-                    onDiscoverSystem={props.onDiscoverSystem}
+                    universe={props.universe}
                     onLoadSystem={props.onLoadSystem}
-                    canDiscover={canDiscoverOwner && canDiscoverBalance}
-                    freeDiscovery={freeDiscovery}
+                    systemCoords={props.systemCoords}
                 />
+                <div className={discoverButtonClassName} onClick={canDiscover ? onDiscover : null}>
+                    {!freeDiscovery &&
+                        <div className="iconWrapper">
+                            <OfflineBoltIcon/>
+                            <span>1</span>
+                        </div>
+                    }
+                    <span>
+                        DISCOVER
+                    </span>
+                </div>
+            </div>
+            <div className="homeIcon" onClick={goHome}>
+                <HomeIcon fontSize="large"/>
             </div>
         </div>
     );

@@ -1,8 +1,8 @@
 {
   "metadataVersion": "0.1.0",
   "source": {
-    "hash": "0x6a49f25e601855688a6cc9ca7567a5573c0858b7486a7438646f846c1f72561e",
-    "language": "ink! 3.0.0-rc3",
+    "hash": "0xe9c81d1a0e82904a4e5364a0ca7c42a719a79a975ddcb3824ed8bab2c6ec7dc0",
+    "language": "ink! 3.0.0-rc4",
     "compiler": "rustc 1.55.0-nightly"
   },
   "contract": {
@@ -69,6 +69,24 @@
               ],
               "type": 14
             }
+          },
+          {
+            "name": "new_omega_market",
+            "type": {
+              "displayName": [
+                "NewOmegaMarket"
+              ],
+              "type": 15
+            }
+          },
+          {
+            "name": "new_omega_quests",
+            "type": {
+              "displayName": [
+                "NewOmegaQuests"
+              ],
+              "type": 16
+            }
           }
         ],
         "docs": [
@@ -91,7 +109,7 @@
     "docs": [
       " The Delegator Contract",
       "",
-      " Instantiates all the other contracts, and acts as a facade to interact with them."
+      " Manages all the other contracts, and acts as a facade to interact with them."
     ],
     "events": [
       {
@@ -126,7 +144,7 @@
               "displayName": [
                 "FightResult"
               ],
-              "type": 21
+              "type": 23
             }
           },
           {
@@ -137,7 +155,7 @@
               "displayName": [
                 "Balance"
               ],
-              "type": 31
+              "type": 34
             }
           }
         ],
@@ -176,12 +194,62 @@
               "displayName": [
                 "FightResult"
               ],
-              "type": 21
+              "type": 23
+            }
+          },
+          {
+            "docs": [],
+            "indexed": false,
+            "name": "location",
+            "type": {
+              "displayName": [
+                "SystemCoordinate"
+              ],
+              "type": 42
             }
           }
         ],
         "docs": [],
         "name": "UniverseFightComplete"
+      },
+      {
+        "args": [
+          {
+            "docs": [],
+            "indexed": true,
+            "name": "player",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          },
+          {
+            "docs": [],
+            "indexed": true,
+            "name": "token_id",
+            "type": {
+              "displayName": [
+                "TokenId"
+              ],
+              "type": 34
+            }
+          },
+          {
+            "docs": [],
+            "indexed": false,
+            "name": "definition",
+            "type": {
+              "displayName": [
+                "ModuleDefinition"
+              ],
+              "type": 61
+            }
+          }
+        ],
+        "docs": [],
+        "name": "ModuleCrafted"
       }
     ],
     "messages": [
@@ -193,35 +261,35 @@
               "displayName": [
                 "u64"
               ],
-              "type": 15
+              "type": 17
             }
           },
           {
             "name": "selection_lhs",
             "type": {
               "displayName": [],
-              "type": 16
+              "type": 18
             }
           },
           {
             "name": "selection_rhs",
             "type": {
               "displayName": [],
-              "type": 16
+              "type": 18
             }
           },
           {
             "name": "modules_lhs",
             "type": {
               "displayName": [],
-              "type": 17
+              "type": 19
             }
           },
           {
             "name": "modules_rhs",
             "type": {
               "displayName": [],
-              "type": 17
+              "type": 19
             }
           },
           {
@@ -230,7 +298,7 @@
               "displayName": [
                 "TargetingType"
               ],
-              "type": 19
+              "type": 21
             }
           },
           {
@@ -239,7 +307,7 @@
               "displayName": [
                 "TargetingType"
               ],
-              "type": 19
+              "type": 21
             }
           }
         ],
@@ -267,7 +335,7 @@
         "payable": false,
         "returnType": {
           "displayName": [],
-          "type": 20
+          "type": 22
         },
         "selector": "0x42941c88"
       },
@@ -279,35 +347,35 @@
               "displayName": [
                 "u64"
               ],
-              "type": 15
+              "type": 17
             }
           },
           {
             "name": "selection_lhs",
             "type": {
               "displayName": [],
-              "type": 16
+              "type": 18
             }
           },
           {
             "name": "selection_rhs",
             "type": {
               "displayName": [],
-              "type": 16
+              "type": 18
             }
           },
           {
             "name": "modules_lhs",
             "type": {
               "displayName": [],
-              "type": 17
+              "type": 19
             }
           },
           {
             "name": "modules_rhs",
             "type": {
               "displayName": [],
-              "type": 17
+              "type": 19
             }
           },
           {
@@ -316,7 +384,7 @@
               "displayName": [
                 "TargetingType"
               ],
-              "type": 19
+              "type": 21
             }
           },
           {
@@ -325,7 +393,7 @@
               "displayName": [
                 "TargetingType"
               ],
-              "type": 19
+              "type": 21
             }
           }
         ],
@@ -353,7 +421,7 @@
         "payable": false,
         "returnType": {
           "displayName": [],
-          "type": 20
+          "type": 22
         },
         "selector": "0x4c84c454"
       },
@@ -365,7 +433,7 @@
               "displayName": [
                 "u16"
               ],
-              "type": 29
+              "type": 31
             }
           },
           {
@@ -374,7 +442,7 @@
               "displayName": [
                 "u16"
               ],
-              "type": 29
+              "type": 31
             }
           },
           {
@@ -383,7 +451,7 @@
               "displayName": [
                 "u16"
               ],
-              "type": 29
+              "type": 31
             }
           },
           {
@@ -392,7 +460,7 @@
               "displayName": [
                 "u16"
               ],
-              "type": 29
+              "type": 31
             }
           },
           {
@@ -401,7 +469,7 @@
               "displayName": [
                 "u16"
               ],
-              "type": 29
+              "type": 31
             }
           },
           {
@@ -450,14 +518,14 @@
             "name": "selection",
             "type": {
               "displayName": [],
-              "type": 16
+              "type": 18
             }
           },
           {
             "name": "modules",
             "type": {
               "displayName": [],
-              "type": 17
+              "type": 32
             }
           },
           {
@@ -466,7 +534,7 @@
               "displayName": [
                 "String"
               ],
-              "type": 30
+              "type": 35
             }
           },
           {
@@ -475,7 +543,7 @@
               "displayName": [
                 "TargetingType"
               ],
-              "type": 19
+              "type": 21
             }
           }
         ],
@@ -518,7 +586,7 @@
               "displayName": [
                 "Balance"
               ],
-              "type": 31
+              "type": 34
             }
           }
         ],
@@ -550,7 +618,7 @@
           "displayName": [
             "PlayerDefence"
           ],
-          "type": 32
+          "type": 36
         },
         "selector": "0x910faa81"
       },
@@ -572,7 +640,7 @@
           "displayName": [
             "Vec"
           ],
-          "type": 33
+          "type": 37
         },
         "selector": "0x6e2c3eec"
       },
@@ -591,14 +659,14 @@
             "name": "selection",
             "type": {
               "displayName": [],
-              "type": 16
+              "type": 18
             }
           },
           {
             "name": "modules",
             "type": {
               "displayName": [],
-              "type": 17
+              "type": 32
             }
           },
           {
@@ -607,7 +675,7 @@
               "displayName": [
                 "TargetingType"
               ],
-              "type": 19
+              "type": 21
             }
           }
         ],
@@ -650,7 +718,7 @@
           "displayName": [
             "Vec"
           ],
-          "type": 35
+          "type": 39
         },
         "selector": "0x091a420a"
       },
@@ -672,7 +740,7 @@
           "displayName": [
             "PlayerData"
           ],
-          "type": 37
+          "type": 41
         },
         "selector": "0xbee2d9bc"
       },
@@ -684,7 +752,7 @@
               "displayName": [
                 "SystemCoordinate"
               ],
-              "type": 38
+              "type": 42
             }
           }
         ],
@@ -696,9 +764,20 @@
         "payable": false,
         "returnType": {
           "displayName": [],
-          "type": 40
+          "type": 43
         },
         "selector": "0xf0de6585"
+      },
+      {
+        "args": [],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "ensure_discovery"
+        ],
+        "payable": false,
+        "returnType": null,
+        "selector": "0x79c5ca8e"
       },
       {
         "args": [
@@ -708,7 +787,7 @@
               "displayName": [
                 "String"
               ],
-              "type": 30
+              "type": 35
             }
           }
         ],
@@ -722,17 +801,7 @@
         "selector": "0xfcaf6dd8"
       },
       {
-        "args": [
-          {
-            "name": "target",
-            "type": {
-              "displayName": [
-                "SystemCoordinate"
-              ],
-              "type": 38
-            }
-          }
-        ],
+        "args": [],
         "docs": [],
         "mutates": true,
         "name": [
@@ -754,7 +823,7 @@
           "displayName": [
             "FreeActions"
           ],
-          "type": 47
+          "type": 50
         },
         "selector": "0x986cc91c"
       },
@@ -780,7 +849,7 @@
           "displayName": [
             "Vec"
           ],
-          "type": 48
+          "type": 51
         },
         "selector": "0xf6a850b7"
       },
@@ -792,7 +861,7 @@
               "displayName": [
                 "SystemCoordinate"
               ],
-              "type": 38
+              "type": 42
             }
           },
           {
@@ -808,14 +877,14 @@
             "name": "selection",
             "type": {
               "displayName": [],
-              "type": 16
+              "type": 18
             }
           },
           {
             "name": "modules",
             "type": {
               "displayName": [],
-              "type": 17
+              "type": 32
             }
           },
           {
@@ -824,7 +893,7 @@
               "displayName": [
                 "TargetingType"
               ],
-              "type": 19
+              "type": 21
             }
           }
         ],
@@ -849,7 +918,7 @@
           "displayName": [
             "PlayerAssets"
           ],
-          "type": 49
+          "type": 52
         },
         "selector": "0xd3cb40e7"
       },
@@ -861,7 +930,7 @@
               "displayName": [
                 "Vec"
               ],
-              "type": 50
+              "type": 53
             }
           }
         ],
@@ -875,7 +944,7 @@
           "displayName": [
             "Vec"
           ],
-          "type": 51
+          "type": 54
         },
         "selector": "0x67a63ab4"
       },
@@ -887,7 +956,7 @@
               "displayName": [
                 "SystemCoordinate"
               ],
-              "type": 38
+              "type": 42
             }
           }
         ],
@@ -912,7 +981,7 @@
           "displayName": [
             "GameStats"
           ],
-          "type": 52
+          "type": 55
         },
         "selector": "0xc5ab1911"
       },
@@ -924,7 +993,7 @@
               "displayName": [
                 "SystemCoordinate"
               ],
-              "type": 38
+              "type": 42
             }
           },
           {
@@ -940,14 +1009,14 @@
             "name": "selection",
             "type": {
               "displayName": [],
-              "type": 16
+              "type": 18
             }
           },
           {
             "name": "modules",
             "type": {
               "displayName": [],
-              "type": 17
+              "type": 32
             }
           },
           {
@@ -956,7 +1025,7 @@
               "displayName": [
                 "TargetingType"
               ],
-              "type": 19
+              "type": 21
             }
           }
         ],
@@ -978,8 +1047,10 @@
         ],
         "payable": false,
         "returnType": {
-          "displayName": [],
-          "type": 53
+          "displayName": [
+            "Vec"
+          ],
+          "type": 56
         },
         "selector": "0x96bba729"
       },
@@ -1002,7 +1073,7 @@
               "displayName": [
                 "SystemCoordinate"
               ],
-              "type": 38
+              "type": 42
             }
           },
           {
@@ -1044,7 +1115,7 @@
         "payable": false,
         "returnType": {
           "displayName": [],
-          "type": 54
+          "type": 57
         },
         "selector": "0xc0c49d03"
       },
@@ -1065,7 +1136,7 @@
               "displayName": [
                 "RegisteredTrade"
               ],
-              "type": 55
+              "type": 58
             }
           }
         ],
@@ -1104,7 +1175,7 @@
               "displayName": [
                 "RegisteredTrade"
               ],
-              "type": 55
+              "type": 58
             }
           }
         ],
@@ -1132,9 +1203,9 @@
             "name": "amount",
             "type": {
               "displayName": [
-                "u32"
+                "Balance"
               ],
-              "type": 5
+              "type": 34
             }
           }
         ],
@@ -1156,8 +1227,10 @@
         ],
         "payable": false,
         "returnType": {
-          "displayName": [],
-          "type": 53
+          "displayName": [
+            "Vec"
+          ],
+          "type": 56
         },
         "selector": "0x61838863"
       },
@@ -1169,7 +1242,7 @@
               "displayName": [
                 "SystemCoordinate"
               ],
-              "type": 38
+              "type": 42
             }
           },
           {
@@ -1187,7 +1260,7 @@
               "displayName": [
                 "String"
               ],
-              "type": 30
+              "type": 35
             }
           }
         ],
@@ -1208,7 +1281,7 @@
               "displayName": [
                 "SystemCoordinate"
               ],
-              "type": 38
+              "type": 42
             }
           },
           {
@@ -1229,6 +1302,194 @@
         "payable": true,
         "returnType": null,
         "selector": "0x1363e094"
+      },
+      {
+        "args": [],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "craft_module"
+        ],
+        "payable": true,
+        "returnType": null,
+        "selector": "0xb7e77f31"
+      },
+      {
+        "args": [],
+        "docs": [],
+        "mutates": false,
+        "name": [
+          "get_player_modules"
+        ],
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "Vec"
+          ],
+          "type": 59
+        },
+        "selector": "0x7dd9b4ab"
+      },
+      {
+        "args": [
+          {
+            "name": "token_id",
+            "type": {
+              "displayName": [
+                "TokenId"
+              ],
+              "type": 34
+            }
+          },
+          {
+            "name": "price",
+            "type": {
+              "displayName": [
+                "Balance"
+              ],
+              "type": 34
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "register_module_sale"
+        ],
+        "payable": false,
+        "returnType": null,
+        "selector": "0x98cd5cc0"
+      },
+      {
+        "args": [
+          {
+            "name": "token_id",
+            "type": {
+              "displayName": [
+                "TokenId"
+              ],
+              "type": 34
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "cancel_module_sale"
+        ],
+        "payable": false,
+        "returnType": null,
+        "selector": "0x0e7f6873"
+      },
+      {
+        "args": [],
+        "docs": [],
+        "mutates": false,
+        "name": [
+          "get_all_auctions"
+        ],
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "Vec"
+          ],
+          "type": 62
+        },
+        "selector": "0x95baa3db"
+      },
+      {
+        "args": [],
+        "docs": [],
+        "mutates": false,
+        "name": [
+          "get_token_count"
+        ],
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "TokenId"
+          ],
+          "type": 34
+        },
+        "selector": "0x744362af"
+      },
+      {
+        "args": [],
+        "docs": [],
+        "mutates": false,
+        "name": [
+          "get_player_quest_progress"
+        ],
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "QuestProgress"
+          ],
+          "type": 64
+        },
+        "selector": "0x27f688bc"
+      },
+      {
+        "args": [],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "claim_quest"
+        ],
+        "payable": false,
+        "returnType": null,
+        "selector": "0x0292d669"
+      },
+      {
+        "args": [
+          {
+            "name": "token_id",
+            "type": {
+              "displayName": [
+                "TokenId"
+              ],
+              "type": 34
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "destroy_module"
+        ],
+        "payable": false,
+        "returnType": null,
+        "selector": "0x692bb410"
+      },
+      {
+        "args": [
+          {
+            "name": "seller",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          },
+          {
+            "name": "token_id",
+            "type": {
+              "displayName": [
+                "TokenId"
+              ],
+              "type": 34
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "buy_module_from_market"
+        ],
+        "payable": true,
+        "returnType": null,
+        "selector": "0xb37df475"
       }
     ]
   },
@@ -1358,12 +1619,48 @@
               "fields": [
                 {
                   "layout": {
+                    "cell": {
+                      "key": "0x0700000000000000000000000000000000000000000000000000000000000000",
+                      "ty": 1
+                    }
+                  },
+                  "name": "account_id"
+                }
+              ]
+            }
+          },
+          "name": "new_omega_market"
+        },
+        {
+          "layout": {
+            "struct": {
+              "fields": [
+                {
+                  "layout": {
+                    "cell": {
+                      "key": "0x0800000000000000000000000000000000000000000000000000000000000000",
+                      "ty": 1
+                    }
+                  },
+                  "name": "account_id"
+                }
+              ]
+            }
+          },
+          "name": "new_omega_quests"
+        },
+        {
+          "layout": {
+            "struct": {
+              "fields": [
+                {
+                  "layout": {
                     "struct": {
                       "fields": [
                         {
                           "layout": {
                             "cell": {
-                              "key": "0x0700000000000000000000000000000000000000000000000000000000000000",
+                              "key": "0x0900000000000000000000000000000000000000000000000000000000000000",
                               "ty": 4
                             }
                           },
@@ -1376,7 +1673,7 @@
                                 {
                                   "layout": {
                                     "cell": {
-                                      "key": "0x0800000000000000000000000000000000000000000000000000000000000000",
+                                      "key": "0x0a00000000000000000000000000000000000000000000000000000000000000",
                                       "ty": 5
                                     }
                                   },
@@ -1388,12 +1685,12 @@
                                       "cellsPerElem": 1,
                                       "layout": {
                                         "cell": {
-                                          "key": "0x0800000001000000000000000000000000000000000000000000000000000000",
+                                          "key": "0x0a00000001000000000000000000000000000000000000000000000000000000",
                                           "ty": 6
                                         }
                                       },
                                       "len": 4294967295,
-                                      "offset": "0x0900000000000000000000000000000000000000000000000000000000000000"
+                                      "offset": "0x0b00000000000000000000000000000000000000000000000000000000000000"
                                     }
                                   },
                                   "name": "elems"
@@ -1413,11 +1710,11 @@
                     "hash": {
                       "layout": {
                         "cell": {
-                          "key": "0x0900000001000000000000000000000000000000000000000000000000000000",
+                          "key": "0x0b00000001000000000000000000000000000000000000000000000000000000",
                           "ty": 8
                         }
                       },
-                      "offset": "0x0800000001000000000000000000000000000000000000000000000000000000",
+                      "offset": "0x0a00000001000000000000000000000000000000000000000000000000000000",
                       "strategy": {
                         "hasher": "Blake2x256",
                         "postfix": "",
@@ -1431,6 +1728,86 @@
             }
           },
           "name": "free_discovery"
+        },
+        {
+          "layout": {
+            "struct": {
+              "fields": [
+                {
+                  "layout": {
+                    "struct": {
+                      "fields": [
+                        {
+                          "layout": {
+                            "cell": {
+                              "key": "0x0b00000001000000000000000000000000000000000000000000000000000000",
+                              "ty": 4
+                            }
+                          },
+                          "name": "header"
+                        },
+                        {
+                          "layout": {
+                            "struct": {
+                              "fields": [
+                                {
+                                  "layout": {
+                                    "cell": {
+                                      "key": "0x0c00000001000000000000000000000000000000000000000000000000000000",
+                                      "ty": 5
+                                    }
+                                  },
+                                  "name": "len"
+                                },
+                                {
+                                  "layout": {
+                                    "array": {
+                                      "cellsPerElem": 1,
+                                      "layout": {
+                                        "cell": {
+                                          "key": "0x0c00000002000000000000000000000000000000000000000000000000000000",
+                                          "ty": 6
+                                        }
+                                      },
+                                      "len": 4294967295,
+                                      "offset": "0x0d00000001000000000000000000000000000000000000000000000000000000"
+                                    }
+                                  },
+                                  "name": "elems"
+                                }
+                              ]
+                            }
+                          },
+                          "name": "entries"
+                        }
+                      ]
+                    }
+                  },
+                  "name": "keys"
+                },
+                {
+                  "layout": {
+                    "hash": {
+                      "layout": {
+                        "cell": {
+                          "key": "0x0d00000002000000000000000000000000000000000000000000000000000000",
+                          "ty": 8
+                        }
+                      },
+                      "offset": "0x0c00000002000000000000000000000000000000000000000000000000000000",
+                      "strategy": {
+                        "hasher": "Blake2x256",
+                        "postfix": "",
+                        "prefix": "0x696e6b20686173686d6170"
+                      }
+                    }
+                  },
+                  "name": "values"
+                }
+              ]
+            }
+          },
+          "name": "task_claim"
         }
       ]
     }
@@ -1696,6 +2073,42 @@
     },
     {
       "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "account_id",
+              "type": 1,
+              "typeName": "AccountId"
+            }
+          ]
+        }
+      },
+      "path": [
+        "newomegamarket",
+        "newomegamarket",
+        "NewOmegaMarket"
+      ]
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "account_id",
+              "type": 1,
+              "typeName": "AccountId"
+            }
+          ]
+        }
+      },
+      "path": [
+        "newomegaquests",
+        "newomegaquests",
+        "NewOmegaQuests"
+      ]
+    },
+    {
+      "def": {
         "primitive": "u64"
       }
     },
@@ -1711,7 +2124,7 @@
       "def": {
         "array": {
           "len": 4,
-          "type": 18
+          "type": 20
         }
       }
     },
@@ -1814,9 +2227,9 @@
     {
       "def": {
         "tuple": [
-          21,
           23,
-          23
+          25,
+          25
         ]
       }
     },
@@ -1826,42 +2239,42 @@
           "fields": [
             {
               "name": "selection_lhs",
-              "type": 16,
+              "type": 18,
               "typeName": "[u8; MAX_SHIPS]"
             },
             {
               "name": "selection_rhs",
-              "type": 16,
+              "type": 18,
               "typeName": "[u8; MAX_SHIPS]"
             },
             {
               "name": "modules_lhs",
-              "type": 17,
+              "type": 19,
               "typeName": "[ShipModule; MAX_SHIPS]"
             },
             {
               "name": "modules_rhs",
-              "type": 17,
+              "type": 19,
               "typeName": "[ShipModule; MAX_SHIPS]"
             },
             {
               "name": "targeting_lhs",
-              "type": 19,
+              "type": 21,
               "typeName": "TargetingType"
             },
             {
               "name": "targeting_rhs",
-              "type": 19,
+              "type": 21,
               "typeName": "TargetingType"
             },
             {
               "name": "lhs_dead",
-              "type": 22,
+              "type": 24,
               "typeName": "bool"
             },
             {
               "name": "rhs_dead",
-              "type": 22,
+              "type": 24,
               "typeName": "bool"
             },
             {
@@ -1871,17 +2284,17 @@
             },
             {
               "name": "seed",
-              "type": 15,
+              "type": 17,
               "typeName": "u64"
             },
             {
               "name": "ships_lost_lhs",
-              "type": 16,
+              "type": 18,
               "typeName": "[u8; MAX_SHIPS]"
             },
             {
               "name": "ships_lost_rhs",
-              "type": 16,
+              "type": 18,
               "typeName": "[u8; MAX_SHIPS]"
             }
           ]
@@ -1908,7 +2321,7 @@
             {
               "fields": [
                 {
-                  "type": 24,
+                  "type": 26,
                   "typeName": "T"
                 }
               ],
@@ -1918,7 +2331,7 @@
         }
       },
       "params": [
-        24
+        26
       ],
       "path": [
         "Option"
@@ -1927,7 +2340,7 @@
     {
       "def": {
         "sequence": {
-          "type": 25
+          "type": 27
         }
       }
     },
@@ -1957,7 +2370,7 @@
             },
             {
               "name": "target_position",
-              "type": 26,
+              "type": 28,
               "typeName": "i16"
             },
             {
@@ -1967,12 +2380,12 @@
             },
             {
               "name": "effects_lhs",
-              "type": 27,
+              "type": 29,
               "typeName": "[RunningEffect; MAX_SHIPS]"
             },
             {
               "name": "effects_rhs",
-              "type": 27,
+              "type": 29,
               "typeName": "[RunningEffect; MAX_SHIPS]"
             }
           ]
@@ -1993,7 +2406,7 @@
       "def": {
         "array": {
           "len": 4,
-          "type": 28
+          "type": 30
         }
       }
     },
@@ -2047,8 +2460,37 @@
     },
     {
       "def": {
-        "primitive": "str"
+        "array": {
+          "len": 4,
+          "type": 33
+        }
       }
+    },
+    {
+      "def": {
+        "variant": {
+          "variants": [
+            {
+              "name": "None"
+            },
+            {
+              "fields": [
+                {
+                  "type": 34,
+                  "typeName": "T"
+                }
+              ],
+              "name": "Some"
+            }
+          ]
+        }
+      },
+      "params": [
+        34
+      ],
+      "path": [
+        "Option"
+      ]
     },
     {
       "def": {
@@ -2057,31 +2499,36 @@
     },
     {
       "def": {
+        "primitive": "str"
+      }
+    },
+    {
+      "def": {
         "composite": {
           "fields": [
             {
               "name": "selection",
-              "type": 16,
+              "type": 18,
               "typeName": "[u8; MAX_SHIPS]"
             },
             {
               "name": "modules",
-              "type": 17,
-              "typeName": "[ShipModule; MAX_SHIPS]"
+              "type": 32,
+              "typeName": "[Option<TokenId>; MAX_SHIPS]"
             },
             {
               "name": "targeting",
-              "type": 19,
+              "type": 21,
               "typeName": "TargetingType"
             },
             {
               "name": "name",
-              "type": 30,
+              "type": 35,
               "typeName": "String"
             },
             {
               "name": "value",
-              "type": 31,
+              "type": 34,
               "typeName": "Balance"
             },
             {
@@ -2106,7 +2553,7 @@
     {
       "def": {
         "sequence": {
-          "type": 34
+          "type": 38
         }
       }
     },
@@ -2114,14 +2561,14 @@
       "def": {
         "tuple": [
           1,
-          32
+          36
         ]
       }
     },
     {
       "def": {
         "sequence": {
-          "type": 36
+          "type": 40
         }
       }
     },
@@ -2129,7 +2576,7 @@
       "def": {
         "tuple": [
           1,
-          37
+          41
         ]
       }
     },
@@ -2166,34 +2613,24 @@
               "typeName": "AccountId"
             },
             {
-              "name": "position_x",
-              "type": 39,
-              "typeName": "i32"
-            },
-            {
-              "name": "position_y",
-              "type": 39,
-              "typeName": "i32"
+              "name": "system_id",
+              "type": 17,
+              "typeName": "SystemId"
             }
           ]
         }
       },
       "path": [
-        "newomegauniverse",
-        "newomegauniverse",
+        "newomegauniversestorage",
+        "newomegauniversestorage",
         "SystemCoordinate"
       ]
     },
     {
       "def": {
-        "primitive": "i32"
-      }
-    },
-    {
-      "def": {
         "tuple": [
-          41,
-          22
+          44,
+          24
         ]
       }
     },
@@ -2207,7 +2644,7 @@
             {
               "fields": [
                 {
-                  "type": 42,
+                  "type": 45,
                   "typeName": "T"
                 }
               ],
@@ -2217,7 +2654,7 @@
         }
       },
       "params": [
-        42
+        45
       ],
       "path": [
         "Option"
@@ -2229,22 +2666,22 @@
           "fields": [
             {
               "name": "position",
-              "type": 38,
+              "type": 42,
               "typeName": "SystemCoordinate"
             },
             {
               "name": "gateway_in",
-              "type": 43,
+              "type": 46,
               "typeName": "Gateway"
             },
             {
               "name": "gateway_out",
-              "type": 43,
+              "type": 46,
               "typeName": "Gateway"
             },
             {
               "name": "planets",
-              "type": 44,
+              "type": 47,
               "typeName": "Vec<Planet>"
             },
             {
@@ -2256,8 +2693,8 @@
         }
       },
       "path": [
-        "newomegauniverse",
-        "newomegauniverse",
+        "newomegauniversestorage",
+        "newomegauniversestorage",
         "System"
       ]
     },
@@ -2267,27 +2704,27 @@
           "fields": [
             {
               "name": "built",
-              "type": 22,
+              "type": 24,
               "typeName": "bool"
             },
             {
               "name": "target",
-              "type": 38,
+              "type": 42,
               "typeName": "SystemCoordinate"
             }
           ]
         }
       },
       "path": [
-        "newomegauniverse",
-        "newomegauniverse",
+        "newomegauniversestorage",
+        "newomegauniversestorage",
         "Gateway"
       ]
     },
     {
       "def": {
         "sequence": {
-          "type": 45
+          "type": 48
         }
       }
     },
@@ -2297,17 +2734,17 @@
           "fields": [
             {
               "name": "selection",
-              "type": 16,
+              "type": 18,
               "typeName": "[u8; MAX_SHIPS]"
             },
             {
               "name": "modules",
-              "type": 17,
-              "typeName": "[ShipModule; MAX_SHIPS]"
+              "type": 32,
+              "typeName": "[Option<TokenId>; MAX_SHIPS]"
             },
             {
               "name": "targeting",
-              "type": 19,
+              "type": 21,
               "typeName": "TargetingType"
             },
             {
@@ -2342,15 +2779,15 @@
             },
             {
               "name": "name",
-              "type": 46,
+              "type": 49,
               "typeName": "Option<String>"
             }
           ]
         }
       },
       "path": [
-        "newomegauniverse",
-        "newomegauniverse",
+        "newomegauniversestorage",
+        "newomegauniversestorage",
         "Planet"
       ]
     },
@@ -2364,7 +2801,7 @@
             {
               "fields": [
                 {
-                  "type": 30,
+                  "type": 35,
                   "typeName": "T"
                 }
               ],
@@ -2374,7 +2811,7 @@
         }
       },
       "params": [
-        30
+        35
       ],
       "path": [
         "Option"
@@ -2386,6 +2823,11 @@
           "fields": [
             {
               "name": "discovery",
+              "type": 5,
+              "typeName": "BlockNumber"
+            },
+            {
+              "name": "task_claim",
               "type": 5,
               "typeName": "BlockNumber"
             }
@@ -2401,7 +2843,7 @@
     {
       "def": {
         "sequence": {
-          "type": 42
+          "type": 45
         }
       }
     },
@@ -2411,15 +2853,20 @@
           "fields": [
             {
               "name": "name",
-              "type": 30,
+              "type": 35,
               "typeName": "String"
+            },
+            {
+              "name": "last_system",
+              "type": 17,
+              "typeName": "SystemId"
             }
           ]
         }
       },
       "path": [
-        "newomegauniverse",
-        "newomegauniverse",
+        "newomegauniversestorage",
+        "newomegauniversestorage",
         "PlayerAssets"
       ]
     },
@@ -2433,7 +2880,7 @@
     {
       "def": {
         "sequence": {
-          "type": 30
+          "type": 35
         }
       }
     },
@@ -2443,28 +2890,27 @@
           "fields": [
             {
               "name": "no_players",
-              "type": 15,
+              "type": 17,
               "typeName": "u64"
             },
             {
               "name": "no_systems",
-              "type": 15,
+              "type": 17,
               "typeName": "u64"
             }
           ]
         }
       },
       "path": [
-        "newomegauniverse",
-        "newomegauniverse",
+        "newomegauniversestorage",
+        "newomegauniversestorage",
         "GameStats"
       ]
     },
     {
       "def": {
-        "array": {
-          "len": 4,
-          "type": 5
+        "sequence": {
+          "type": 34
         }
       }
     },
@@ -2472,7 +2918,7 @@
       "def": {
         "array": {
           "len": 4,
-          "type": 55
+          "type": 58
         }
       }
     },
@@ -2482,8 +2928,8 @@
           "fields": [
             {
               "name": "amount",
-              "type": 5,
-              "typeName": "u32"
+              "type": 34,
+              "typeName": "Balance"
             },
             {
               "name": "exchange_for",
@@ -2497,6 +2943,119 @@
         "newomegastorage",
         "newomegastorage",
         "RegisteredTrade"
+      ]
+    },
+    {
+      "def": {
+        "sequence": {
+          "type": 60
+        }
+      }
+    },
+    {
+      "def": {
+        "tuple": [
+          34,
+          61
+        ]
+      }
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "module_stats",
+              "type": 20,
+              "typeName": "ShipModule"
+            },
+            {
+              "name": "creator",
+              "type": 1,
+              "typeName": "AccountId"
+            }
+          ]
+        }
+      },
+      "path": [
+        "newomegastorage",
+        "newomegastorage",
+        "ModuleDefinition"
+      ]
+    },
+    {
+      "def": {
+        "sequence": {
+          "type": 63
+        }
+      }
+    },
+    {
+      "def": {
+        "tuple": [
+          1,
+          34,
+          34,
+          61
+        ]
+      }
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "planet_capture",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "ranked_wins",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "module_craft",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "planet_harvest",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "produce_ships",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "discover",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "build_gateway",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "register_mineral_trade",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "upgrade_planet",
+              "type": 3,
+              "typeName": "u8"
+            }
+          ]
+        }
+      },
+      "path": [
+        "newomegaquests",
+        "newomegaquests",
+        "QuestProgress"
       ]
     }
   ]

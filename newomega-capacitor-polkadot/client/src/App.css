@@ -7,18 +7,12 @@ html {
     position: fixed;
     height: 100%;
     width: 100%;
-    font-size: 12px;
+    font-size: 10px;
 }
 
 @media (min-width:961px) {
     html {
         font-size: 20px;
-    }
-}
-
-@media (min-width:1281px) {
-    html {
-        font-size: 24px;
     }
 }
 
@@ -89,10 +83,9 @@ canvas {
 .App .settingsWrapper {
     text-align: right;
     color: white;
-    font-size: 3rem;
     position: absolute;
     right: 0.5rem;
-    top: 0;
+    top: 0.5rem;
 }
 
 .App .settingsWrapper svg {
@@ -101,6 +94,11 @@ canvas {
     background: rgba(0, 0, 0, 0.4);
     border-radius: 50%;
     margin-left: 0.5rem;
+    font-size: 3rem;
+}
+
+.App .settingsWrapper svg.questsButton {
+    color: #FFEB3B;
 }
 
 .App .playerName {
@@ -206,7 +204,7 @@ canvas {
     background: black;
     opacity: 1;
     animation: fade-out 0.5s ease-in forwards;
-    animation-delay: 12s;
+    animation-delay: 6s;
 }
 
 .App .bottomElement {
@@ -302,6 +300,11 @@ canvas {
     border-radius: 0.5rem;
     width: 20%;
     left: 40%;
+}
+
+.App .logsButton.underAttack {
+    animation: pulse 1s infinite;
+    color: #F44336;
 }
 
 .progress-line, .progress-line:before {
@@ -492,4 +495,55 @@ canvas:focus {
     flex-direction: column;   
     text-transform: uppercase;
     text-align: center;
+}
+
+.grade.common {
+    color: white;
+}
+
+.grade.rare {
+    color: #1e88e5;
+}
+
+.grade.epic {
+    color: #AB47BC;    
+}
+
+.grade.legendary {
+    color: #fdd835;
+}
+
+.grade.primal {
+    color: #f4511e;
+}
+
+.gradeBackground.common {
+    background-color: white;
+}
+
+.gradeBackground.rare {
+    background-color: #1e88e5;
+}
+
+.gradeBackground.epic {
+    background-color: #AB47BC;    
+}
+
+.gradeBackground.legendary {
+    background-color: #fdd835;
+}
+
+.gradeBackground.primal {
+    background-color: #f4511e;
+}
+
+.MuiLinearProgress-root {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+body > [role="presentation"] {
+    padding: 5%;
 }

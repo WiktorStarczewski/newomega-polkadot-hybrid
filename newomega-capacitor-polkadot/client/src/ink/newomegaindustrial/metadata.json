@@ -1,8 +1,8 @@
 {
   "metadataVersion": "0.1.0",
   "source": {
-    "hash": "0x65ea1a08bd0ed1d2409cac049b1d50b2c3a18ada7877424bc15f266b485f317a",
-    "language": "ink! 3.0.0-rc3",
+    "hash": "0x0089d32b634a9ef7717f800b16caf65035776a07e4c6b7b08345cc5ecac9d976",
+    "language": "ink! 3.0.0-rc4",
     "compiler": "rustc 1.55.0-nightly"
   },
   "contract": {
@@ -33,6 +33,24 @@
               ],
               "type": 5
             }
+          },
+          {
+            "name": "new_omega_tokens",
+            "type": {
+              "displayName": [
+                "NewOmegaTokens"
+              ],
+              "type": 6
+            }
+          },
+          {
+            "name": "new_omega_market",
+            "type": {
+              "displayName": [
+                "NewOmegaMarket"
+              ],
+              "type": 7
+            }
           }
         ],
         "docs": [],
@@ -57,7 +75,13 @@
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Authorises the Delegator contract to fire methods on this one.",
+          "",
+          " # Arguments",
+          "",
+          " * `delegator_address` - AccountId of the Delegator contract"
+        ],
         "mutates": true,
         "name": [
           "authorise_delegator"
@@ -65,6 +89,96 @@
         "payable": false,
         "returnType": null,
         "selector": "0xdd9c74d2"
+      },
+      {
+        "args": [
+          {
+            "name": "caller",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          }
+        ],
+        "docs": [
+          " Crafts a random module for a player",
+          "",
+          " # Arguments",
+          "",
+          " `caller` - AccountId of the player",
+          "",
+          " # Returns",
+          "",
+          " `definition` - The generated ModuleDefinition"
+        ],
+        "mutates": true,
+        "name": [
+          "craft_module"
+        ],
+        "payable": false,
+        "returnType": {
+          "displayName": [],
+          "type": 8
+        },
+        "selector": "0xb7e77f31"
+      },
+      {
+        "args": [
+          {
+            "name": "caller",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          },
+          {
+            "name": "token_id",
+            "type": {
+              "displayName": [
+                "TokenId"
+              ],
+              "type": 9
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "destroy_module"
+        ],
+        "payable": false,
+        "returnType": null,
+        "selector": "0x692bb410"
+      },
+      {
+        "args": [
+          {
+            "name": "caller",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": false,
+        "name": [
+          "get_player_modules"
+        ],
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "Vec"
+          ],
+          "type": 12
+        },
+        "selector": "0x7dd9b4ab"
       },
       {
         "args": [
@@ -90,13 +204,21 @@
             "name": "amount",
             "type": {
               "displayName": [
-                "u32"
+                "Balance"
               ],
-              "type": 6
+              "type": 9
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Produces a given amount of a certain ship for a player",
+          "",
+          " # Arguments",
+          "",
+          " * `caller` - Account id of the player to produce ships for",
+          " * `ship_id` - Which ship to produce (0..MAX_SHIPS)",
+          " * `amount` - How many ships to produce"
+        ],
         "mutates": true,
         "name": [
           "produce_ships"
@@ -104,6 +226,165 @@
         "payable": false,
         "returnType": null,
         "selector": "0xafe6f31d"
+      },
+      {
+        "args": [],
+        "docs": [],
+        "mutates": false,
+        "name": [
+          "get_all_auctions"
+        ],
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "Vec"
+          ],
+          "type": 13
+        },
+        "selector": "0x95baa3db"
+      },
+      {
+        "args": [
+          {
+            "name": "caller",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          },
+          {
+            "name": "token_id",
+            "type": {
+              "displayName": [
+                "TokenId"
+              ],
+              "type": 9
+            }
+          },
+          {
+            "name": "price",
+            "type": {
+              "displayName": [
+                "Balance"
+              ],
+              "type": 9
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "register_module_sale"
+        ],
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "Result"
+          ],
+          "type": 15
+        },
+        "selector": "0x98cd5cc0"
+      },
+      {
+        "args": [
+          {
+            "name": "caller",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          },
+          {
+            "name": "token_id",
+            "type": {
+              "displayName": [
+                "TokenId"
+              ],
+              "type": 9
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "cancel_module_sale"
+        ],
+        "payable": false,
+        "returnType": null,
+        "selector": "0x0e7f6873"
+      },
+      {
+        "args": [
+          {
+            "name": "caller",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          },
+          {
+            "name": "seller",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 1
+            }
+          },
+          {
+            "name": "token_id",
+            "type": {
+              "displayName": [
+                "TokenId"
+              ],
+              "type": 9
+            }
+          },
+          {
+            "name": "transferred_value",
+            "type": {
+              "displayName": [
+                "Balance"
+              ],
+              "type": 9
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "buy_module_from_market"
+        ],
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "Result"
+          ],
+          "type": 15
+        },
+        "selector": "0xb37df475"
+      },
+      {
+        "args": [],
+        "docs": [],
+        "mutates": false,
+        "name": [
+          "get_token_count"
+        ],
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "TokenId"
+          ],
+          "type": 9
+        },
+        "selector": "0x744362af"
       }
     ]
   },
@@ -214,6 +495,76 @@
             }
           },
           "name": "new_omega_storage"
+        },
+        {
+          "layout": {
+            "enum": {
+              "dispatchKey": "0x0400000000000000000000000000000000000000000000000000000000000000",
+              "variants": {
+                "0": {
+                  "fields": [
+                    {
+                      "layout": {
+                        "struct": {
+                          "fields": [
+                            {
+                              "layout": {
+                                "cell": {
+                                  "key": "0x0500000000000000000000000000000000000000000000000000000000000000",
+                                  "ty": 1
+                                }
+                              },
+                              "name": "account_id"
+                            }
+                          ]
+                        }
+                      },
+                      "name": null
+                    }
+                  ]
+                },
+                "1": {
+                  "fields": []
+                }
+              }
+            }
+          },
+          "name": "new_omega_tokens"
+        },
+        {
+          "layout": {
+            "enum": {
+              "dispatchKey": "0x0500000000000000000000000000000000000000000000000000000000000000",
+              "variants": {
+                "0": {
+                  "fields": [
+                    {
+                      "layout": {
+                        "struct": {
+                          "fields": [
+                            {
+                              "layout": {
+                                "cell": {
+                                  "key": "0x0600000000000000000000000000000000000000000000000000000000000000",
+                                  "ty": 1
+                                }
+                              },
+                              "name": "account_id"
+                            }
+                          ]
+                        }
+                      },
+                      "name": null
+                    }
+                  ]
+                },
+                "1": {
+                  "fields": []
+                }
+              }
+            }
+          },
+          "name": "new_omega_market"
         }
       ]
     }
@@ -287,8 +638,205 @@
     },
     {
       "def": {
-        "primitive": "u32"
+        "composite": {
+          "fields": [
+            {
+              "name": "account_id",
+              "type": 1,
+              "typeName": "AccountId"
+            }
+          ]
+        }
+      },
+      "path": [
+        "newomegatokens",
+        "newomegatokens",
+        "NewOmegaTokens"
+      ]
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "account_id",
+              "type": 1,
+              "typeName": "AccountId"
+            }
+          ]
+        }
+      },
+      "path": [
+        "newomegamarket",
+        "newomegamarket",
+        "NewOmegaMarket"
+      ]
+    },
+    {
+      "def": {
+        "tuple": [
+          9,
+          10
+        ]
       }
+    },
+    {
+      "def": {
+        "primitive": "u128"
+      }
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "module_stats",
+              "type": 11,
+              "typeName": "ShipModule"
+            },
+            {
+              "name": "creator",
+              "type": 1,
+              "typeName": "AccountId"
+            }
+          ]
+        }
+      },
+      "path": [
+        "newomegastorage",
+        "newomegastorage",
+        "ModuleDefinition"
+      ]
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "snare",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "root",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "blind",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "attack_debuff",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "defence_debuff",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "range_debuff",
+              "type": 3,
+              "typeName": "u8"
+            }
+          ]
+        }
+      },
+      "path": [
+        "newomega",
+        "newomega",
+        "ShipModule"
+      ]
+    },
+    {
+      "def": {
+        "sequence": {
+          "type": 8
+        }
+      }
+    },
+    {
+      "def": {
+        "sequence": {
+          "type": 14
+        }
+      }
+    },
+    {
+      "def": {
+        "tuple": [
+          1,
+          9,
+          9,
+          10
+        ]
+      }
+    },
+    {
+      "def": {
+        "variant": {
+          "variants": [
+            {
+              "fields": [
+                {
+                  "type": 16,
+                  "typeName": "T"
+                }
+              ],
+              "name": "Ok"
+            },
+            {
+              "fields": [
+                {
+                  "type": 17,
+                  "typeName": "E"
+                }
+              ],
+              "name": "Err"
+            }
+          ]
+        }
+      },
+      "params": [
+        16,
+        17
+      ],
+      "path": [
+        "Result"
+      ]
+    },
+    {
+      "def": {
+        "tuple": []
+      }
+    },
+    {
+      "def": {
+        "variant": {
+          "variants": [
+            {
+              "discriminant": 0,
+              "name": "UnexistentToken"
+            },
+            {
+              "discriminant": 1,
+              "name": "SellerNotOwner"
+            },
+            {
+              "discriminant": 2,
+              "name": "WrongPrice"
+            }
+          ]
+        }
+      },
+      "path": [
+        "newomegaindustrial",
+        "newomegaindustrial",
+        "ModuleBuyError"
+      ]
     }
   ]
 }

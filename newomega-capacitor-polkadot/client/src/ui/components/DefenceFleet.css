@@ -5,15 +5,15 @@
     width: 100%;
     color: white;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    justify-content: space-around;
     background: rgba(0, 0, 0, 0.4);
 }
 
 .DefenceFleet .registerFleet {
     cursor: pointer;
     text-transform: uppercase;
-    flex: 1;
     font-size: 2rem;
     display: flex;
     align-items: center;
@@ -40,8 +40,6 @@
 }
 
 .DefenceFleet .defenceIcon {
-    position: absolute;
-    left: 0.5rem;
     color: #73ffbe;
     font-size: 5rem;
     top: 1.5rem;
@@ -51,16 +49,9 @@
 }
 
 .DefenceFleet .iconTitle {
-    position: absolute;
-    left: 0.5rem;
-    top: 6.5rem;
-    width: 5rem;
 }
 
 .DefenceFleet .unregisterFleet {
-    position: absolute;
-    top: 0;
-    right: 0.5rem;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -69,4 +60,18 @@
 
 .DefenceFleet .fleetBalance {
     font-size: 2rem;
+}
+
+.DefenceFleet .homeFleetIcon {
+    cursor: pointer;
+}
+
+body > [role="presentation"] .modalCloseIcon {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 50%;
+    height: 2.1875rem;
+    cursor: pointer;
 }

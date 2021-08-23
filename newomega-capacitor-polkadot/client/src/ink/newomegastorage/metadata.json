@@ -1,8 +1,8 @@
 {
   "metadataVersion": "0.1.0",
   "source": {
-    "hash": "0x2fa8bd65c733b43aeb48e521eaaba64fc922e0f4745b3aae81a50dc5ffac77b4",
-    "language": "ink! 3.0.0-rc3",
+    "hash": "0x0dd9af88b5ddd424557222ddfcac5ab03fce9715d13a8d3fbf4def134a0d73a1",
+    "language": "ink! 3.0.0-rc4",
     "compiler": "rustc 1.55.0-nightly"
   },
   "contract": {
@@ -15,7 +15,17 @@
   "spec": {
     "constructors": [
       {
-        "args": [],
+        "args": [
+          {
+            "name": "new_omega_tokens",
+            "type": {
+              "displayName": [
+                "NewOmegaTokens"
+              ],
+              "type": 20
+            }
+          }
+        ],
         "docs": [],
         "name": [
           "new"
@@ -52,7 +62,13 @@
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Authorises the Delegator contract to fire methods on this one.",
+          "",
+          " # Arguments",
+          "",
+          " * `delegator_address` - AccountId of the Delegator contract"
+        ],
         "mutates": true,
         "name": [
           "authorise_delegator"
@@ -73,7 +89,13 @@
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Authorises the Ranked contract to fire methods on this one.",
+          "",
+          " # Arguments",
+          "",
+          " * `ranked_address` - AccountId of the Ranked contract"
+        ],
         "mutates": true,
         "name": [
           "authorise_ranked_contract"
@@ -94,7 +116,13 @@
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Authorises the Universe contract to fire methods on this one.",
+          "",
+          " # Arguments",
+          "",
+          " * `universe_address` - AccountId of the Universe contract"
+        ],
         "mutates": true,
         "name": [
           "authorise_universe_contract"
@@ -115,7 +143,13 @@
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Authorises the Industrial contract to fire methods on this one.",
+          "",
+          " # Arguments",
+          "",
+          " * `industrial_address` - AccountId of the Delegator contract"
+        ],
         "mutates": true,
         "name": [
           "authorise_industrial_contract"
@@ -125,6 +159,109 @@
         "selector": "0x36958c59"
       },
       {
+        "args": [],
+        "docs": [
+          " Creates the tokens for minerals."
+        ],
+        "mutates": true,
+        "name": [
+          "create_newomega_tokens"
+        ],
+        "payable": false,
+        "returnType": null,
+        "selector": "0x8f2eb972"
+      },
+      {
+        "args": [
+          {
+            "name": "token_id",
+            "type": {
+              "displayName": [
+                "TokenId"
+              ],
+              "type": 12
+            }
+          },
+          {
+            "name": "definition",
+            "type": {
+              "displayName": [
+                "ModuleDefinition"
+              ],
+              "type": 15
+            }
+          }
+        ],
+        "docs": [
+          " Registers a ModuleDefinition with a module",
+          "",
+          " # Arguments",
+          "",
+          " * `token_id` - The token id of the module to register with",
+          " * `definition` - The ModuleDefinition to register"
+        ],
+        "mutates": true,
+        "name": [
+          "register_module_definition"
+        ],
+        "payable": false,
+        "returnType": null,
+        "selector": "0x36ad527b"
+      },
+      {
+        "args": [
+          {
+            "name": "token_id",
+            "type": {
+              "displayName": [
+                "TokenId"
+              ],
+              "type": 12
+            }
+          }
+        ],
+        "docs": [],
+        "mutates": true,
+        "name": [
+          "unregister_module_definition"
+        ],
+        "payable": false,
+        "returnType": null,
+        "selector": "0x8bab399b"
+      },
+      {
+        "args": [
+          {
+            "name": "token_id",
+            "type": {
+              "displayName": [
+                "TokenId"
+              ],
+              "type": 12
+            }
+          }
+        ],
+        "docs": [
+          " Gets a ModuleDefinition per registered TokenId",
+          "",
+          " # Arguments",
+          "",
+          " * `token_id` - The token id of the module to get definition for"
+        ],
+        "mutates": false,
+        "name": [
+          "get_module_definition"
+        ],
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ModuleDefinition"
+          ],
+          "type": 15
+        },
+        "selector": "0x66b34524"
+      },
+      {
         "args": [
           {
             "name": "caller",
@@ -134,16 +271,26 @@
               ],
               "type": 1
             }
+          },
+          {
+            "name": "modules",
+            "type": {
+              "displayName": [],
+              "type": 21
+            }
           }
         ],
         "docs": [],
-        "mutates": true,
+        "mutates": false,
         "name": [
-          "ensure_minerals"
+          "decode_modules"
         ],
         "payable": false,
-        "returnType": null,
-        "selector": "0x21dfdbfe"
+        "returnType": {
+          "displayName": [],
+          "type": 23
+        },
+        "selector": "0x394c8c42"
       },
       {
         "args": [
@@ -157,7 +304,13 @@
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Ensures that the player has a trades entry",
+          "",
+          " # Arguments",
+          "",
+          " * `caller` - AccountId of the player to ensure"
+        ],
         "mutates": true,
         "name": [
           "ensure_trades"
@@ -178,14 +331,20 @@
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Mints the initial assets for a new player",
+          "",
+          " # Arguments",
+          "",
+          " * `caller` - AccountId of the player to mint for"
+        ],
         "mutates": true,
         "name": [
-          "ensure_ships"
+          "mint_initial_assets"
         ],
         "payable": false,
         "returnType": null,
-        "selector": "0x2a76a922"
+        "selector": "0x7bc1cbdd"
       },
       {
         "args": [
@@ -202,11 +361,22 @@
             "name": "selection",
             "type": {
               "displayName": [],
-              "type": 15
+              "type": 24
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Checks whether the player has enough ships",
+          "",
+          " # Arguments",
+          "",
+          " * `caller` - AccountId of the player to check ships of",
+          " * `selection` - The ship selection to verify for the player",
+          "",
+          " # Returns",
+          "",
+          " * `has_enough` - A bool signifying whether the player has enough ships"
+        ],
         "mutates": false,
         "name": [
           "has_enough_ships"
@@ -216,7 +386,7 @@
           "displayName": [
             "bool"
           ],
-          "type": 16
+          "type": 25
         },
         "selector": "0x6d399dc1"
       },
@@ -235,11 +405,18 @@
             "name": "amounts",
             "type": {
               "displayName": [],
-              "type": 11
+              "type": 26
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Adds minerals for a player by minting the tokens",
+          "",
+          " # Arguments",
+          "",
+          " * `caller` - AccountId of the player",
+          " * `amounts` - The amounts of minerals to add"
+        ],
         "mutates": true,
         "name": [
           "add_minerals"
@@ -263,11 +440,18 @@
             "name": "amounts",
             "type": {
               "displayName": [],
-              "type": 11
+              "type": 26
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Remove minerals from a player by burning the tokens",
+          "",
+          " # Arguments",
+          "",
+          " * `caller` - AccountId of the player",
+          " * `amounts` - The amounts of minerals to remove"
+        ],
         "mutates": true,
         "name": [
           "remove_minerals"
@@ -291,11 +475,18 @@
             "name": "amounts",
             "type": {
               "displayName": [],
-              "type": 11
+              "type": 26
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Adds ships for a player",
+          "",
+          " # Arguments",
+          "",
+          " * `caller` - AccountId of the player",
+          " * `amounts` - The amounts of ships to add"
+        ],
         "mutates": true,
         "name": [
           "add_ships"
@@ -319,11 +510,18 @@
             "name": "amounts",
             "type": {
               "displayName": [],
-              "type": 11
+              "type": 26
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Removes ships from a player",
+          "",
+          " # Arguments",
+          "",
+          " * `caller` - AccountId of the player",
+          " * `amounts` - The amounts of ships to remove"
+        ],
         "mutates": true,
         "name": [
           "remove_ships"
@@ -344,15 +542,27 @@
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Returns how many ships a player has",
+          "",
+          " # Arguments",
+          "",
+          " * `caller` - AccountId of the player to check ships of",
+          "",
+          " # Returns",
+          "",
+          " * `ships` - A Selection of ships the player has"
+        ],
         "mutates": false,
         "name": [
           "get_player_ships"
         ],
         "payable": false,
         "returnType": {
-          "displayName": [],
-          "type": 11
+          "displayName": [
+            "Vec"
+          ],
+          "type": 27
         },
         "selector": "0x61838863"
       },
@@ -368,15 +578,27 @@
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Returns how many minerals a player has",
+          "",
+          " # Arguments",
+          "",
+          " * `caller` - AccountId of the player to check minerals of",
+          "",
+          " # Returns",
+          "",
+          " * `minerals` - A Vec of minerals balances the player has"
+        ],
         "mutates": false,
         "name": [
           "get_player_minerals"
         ],
         "payable": false,
         "returnType": {
-          "displayName": [],
-          "type": 11
+          "displayName": [
+            "Vec"
+          ],
+          "type": 27
         },
         "selector": "0x96bba729"
       },
@@ -392,7 +614,17 @@
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Returns open trades for a player",
+          "",
+          " # Arguments",
+          "",
+          " * `caller` - AccountId of the player to check trades of",
+          "",
+          " # Returns",
+          "",
+          " * `trades` - A Selection of trades the player has open"
+        ],
         "mutates": false,
         "name": [
           "get_trades"
@@ -400,7 +632,7 @@
         "payable": false,
         "returnType": {
           "displayName": [],
-          "type": 13
+          "type": 18
         },
         "selector": "0xc0c49d03"
       },
@@ -430,11 +662,20 @@
               "displayName": [
                 "RegisteredTrade"
               ],
-              "type": 14
+              "type": 19
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Registers a trade for a player.",
+          " A trade occurs between two players, and two resources, in a certain amount.",
+          "",
+          " # Arguments",
+          "",
+          " * `caller` - AccountId of the player to register trade for",
+          " * `resource_id` - Which resource to trade away (0..MAX_MINERALS)",
+          " * `trade` - Trade structure containing which resource to trade for and in which amount"
+        ],
         "mutates": true,
         "name": [
           "register_trade"
@@ -478,11 +719,21 @@
               "displayName": [
                 "RegisteredTrade"
               ],
-              "type": 14
+              "type": 19
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Performs a trade.",
+          " A trade occurs between two players, and two resources, in a certain amount.",
+          "",
+          " # Arguments",
+          "",
+          " * `caller` - AccountId of the player initiating the trade",
+          " * `target` - AccountId of the player to trade with",
+          " * `resource_id` - Which resource to trade away (0..MAX_MINERALS)",
+          " * `trade` - Trade structure containing which resource to trade for and in which amount"
+        ],
         "mutates": true,
         "name": [
           "trade"
@@ -563,7 +814,7 @@
           "displayName": [
             "Vec"
           ],
-          "type": 17
+          "type": 28
         },
         "selector": "0x091a420a"
       },
@@ -649,6 +900,41 @@
         },
         {
           "layout": {
+            "enum": {
+              "dispatchKey": "0x0100000001000000000000000000000000000000000000000000000000000000",
+              "variants": {
+                "0": {
+                  "fields": [
+                    {
+                      "layout": {
+                        "struct": {
+                          "fields": [
+                            {
+                              "layout": {
+                                "cell": {
+                                  "key": "0x0200000001000000000000000000000000000000000000000000000000000000",
+                                  "ty": 1
+                                }
+                              },
+                              "name": "account_id"
+                            }
+                          ]
+                        }
+                      },
+                      "name": null
+                    }
+                  ]
+                },
+                "1": {
+                  "fields": []
+                }
+              }
+            }
+          },
+          "name": "new_omega_tokens"
+        },
+        {
+          "layout": {
             "struct": {
               "fields": [
                 {
@@ -658,7 +944,7 @@
                         {
                           "layout": {
                             "cell": {
-                              "key": "0x0100000001000000000000000000000000000000000000000000000000000000",
+                              "key": "0x0200000001000000000000000000000000000000000000000000000000000000",
                               "ty": 5
                             }
                           },
@@ -671,7 +957,7 @@
                                 {
                                   "layout": {
                                     "cell": {
-                                      "key": "0x0200000001000000000000000000000000000000000000000000000000000000",
+                                      "key": "0x0300000001000000000000000000000000000000000000000000000000000000",
                                       "ty": 4
                                     }
                                   },
@@ -683,12 +969,12 @@
                                       "cellsPerElem": 1,
                                       "layout": {
                                         "cell": {
-                                          "key": "0x0200000002000000000000000000000000000000000000000000000000000000",
+                                          "key": "0x0300000002000000000000000000000000000000000000000000000000000000",
                                           "ty": 6
                                         }
                                       },
                                       "len": 4294967295,
-                                      "offset": "0x0300000001000000000000000000000000000000000000000000000000000000"
+                                      "offset": "0x0400000001000000000000000000000000000000000000000000000000000000"
                                     }
                                   },
                                   "name": "elems"
@@ -708,11 +994,11 @@
                     "hash": {
                       "layout": {
                         "cell": {
-                          "key": "0x0300000002000000000000000000000000000000000000000000000000000000",
+                          "key": "0x0400000002000000000000000000000000000000000000000000000000000000",
                           "ty": 8
                         }
                       },
-                      "offset": "0x0200000002000000000000000000000000000000000000000000000000000000",
+                      "offset": "0x0300000002000000000000000000000000000000000000000000000000000000",
                       "strategy": {
                         "hasher": "Blake2x256",
                         "postfix": "",
@@ -738,7 +1024,7 @@
                         {
                           "layout": {
                             "cell": {
-                              "key": "0x0300000002000000000000000000000000000000000000000000000000000000",
+                              "key": "0x0400000002000000000000000000000000000000000000000000000000000000",
                               "ty": 5
                             }
                           },
@@ -751,7 +1037,7 @@
                                 {
                                   "layout": {
                                     "cell": {
-                                      "key": "0x0400000002000000000000000000000000000000000000000000000000000000",
+                                      "key": "0x0500000002000000000000000000000000000000000000000000000000000000",
                                       "ty": 4
                                     }
                                   },
@@ -763,12 +1049,12 @@
                                       "cellsPerElem": 1,
                                       "layout": {
                                         "cell": {
-                                          "key": "0x0400000003000000000000000000000000000000000000000000000000000000",
-                                          "ty": 6
+                                          "key": "0x0500000003000000000000000000000000000000000000000000000000000000",
+                                          "ty": 10
                                         }
                                       },
                                       "len": 4294967295,
-                                      "offset": "0x0500000002000000000000000000000000000000000000000000000000000000"
+                                      "offset": "0x0600000002000000000000000000000000000000000000000000000000000000"
                                     }
                                   },
                                   "name": "elems"
@@ -788,11 +1074,11 @@
                     "hash": {
                       "layout": {
                         "cell": {
-                          "key": "0x0500000003000000000000000000000000000000000000000000000000000000",
-                          "ty": 10
+                          "key": "0x0600000003000000000000000000000000000000000000000000000000000000",
+                          "ty": 11
                         }
                       },
-                      "offset": "0x0400000003000000000000000000000000000000000000000000000000000000",
+                      "offset": "0x0500000003000000000000000000000000000000000000000000000000000000",
                       "strategy": {
                         "hasher": "Blake2x256",
                         "postfix": "",
@@ -805,7 +1091,7 @@
               ]
             }
           },
-          "name": "minerals"
+          "name": "minerals_tokens"
         },
         {
           "layout": {
@@ -818,7 +1104,7 @@
                         {
                           "layout": {
                             "cell": {
-                              "key": "0x0500000003000000000000000000000000000000000000000000000000000000",
+                              "key": "0x0600000003000000000000000000000000000000000000000000000000000000",
                               "ty": 5
                             }
                           },
@@ -831,7 +1117,7 @@
                                 {
                                   "layout": {
                                     "cell": {
-                                      "key": "0x0600000003000000000000000000000000000000000000000000000000000000",
+                                      "key": "0x0700000003000000000000000000000000000000000000000000000000000000",
                                       "ty": 4
                                     }
                                   },
@@ -843,12 +1129,12 @@
                                       "cellsPerElem": 1,
                                       "layout": {
                                         "cell": {
-                                          "key": "0x0600000004000000000000000000000000000000000000000000000000000000",
-                                          "ty": 6
+                                          "key": "0x0700000004000000000000000000000000000000000000000000000000000000",
+                                          "ty": 10
                                         }
                                       },
                                       "len": 4294967295,
-                                      "offset": "0x0700000003000000000000000000000000000000000000000000000000000000"
+                                      "offset": "0x0800000003000000000000000000000000000000000000000000000000000000"
                                     }
                                   },
                                   "name": "elems"
@@ -868,11 +1154,171 @@
                     "hash": {
                       "layout": {
                         "cell": {
-                          "key": "0x0700000004000000000000000000000000000000000000000000000000000000",
-                          "ty": 12
+                          "key": "0x0800000004000000000000000000000000000000000000000000000000000000",
+                          "ty": 11
                         }
                       },
-                      "offset": "0x0600000004000000000000000000000000000000000000000000000000000000",
+                      "offset": "0x0700000004000000000000000000000000000000000000000000000000000000",
+                      "strategy": {
+                        "hasher": "Blake2x256",
+                        "postfix": "",
+                        "prefix": "0x696e6b20686173686d6170"
+                      }
+                    }
+                  },
+                  "name": "values"
+                }
+              ]
+            }
+          },
+          "name": "ships_tokens"
+        },
+        {
+          "layout": {
+            "struct": {
+              "fields": [
+                {
+                  "layout": {
+                    "struct": {
+                      "fields": [
+                        {
+                          "layout": {
+                            "cell": {
+                              "key": "0x0800000004000000000000000000000000000000000000000000000000000000",
+                              "ty": 5
+                            }
+                          },
+                          "name": "header"
+                        },
+                        {
+                          "layout": {
+                            "struct": {
+                              "fields": [
+                                {
+                                  "layout": {
+                                    "cell": {
+                                      "key": "0x0900000004000000000000000000000000000000000000000000000000000000",
+                                      "ty": 4
+                                    }
+                                  },
+                                  "name": "len"
+                                },
+                                {
+                                  "layout": {
+                                    "array": {
+                                      "cellsPerElem": 1,
+                                      "layout": {
+                                        "cell": {
+                                          "key": "0x0900000005000000000000000000000000000000000000000000000000000000",
+                                          "ty": 13
+                                        }
+                                      },
+                                      "len": 4294967295,
+                                      "offset": "0x0a00000004000000000000000000000000000000000000000000000000000000"
+                                    }
+                                  },
+                                  "name": "elems"
+                                }
+                              ]
+                            }
+                          },
+                          "name": "entries"
+                        }
+                      ]
+                    }
+                  },
+                  "name": "keys"
+                },
+                {
+                  "layout": {
+                    "hash": {
+                      "layout": {
+                        "cell": {
+                          "key": "0x0a00000005000000000000000000000000000000000000000000000000000000",
+                          "ty": 14
+                        }
+                      },
+                      "offset": "0x0900000005000000000000000000000000000000000000000000000000000000",
+                      "strategy": {
+                        "hasher": "Blake2x256",
+                        "postfix": "",
+                        "prefix": "0x696e6b20686173686d6170"
+                      }
+                    }
+                  },
+                  "name": "values"
+                }
+              ]
+            }
+          },
+          "name": "modules_definitions"
+        },
+        {
+          "layout": {
+            "struct": {
+              "fields": [
+                {
+                  "layout": {
+                    "struct": {
+                      "fields": [
+                        {
+                          "layout": {
+                            "cell": {
+                              "key": "0x0a00000005000000000000000000000000000000000000000000000000000000",
+                              "ty": 5
+                            }
+                          },
+                          "name": "header"
+                        },
+                        {
+                          "layout": {
+                            "struct": {
+                              "fields": [
+                                {
+                                  "layout": {
+                                    "cell": {
+                                      "key": "0x0b00000005000000000000000000000000000000000000000000000000000000",
+                                      "ty": 4
+                                    }
+                                  },
+                                  "name": "len"
+                                },
+                                {
+                                  "layout": {
+                                    "array": {
+                                      "cellsPerElem": 1,
+                                      "layout": {
+                                        "cell": {
+                                          "key": "0x0b00000006000000000000000000000000000000000000000000000000000000",
+                                          "ty": 6
+                                        }
+                                      },
+                                      "len": 4294967295,
+                                      "offset": "0x0c00000005000000000000000000000000000000000000000000000000000000"
+                                    }
+                                  },
+                                  "name": "elems"
+                                }
+                              ]
+                            }
+                          },
+                          "name": "entries"
+                        }
+                      ]
+                    }
+                  },
+                  "name": "keys"
+                },
+                {
+                  "layout": {
+                    "hash": {
+                      "layout": {
+                        "cell": {
+                          "key": "0x0c00000006000000000000000000000000000000000000000000000000000000",
+                          "ty": 17
+                        }
+                      },
+                      "offset": "0x0b00000006000000000000000000000000000000000000000000000000000000",
                       "strategy": {
                         "hasher": "Blake2x256",
                         "postfix": "",
@@ -886,86 +1332,6 @@
             }
           },
           "name": "trades"
-        },
-        {
-          "layout": {
-            "struct": {
-              "fields": [
-                {
-                  "layout": {
-                    "struct": {
-                      "fields": [
-                        {
-                          "layout": {
-                            "cell": {
-                              "key": "0x0700000004000000000000000000000000000000000000000000000000000000",
-                              "ty": 5
-                            }
-                          },
-                          "name": "header"
-                        },
-                        {
-                          "layout": {
-                            "struct": {
-                              "fields": [
-                                {
-                                  "layout": {
-                                    "cell": {
-                                      "key": "0x0800000004000000000000000000000000000000000000000000000000000000",
-                                      "ty": 4
-                                    }
-                                  },
-                                  "name": "len"
-                                },
-                                {
-                                  "layout": {
-                                    "array": {
-                                      "cellsPerElem": 1,
-                                      "layout": {
-                                        "cell": {
-                                          "key": "0x0800000005000000000000000000000000000000000000000000000000000000",
-                                          "ty": 6
-                                        }
-                                      },
-                                      "len": 4294967295,
-                                      "offset": "0x0900000004000000000000000000000000000000000000000000000000000000"
-                                    }
-                                  },
-                                  "name": "elems"
-                                }
-                              ]
-                            }
-                          },
-                          "name": "entries"
-                        }
-                      ]
-                    }
-                  },
-                  "name": "keys"
-                },
-                {
-                  "layout": {
-                    "hash": {
-                      "layout": {
-                        "cell": {
-                          "key": "0x0900000005000000000000000000000000000000000000000000000000000000",
-                          "ty": 10
-                        }
-                      },
-                      "offset": "0x0800000005000000000000000000000000000000000000000000000000000000",
-                      "strategy": {
-                        "hasher": "Blake2x256",
-                        "postfix": "",
-                        "prefix": "0x696e6b20686173686d6170"
-                      }
-                    }
-                  },
-                  "name": "values"
-                }
-              ]
-            }
-          },
-          "name": "ships"
         }
       ]
     }
@@ -1146,11 +1512,46 @@
     },
     {
       "def": {
+        "variant": {
+          "variants": [
+            {
+              "fields": [
+                {
+                  "type": 7,
+                  "typeName": "VacantEntry"
+                }
+              ],
+              "name": "Vacant"
+            },
+            {
+              "fields": [
+                {
+                  "type": 3,
+                  "typeName": "T"
+                }
+              ],
+              "name": "Occupied"
+            }
+          ]
+        }
+      },
+      "params": [
+        3
+      ],
+      "path": [
+        "ink_storage",
+        "collections",
+        "stash",
+        "Entry"
+      ]
+    },
+    {
+      "def": {
         "composite": {
           "fields": [
             {
               "name": "value",
-              "type": 11,
+              "type": 12,
               "typeName": "V"
             },
             {
@@ -1162,7 +1563,7 @@
         }
       },
       "params": [
-        11
+        12
       ],
       "path": [
         "ink_storage",
@@ -1173,19 +1574,51 @@
     },
     {
       "def": {
-        "array": {
-          "len": 4,
-          "type": 4
-        }
+        "primitive": "u128"
       }
     },
     {
       "def": {
+        "variant": {
+          "variants": [
+            {
+              "fields": [
+                {
+                  "type": 7,
+                  "typeName": "VacantEntry"
+                }
+              ],
+              "name": "Vacant"
+            },
+            {
+              "fields": [
+                {
+                  "type": 12,
+                  "typeName": "T"
+                }
+              ],
+              "name": "Occupied"
+            }
+          ]
+        }
+      },
+      "params": [
+        12
+      ],
+      "path": [
+        "ink_storage",
+        "collections",
+        "stash",
+        "Entry"
+      ]
+    },
+    {
+      "def": {
         "composite": {
           "fields": [
             {
               "name": "value",
-              "type": 13,
+              "type": 15,
               "typeName": "V"
             },
             {
@@ -1197,7 +1630,100 @@
         }
       },
       "params": [
-        13
+        15
+      ],
+      "path": [
+        "ink_storage",
+        "collections",
+        "hashmap",
+        "ValueEntry"
+      ]
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "module_stats",
+              "type": 16,
+              "typeName": "ShipModule"
+            },
+            {
+              "name": "creator",
+              "type": 1,
+              "typeName": "AccountId"
+            }
+          ]
+        }
+      },
+      "path": [
+        "newomegastorage",
+        "newomegastorage",
+        "ModuleDefinition"
+      ]
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "snare",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "root",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "blind",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "attack_debuff",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "defence_debuff",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "range_debuff",
+              "type": 3,
+              "typeName": "u8"
+            }
+          ]
+        }
+      },
+      "path": [
+        "newomega",
+        "newomega",
+        "ShipModule"
+      ]
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "value",
+              "type": 18,
+              "typeName": "V"
+            },
+            {
+              "name": "key_index",
+              "type": 4,
+              "typeName": "KeyIndex"
+            }
+          ]
+        }
+      },
+      "params": [
+        18
       ],
       "path": [
         "ink_storage",
@@ -1210,7 +1736,7 @@
       "def": {
         "array": {
           "len": 4,
-          "type": 14
+          "type": 19
         }
       }
     },
@@ -1220,8 +1746,8 @@
           "fields": [
             {
               "name": "amount",
-              "type": 4,
-              "typeName": "u32"
+              "type": 12,
+              "typeName": "Balance"
             },
             {
               "name": "exchange_for",
@@ -1239,6 +1765,66 @@
     },
     {
       "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "account_id",
+              "type": 1,
+              "typeName": "AccountId"
+            }
+          ]
+        }
+      },
+      "path": [
+        "newomegatokens",
+        "newomegatokens",
+        "NewOmegaTokens"
+      ]
+    },
+    {
+      "def": {
+        "array": {
+          "len": 4,
+          "type": 22
+        }
+      }
+    },
+    {
+      "def": {
+        "variant": {
+          "variants": [
+            {
+              "name": "None"
+            },
+            {
+              "fields": [
+                {
+                  "type": 12,
+                  "typeName": "T"
+                }
+              ],
+              "name": "Some"
+            }
+          ]
+        }
+      },
+      "params": [
+        12
+      ],
+      "path": [
+        "Option"
+      ]
+    },
+    {
+      "def": {
+        "array": {
+          "len": 4,
+          "type": 16
+        }
+      }
+    },
+    {
+      "def": {
         "array": {
           "len": 4,
           "type": 3
@@ -1252,8 +1838,23 @@
     },
     {
       "def": {
+        "array": {
+          "len": 4,
+          "type": 12
+        }
+      }
+    },
+    {
+      "def": {
         "sequence": {
-          "type": 18
+          "type": 12
+        }
+      }
+    },
+    {
+      "def": {
+        "sequence": {
+          "type": 29
         }
       }
     },

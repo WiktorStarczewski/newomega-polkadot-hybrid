@@ -1,8 +1,8 @@
 {
   "metadataVersion": "0.1.0",
   "source": {
-    "hash": "0x3d20221187ec07a18a083220f7ce472fdd2bd3fe49c8255bd1cc893aad5e9e14",
-    "language": "ink! 3.0.0-rc3",
+    "hash": "0x02285712f3027d83add5958791e8c7585301f1aa39568487dc6e284d5c1235f3",
+    "language": "ink! 3.0.0-rc4",
     "compiler": "rustc 1.55.0-nightly"
   },
   "contract": {
@@ -22,7 +22,7 @@
               "displayName": [
                 "NewOmegaGame"
               ],
-              "type": 25
+              "type": 4
             }
           },
           {
@@ -31,7 +31,16 @@
               "displayName": [
                 "NewOmegaStorage"
               ],
-              "type": 26
+              "type": 5
+            }
+          },
+          {
+            "name": "new_omega_universe_storage",
+            "type": {
+              "displayName": [
+                "NewOmegaUniverseStorage"
+              ],
+              "type": 6
             }
           }
         ],
@@ -65,7 +74,13 @@
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Authorises the Delegator contract to fire methods on this one.",
+          "",
+          " # Arguments",
+          "",
+          " * `delegator_address` - AccountId of the Delegator contract"
+        ],
         "mutates": true,
         "name": [
           "authorise_delegator"
@@ -91,11 +106,23 @@
               "displayName": [
                 "SystemCoordinate"
               ],
-              "type": 11
+              "type": 7
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Gets a System according to its coordinate and check whether its attackable by a given player",
+          "",
+          " # Arguments",
+          "",
+          " * `caller` - The AccountId of a player to check attackability for",
+          " * `coord` - The SystemCoordinate of the system to get",
+          "",
+          " # Returns",
+          "",
+          " * `system` - An Option containing the System, or None",
+          " * `attackable` - Whether the System is attackable by the player `caller`"
+        ],
         "mutates": false,
         "name": [
           "get_system_check"
@@ -103,7 +130,7 @@
         "payable": false,
         "returnType": {
           "displayName": [],
-          "type": 27
+          "type": 9
         },
         "selector": "0xd40ead8d"
       },
@@ -124,11 +151,19 @@
               "displayName": [
                 "String"
               ],
-              "type": 22
+              "type": 23
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Registers a player in the Universe module. ",
+          " Performs all neccesary ensures so that the account is fully playable.",
+          "",
+          " # Arguments",
+          "",
+          " * `caller` - The player to register",
+          " * `name` - The name under which to register the player"
+        ],
         "mutates": true,
         "name": [
           "register_player"
@@ -145,11 +180,21 @@
               "displayName": [
                 "Vec"
               ],
-              "type": 29
+              "type": 24
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Translates AccountIds of players into their registered names",
+          "",
+          " # Arguments",
+          "",
+          " * `players` - The AccountIds of players to get names for",
+          "",
+          " # Returns",
+          "",
+          " * `names` - Vec of Strings containing the names"
+        ],
         "mutates": false,
         "name": [
           "get_player_names"
@@ -159,7 +204,7 @@
           "displayName": [
             "Vec"
           ],
-          "type": 30
+          "type": 25
         },
         "selector": "0x67a63ab4"
       },
@@ -180,7 +225,7 @@
               "displayName": [
                 "SystemCoordinate"
               ],
-              "type": 11
+              "type": 7
             }
           },
           {
@@ -196,14 +241,14 @@
             "name": "selection",
             "type": {
               "displayName": [],
-              "type": 17
+              "type": 16
             }
           },
           {
             "name": "modules",
             "type": {
               "displayName": [],
-              "type": 18
+              "type": 17
             }
           },
           {
@@ -216,7 +261,18 @@
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Reinforces a players owned planet with a fleet selection and sets tactics.",
+          "",
+          " # Arguments",
+          "",
+          " * `caller` - AccountId of the player",
+          " * `target` - The location of the planet to reinforce",
+          " * `planet_id` - Which planet to attack (0..MAX_PLANETS)",
+          " * `selection` - The fleet selection to register",
+          " * `modules` - The modules to register with the fleet",
+          " * `targeting` - The targeting to register with the fleet"
+        ],
         "mutates": true,
         "name": [
           "reinforce_planet"
@@ -242,7 +298,7 @@
               "displayName": [
                 "SystemCoordinate"
               ],
-              "type": 11
+              "type": 7
             }
           },
           {
@@ -260,11 +316,20 @@
               "displayName": [
                 "String"
               ],
-              "type": 22
+              "type": 23
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Renames a planet",
+          "",
+          " # Arguments",
+          "",
+          " * `caller` - The player making the rename request",
+          " * `target` - SystemCoordinate of the the planet to rename",
+          " * `planet_id` - Which planet to rename (0..MAX_PLANETS)",
+          " * `name` - The name to set"
+        ],
         "mutates": true,
         "name": [
           "rename_planet"
@@ -283,18 +348,16 @@
               ],
               "type": 1
             }
-          },
-          {
-            "name": "target",
-            "type": {
-              "displayName": [
-                "SystemCoordinate"
-              ],
-              "type": 11
-            }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Discovers a given system for a player",
+          "",
+          " # Arguments",
+          "",
+          " * `caller` - AccountId of the player making the discovery request",
+          " * `target` - SystemCoordinate to discover a System in"
+        ],
         "mutates": true,
         "name": [
           "discover_system"
@@ -320,11 +383,18 @@
               "displayName": [
                 "SystemCoordinate"
               ],
-              "type": 11
+              "type": 7
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Builds a gateway (out) in a System in players universe",
+          "",
+          " # Arguments",
+          "",
+          " * `caller` - AccountId of the connecting player (building gateway out)",
+          " * `source` - SystemCoordinate of the System to build gateway in"
+        ],
         "mutates": true,
         "name": [
           "build_gateway"
@@ -335,7 +405,13 @@
       },
       {
         "args": [],
-        "docs": [],
+        "docs": [
+          " Gets general game statistics",
+          "",
+          " # Returns",
+          "",
+          " * `stats` - The game statistics"
+        ],
         "mutates": false,
         "name": [
           "get_game_stats"
@@ -345,7 +421,7 @@
           "displayName": [
             "GameStats"
           ],
-          "type": 31
+          "type": 26
         },
         "selector": "0xc5ab1911"
       },
@@ -361,7 +437,17 @@
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Gets the Assets for a given player",
+          "",
+          " # Arguments",
+          "",
+          " * `caller` - The player to get Assets for",
+          "",
+          " # Returns",
+          "",
+          " * `assets` - The Assets"
+        ],
         "mutates": false,
         "name": [
           "get_player_assets"
@@ -371,14 +457,14 @@
           "displayName": [
             "PlayerAssets"
           ],
-          "type": 24
+          "type": 27
         },
         "selector": "0xd3cb40e7"
       },
       {
         "args": [
           {
-            "name": "root",
+            "name": "caller",
             "type": {
               "displayName": [
                 "AccountId"
@@ -397,7 +483,7 @@
           "displayName": [
             "Vec"
           ],
-          "type": 9
+          "type": 28
         },
         "selector": "0xf6a850b7"
       },
@@ -413,7 +499,13 @@
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Harvest all planets in a players Universe, which the player owns",
+          "",
+          " # Arguments",
+          "",
+          " * `caller` - The player to harvest planets for"
+        ],
         "mutates": true,
         "name": [
           "harvest"
@@ -439,7 +531,7 @@
               "displayName": [
                 "SystemCoordinate"
               ],
-              "type": 11
+              "type": 7
             }
           },
           {
@@ -452,7 +544,15 @@
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Harvest a specific planet that the player owns",
+          "",
+          " # Arguments",
+          "",
+          " * `caller` - The player to harvest planet for",
+          " * `target`- SystemCoordinate of the system the planet to harvest is in",
+          " * `planet_id` - Which planet to harvest"
+        ],
         "mutates": true,
         "name": [
           "harvest_planet"
@@ -464,21 +564,12 @@
       {
         "args": [
           {
-            "name": "caller",
-            "type": {
-              "displayName": [
-                "AccountId"
-              ],
-              "type": 1
-            }
-          },
-          {
             "name": "target",
             "type": {
               "displayName": [
                 "SystemCoordinate"
               ],
-              "type": 11
+              "type": 7
             }
           },
           {
@@ -491,7 +582,15 @@
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Upgrades a specific planet that the player owns",
+          "",
+          " # Arguments",
+          "",
+          " * `caller` - The player to upgrade planet for",
+          " * `target`- SystemCoordinate of the system the planet to upgrade is in",
+          " * `planet_id` - Which planet to upgrade"
+        ],
         "mutates": true,
         "name": [
           "upgrade_planet"
@@ -517,7 +616,7 @@
               "displayName": [
                 "SystemCoordinate"
               ],
-              "type": 11
+              "type": 7
             }
           },
           {
@@ -533,14 +632,14 @@
             "name": "selection",
             "type": {
               "displayName": [],
-              "type": 17
+              "type": 16
             }
           },
           {
             "name": "modules",
             "type": {
               "displayName": [],
-              "type": 18
+              "type": 17
             }
           },
           {
@@ -553,17 +652,30 @@
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Attacks a planet",
+          "",
+          " # Arguments",
+          "",
+          " * `caller` - The player initating the attack",
+          " * `target`- SystemCoordinate of the system the planet to attack is in",
+          " * `planet_id` - Which planet to attack",
+          " * `selection` - Fleet selection to use in the attack",
+          " * `modules` - Fleet modules to use in the attack",
+          " * `targeting` - Fleet targeting to use in the attack",
+          "",
+          " # Returns",
+          "",
+          " * `result` - The fight result"
+        ],
         "mutates": true,
         "name": [
           "attack_planet"
         ],
         "payable": false,
         "returnType": {
-          "displayName": [
-            "FightResult"
-          ],
-          "type": 33
+          "displayName": [],
+          "type": 29
         },
         "selector": "0x74f8152b"
       }
@@ -679,163 +791,38 @@
         },
         {
           "layout": {
-            "struct": {
-              "fields": [
-                {
-                  "layout": {
-                    "struct": {
-                      "fields": [
-                        {
-                          "layout": {
-                            "cell": {
-                              "key": "0x0400000000000000000000000000000000000000000000000000000000000000",
-                              "ty": 4
-                            }
-                          },
-                          "name": "header"
-                        },
-                        {
-                          "layout": {
-                            "struct": {
-                              "fields": [
-                                {
-                                  "layout": {
-                                    "cell": {
-                                      "key": "0x0500000000000000000000000000000000000000000000000000000000000000",
-                                      "ty": 5
-                                    }
-                                  },
-                                  "name": "len"
-                                },
-                                {
-                                  "layout": {
-                                    "array": {
-                                      "cellsPerElem": 1,
-                                      "layout": {
-                                        "cell": {
-                                          "key": "0x0500000001000000000000000000000000000000000000000000000000000000",
-                                          "ty": 6
-                                        }
-                                      },
-                                      "len": 4294967295,
-                                      "offset": "0x0600000000000000000000000000000000000000000000000000000000000000"
-                                    }
-                                  },
-                                  "name": "elems"
-                                }
-                              ]
-                            }
-                          },
-                          "name": "entries"
-                        }
-                      ]
-                    }
-                  },
-                  "name": "keys"
-                },
-                {
-                  "layout": {
-                    "hash": {
+            "enum": {
+              "dispatchKey": "0x0400000000000000000000000000000000000000000000000000000000000000",
+              "variants": {
+                "0": {
+                  "fields": [
+                    {
                       "layout": {
-                        "cell": {
-                          "key": "0x0600000001000000000000000000000000000000000000000000000000000000",
-                          "ty": 8
+                        "struct": {
+                          "fields": [
+                            {
+                              "layout": {
+                                "cell": {
+                                  "key": "0x0500000000000000000000000000000000000000000000000000000000000000",
+                                  "ty": 1
+                                }
+                              },
+                              "name": "account_id"
+                            }
+                          ]
                         }
                       },
-                      "offset": "0x0500000001000000000000000000000000000000000000000000000000000000",
-                      "strategy": {
-                        "hasher": "Blake2x256",
-                        "postfix": "",
-                        "prefix": "0x696e6b20686173686d6170"
-                      }
+                      "name": null
                     }
-                  },
-                  "name": "values"
-                }
-              ]
-            }
-          },
-          "name": "systems"
-        },
-        {
-          "layout": {
-            "struct": {
-              "fields": [
-                {
-                  "layout": {
-                    "struct": {
-                      "fields": [
-                        {
-                          "layout": {
-                            "cell": {
-                              "key": "0x0600000001000000000000000000000000000000000000000000000000000000",
-                              "ty": 4
-                            }
-                          },
-                          "name": "header"
-                        },
-                        {
-                          "layout": {
-                            "struct": {
-                              "fields": [
-                                {
-                                  "layout": {
-                                    "cell": {
-                                      "key": "0x0700000001000000000000000000000000000000000000000000000000000000",
-                                      "ty": 5
-                                    }
-                                  },
-                                  "name": "len"
-                                },
-                                {
-                                  "layout": {
-                                    "array": {
-                                      "cellsPerElem": 1,
-                                      "layout": {
-                                        "cell": {
-                                          "key": "0x0700000002000000000000000000000000000000000000000000000000000000",
-                                          "ty": 6
-                                        }
-                                      },
-                                      "len": 4294967295,
-                                      "offset": "0x0800000001000000000000000000000000000000000000000000000000000000"
-                                    }
-                                  },
-                                  "name": "elems"
-                                }
-                              ]
-                            }
-                          },
-                          "name": "entries"
-                        }
-                      ]
-                    }
-                  },
-                  "name": "keys"
+                  ]
                 },
-                {
-                  "layout": {
-                    "hash": {
-                      "layout": {
-                        "cell": {
-                          "key": "0x0800000002000000000000000000000000000000000000000000000000000000",
-                          "ty": 23
-                        }
-                      },
-                      "offset": "0x0700000002000000000000000000000000000000000000000000000000000000",
-                      "strategy": {
-                        "hasher": "Blake2x256",
-                        "postfix": "",
-                        "prefix": "0x696e6b20686173686d6170"
-                      }
-                    }
-                  },
-                  "name": "values"
+                "1": {
+                  "fields": []
                 }
-              ]
+              }
             }
           },
-          "name": "assets"
+          "name": "new_omega_universe_storage"
         }
       ]
     }
@@ -876,154 +863,7 @@
         "composite": {
           "fields": [
             {
-              "name": "last_vacant",
-              "type": 5,
-              "typeName": "Index"
-            },
-            {
-              "name": "len",
-              "type": 5,
-              "typeName": "u32"
-            },
-            {
-              "name": "len_entries",
-              "type": 5,
-              "typeName": "u32"
-            }
-          ]
-        }
-      },
-      "path": [
-        "ink_storage",
-        "collections",
-        "stash",
-        "Header"
-      ]
-    },
-    {
-      "def": {
-        "primitive": "u32"
-      }
-    },
-    {
-      "def": {
-        "variant": {
-          "variants": [
-            {
-              "fields": [
-                {
-                  "type": 7,
-                  "typeName": "VacantEntry"
-                }
-              ],
-              "name": "Vacant"
-            },
-            {
-              "fields": [
-                {
-                  "type": 1,
-                  "typeName": "T"
-                }
-              ],
-              "name": "Occupied"
-            }
-          ]
-        }
-      },
-      "params": [
-        1
-      ],
-      "path": [
-        "ink_storage",
-        "collections",
-        "stash",
-        "Entry"
-      ]
-    },
-    {
-      "def": {
-        "composite": {
-          "fields": [
-            {
-              "name": "next",
-              "type": 5,
-              "typeName": "Index"
-            },
-            {
-              "name": "prev",
-              "type": 5,
-              "typeName": "Index"
-            }
-          ]
-        }
-      },
-      "path": [
-        "ink_storage",
-        "collections",
-        "stash",
-        "VacantEntry"
-      ]
-    },
-    {
-      "def": {
-        "composite": {
-          "fields": [
-            {
-              "name": "value",
-              "type": 9,
-              "typeName": "V"
-            },
-            {
-              "name": "key_index",
-              "type": 5,
-              "typeName": "KeyIndex"
-            }
-          ]
-        }
-      },
-      "params": [
-        9
-      ],
-      "path": [
-        "ink_storage",
-        "collections",
-        "hashmap",
-        "ValueEntry"
-      ]
-    },
-    {
-      "def": {
-        "sequence": {
-          "type": 10
-        }
-      }
-    },
-    {
-      "def": {
-        "composite": {
-          "fields": [
-            {
-              "name": "position",
-              "type": 11,
-              "typeName": "SystemCoordinate"
-            },
-            {
-              "name": "gateway_in",
-              "type": 13,
-              "typeName": "Gateway"
-            },
-            {
-              "name": "gateway_out",
-              "type": 13,
-              "typeName": "Gateway"
-            },
-            {
-              "name": "planets",
-              "type": 15,
-              "typeName": "Vec<Planet>"
-            },
-            {
-              "name": "discoverer",
+              "name": "account_id",
               "type": 1,
               "typeName": "AccountId"
             }
@@ -1031,9 +871,45 @@
         }
       },
       "path": [
-        "newomegauniverse",
-        "newomegauniverse",
-        "System"
+        "newomegagame",
+        "newomegagame",
+        "NewOmegaGame"
+      ]
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "account_id",
+              "type": 1,
+              "typeName": "AccountId"
+            }
+          ]
+        }
+      },
+      "path": [
+        "newomegastorage",
+        "newomegastorage",
+        "NewOmegaStorage"
+      ]
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "account_id",
+              "type": 1,
+              "typeName": "AccountId"
+            }
+          ]
+        }
+      },
+      "path": [
+        "newomegauniversestorage",
+        "newomegauniversestorage",
+        "NewOmegaUniverseStorage"
       ]
     },
     {
@@ -1046,28 +922,95 @@
               "typeName": "AccountId"
             },
             {
-              "name": "position_x",
-              "type": 12,
-              "typeName": "i32"
-            },
-            {
-              "name": "position_y",
-              "type": 12,
-              "typeName": "i32"
+              "name": "system_id",
+              "type": 8,
+              "typeName": "SystemId"
             }
           ]
         }
       },
       "path": [
-        "newomegauniverse",
-        "newomegauniverse",
+        "newomegauniversestorage",
+        "newomegauniversestorage",
         "SystemCoordinate"
       ]
     },
     {
       "def": {
-        "primitive": "i32"
+        "primitive": "u64"
       }
+    },
+    {
+      "def": {
+        "tuple": [
+          10,
+          13
+        ]
+      }
+    },
+    {
+      "def": {
+        "variant": {
+          "variants": [
+            {
+              "name": "None"
+            },
+            {
+              "fields": [
+                {
+                  "type": 11,
+                  "typeName": "T"
+                }
+              ],
+              "name": "Some"
+            }
+          ]
+        }
+      },
+      "params": [
+        11
+      ],
+      "path": [
+        "Option"
+      ]
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "position",
+              "type": 7,
+              "typeName": "SystemCoordinate"
+            },
+            {
+              "name": "gateway_in",
+              "type": 12,
+              "typeName": "Gateway"
+            },
+            {
+              "name": "gateway_out",
+              "type": 12,
+              "typeName": "Gateway"
+            },
+            {
+              "name": "planets",
+              "type": 14,
+              "typeName": "Vec<Planet>"
+            },
+            {
+              "name": "discoverer",
+              "type": 1,
+              "typeName": "AccountId"
+            }
+          ]
+        }
+      },
+      "path": [
+        "newomegauniversestorage",
+        "newomegauniversestorage",
+        "System"
+      ]
     },
     {
       "def": {
@@ -1075,20 +1018,20 @@
           "fields": [
             {
               "name": "built",
-              "type": 14,
+              "type": 13,
               "typeName": "bool"
             },
             {
               "name": "target",
-              "type": 11,
+              "type": 7,
               "typeName": "SystemCoordinate"
             }
           ]
         }
       },
       "path": [
-        "newomegauniverse",
-        "newomegauniverse",
+        "newomegauniversestorage",
+        "newomegauniversestorage",
         "Gateway"
       ]
     },
@@ -1100,7 +1043,7 @@
     {
       "def": {
         "sequence": {
-          "type": 16
+          "type": 15
         }
       }
     },
@@ -1110,13 +1053,13 @@
           "fields": [
             {
               "name": "selection",
-              "type": 17,
+              "type": 16,
               "typeName": "[u8; MAX_SHIPS]"
             },
             {
               "name": "modules",
-              "type": 18,
-              "typeName": "[ShipModule; MAX_SHIPS]"
+              "type": 17,
+              "typeName": "[Option<TokenId>; MAX_SHIPS]"
             },
             {
               "name": "targeting",
@@ -1150,20 +1093,20 @@
             },
             {
               "name": "last_harvested",
-              "type": 5,
+              "type": 21,
               "typeName": "BlockNumber"
             },
             {
               "name": "name",
-              "type": 21,
+              "type": 22,
               "typeName": "Option<String>"
             }
           ]
         }
       },
       "path": [
-        "newomegauniverse",
-        "newomegauniverse",
+        "newomegauniversestorage",
+        "newomegauniversestorage",
         "Planet"
       ]
     },
@@ -1179,52 +1122,40 @@
       "def": {
         "array": {
           "len": 4,
-          "type": 19
+          "type": 18
         }
       }
     },
     {
       "def": {
-        "composite": {
-          "fields": [
+        "variant": {
+          "variants": [
             {
-              "name": "snare",
-              "type": 3,
-              "typeName": "u8"
+              "name": "None"
             },
             {
-              "name": "root",
-              "type": 3,
-              "typeName": "u8"
-            },
-            {
-              "name": "blind",
-              "type": 3,
-              "typeName": "u8"
-            },
-            {
-              "name": "attack_debuff",
-              "type": 3,
-              "typeName": "u8"
-            },
-            {
-              "name": "defence_debuff",
-              "type": 3,
-              "typeName": "u8"
-            },
-            {
-              "name": "range_debuff",
-              "type": 3,
-              "typeName": "u8"
+              "fields": [
+                {
+                  "type": 19,
+                  "typeName": "T"
+                }
+              ],
+              "name": "Some"
             }
           ]
         }
       },
+      "params": [
+        19
+      ],
       "path": [
-        "newomega",
-        "newomega",
-        "ShipModule"
+        "Option"
       ]
+    },
+    {
+      "def": {
+        "primitive": "u128"
+      }
     },
     {
       "def": {
@@ -1281,6 +1212,11 @@
     },
     {
       "def": {
+        "primitive": "u32"
+      }
+    },
+    {
+      "def": {
         "variant": {
           "variants": [
             {
@@ -1289,7 +1225,7 @@
             {
               "fields": [
                 {
-                  "type": 22,
+                  "type": 23,
                   "typeName": "T"
                 }
               ],
@@ -1299,7 +1235,7 @@
         }
       },
       "params": [
-        22
+        23
       ],
       "path": [
         "Option"
@@ -1312,121 +1248,6 @@
     },
     {
       "def": {
-        "composite": {
-          "fields": [
-            {
-              "name": "value",
-              "type": 24,
-              "typeName": "V"
-            },
-            {
-              "name": "key_index",
-              "type": 5,
-              "typeName": "KeyIndex"
-            }
-          ]
-        }
-      },
-      "params": [
-        24
-      ],
-      "path": [
-        "ink_storage",
-        "collections",
-        "hashmap",
-        "ValueEntry"
-      ]
-    },
-    {
-      "def": {
-        "composite": {
-          "fields": [
-            {
-              "name": "name",
-              "type": 22,
-              "typeName": "String"
-            }
-          ]
-        }
-      },
-      "path": [
-        "newomegauniverse",
-        "newomegauniverse",
-        "PlayerAssets"
-      ]
-    },
-    {
-      "def": {
-        "composite": {
-          "fields": [
-            {
-              "name": "account_id",
-              "type": 1,
-              "typeName": "AccountId"
-            }
-          ]
-        }
-      },
-      "path": [
-        "newomegagame",
-        "newomegagame",
-        "NewOmegaGame"
-      ]
-    },
-    {
-      "def": {
-        "composite": {
-          "fields": [
-            {
-              "name": "account_id",
-              "type": 1,
-              "typeName": "AccountId"
-            }
-          ]
-        }
-      },
-      "path": [
-        "newomegastorage",
-        "newomegastorage",
-        "NewOmegaStorage"
-      ]
-    },
-    {
-      "def": {
-        "tuple": [
-          28,
-          14
-        ]
-      }
-    },
-    {
-      "def": {
-        "variant": {
-          "variants": [
-            {
-              "name": "None"
-            },
-            {
-              "fields": [
-                {
-                  "type": 10,
-                  "typeName": "T"
-                }
-              ],
-              "name": "Some"
-            }
-          ]
-        }
-      },
-      "params": [
-        10
-      ],
-      "path": [
-        "Option"
-      ]
-    },
-    {
-      "def": {
         "sequence": {
           "type": 1
         }
@@ -1435,7 +1256,7 @@
     {
       "def": {
         "sequence": {
-          "type": 22
+          "type": 23
         }
       }
     },
@@ -1445,26 +1266,59 @@
           "fields": [
             {
               "name": "no_players",
-              "type": 32,
+              "type": 8,
               "typeName": "u64"
             },
             {
               "name": "no_systems",
-              "type": 32,
+              "type": 8,
               "typeName": "u64"
             }
           ]
         }
       },
       "path": [
-        "newomegauniverse",
-        "newomegauniverse",
+        "newomegauniversestorage",
+        "newomegauniversestorage",
         "GameStats"
       ]
     },
     {
       "def": {
-        "primitive": "u64"
+        "composite": {
+          "fields": [
+            {
+              "name": "name",
+              "type": 23,
+              "typeName": "String"
+            },
+            {
+              "name": "last_system",
+              "type": 8,
+              "typeName": "SystemId"
+            }
+          ]
+        }
+      },
+      "path": [
+        "newomegauniversestorage",
+        "newomegauniversestorage",
+        "PlayerAssets"
+      ]
+    },
+    {
+      "def": {
+        "sequence": {
+          "type": 11
+        }
+      }
+    },
+    {
+      "def": {
+        "tuple": [
+          30,
+          1
+        ]
       }
     },
     {
@@ -1473,22 +1327,22 @@
           "fields": [
             {
               "name": "selection_lhs",
-              "type": 17,
+              "type": 16,
               "typeName": "[u8; MAX_SHIPS]"
             },
             {
               "name": "selection_rhs",
-              "type": 17,
+              "type": 16,
               "typeName": "[u8; MAX_SHIPS]"
             },
             {
               "name": "modules_lhs",
-              "type": 18,
+              "type": 31,
               "typeName": "[ShipModule; MAX_SHIPS]"
             },
             {
               "name": "modules_rhs",
-              "type": 18,
+              "type": 31,
               "typeName": "[ShipModule; MAX_SHIPS]"
             },
             {
@@ -1503,12 +1357,12 @@
             },
             {
               "name": "lhs_dead",
-              "type": 14,
+              "type": 13,
               "typeName": "bool"
             },
             {
               "name": "rhs_dead",
-              "type": 14,
+              "type": 13,
               "typeName": "bool"
             },
             {
@@ -1518,17 +1372,17 @@
             },
             {
               "name": "seed",
-              "type": 32,
+              "type": 8,
               "typeName": "u64"
             },
             {
               "name": "ships_lost_lhs",
-              "type": 17,
+              "type": 16,
               "typeName": "[u8; MAX_SHIPS]"
             },
             {
               "name": "ships_lost_rhs",
-              "type": 17,
+              "type": 16,
               "typeName": "[u8; MAX_SHIPS]"
             }
           ]
@@ -1538,6 +1392,57 @@
         "newomega",
         "newomega",
         "FightResult"
+      ]
+    },
+    {
+      "def": {
+        "array": {
+          "len": 4,
+          "type": 32
+        }
+      }
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "snare",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "root",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "blind",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "attack_debuff",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "defence_debuff",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "range_debuff",
+              "type": 3,
+              "typeName": "u8"
+            }
+          ]
+        }
+      },
+      "path": [
+        "newomega",
+        "newomega",
+        "ShipModule"
       ]
     }
   ]

@@ -15,16 +15,15 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import { GiSpaceship } from 'react-icons/gi';
 import { GiRingedPlanet } from 'react-icons/gi';
 import { GiMinerals } from 'react-icons/gi';
+import { ImMap } from 'react-icons/im';
 import Tour from 'reactour';
-import { isDiscoveryFree } from '../../definitions/OmegaDefaults';
 
 
 // props: facade, playerName, isTourOpen, setIsTourOpen, balance, blockNumber
 export const Universe = (props) => {
-    const [coords, setCoords] = useState({
+    const [coords, setCoords] = useState(props.startWithSystem || {
         root: props.facade.alice.address,
-        position_x: 0,
-        position_y: 0,
+        system_id: 0,
     });
     const [loading, setLoading] = useState(true);
     const [initialLoading, setInitialLoading] = useState(true);
@@ -47,6 +46,9 @@ export const Universe = (props) => {
     const [isAttackable, setIsAttackable] = useState(false);
     const [isEmbassyOpen, setIsEmbassyOpen] = useState(false);
     const [isShipProductionOpen, setIsShipProductionOpen] = useState(false);
+    const [isMapOpen, setIsMapOpen] = useState(false);
+    const [needsPlanetsOpen, setNeedsPlanetsOpen] = useState(false);
+    const [playerModules, setPlayerModules] = useState(null);
 
     const reload = () => {
         setCoords(_.clone(coords));
@@ -57,47 +59,53 @@ export const Universe = (props) => {
         return result;
     };
 
-    const loadUniverse = async (system) => {
-        const universe = await props.facade.getUniverseMap(system.position.root);
-        return universe;
+    const changeSystem = async (_coords) => {
+        setNeedsPlanetsOpen(true);
+        setCoords(_coords);
+    };
+
+    const loadUniverse = async (_system) => {
+        const _universe = await props.facade.getUniverseMap(_system.position.root);
+        return _universe;
     };
 
     const loadNames = async (players) => {
-        const names = await props.facade.getPlayerNames(players);
-        return names;
+        const _names = await props.facade.getPlayerNames(players);
+        return _names;
     }
 
     const loadTrades = async (player) => {
-        const trades = await props.facade.getPlayerTrades(player);
-        return trades;
+        const _trades = await props.facade.getPlayerTrades(player);
+        return _trades;
     }
 
     const loadPlayerShips = async () => {
-        const ships = await props.facade.getPlayerShips();
-        return ships;
+        const _ships = await props.facade.getPlayerShips();
+        return _ships;
     }
 
     const loadFreeActions = async () => {
-        const actions = await props.facade.getFreeActions();
-        return actions;
+        const _actions = await props.facade.getFreeActions();
+        return _actions;
+    }
+
+    const loadPlayerModules = async () => {
+        const _modules = await props.facade.getPlayerModules();
+        return _modules;
     }
     
     const loadPlayerMinerals = async () => {
-        const minerals = await props.facade.getPlayerMinerals();
-        return minerals;
+        const _minerals = await props.facade.getPlayerMinerals();
+        return _minerals;
     }
 
-    const discoverSystem = async (system, isFree) => {
+    const discoverSystem = async (isFree) => {
         if (system.position.root !== props.facade.alice.address) {
             return;
         }
         setLoading(true);
-        await props.facade.discoverSystem(system.position, isFree);
-        setCoords(system.position);
-    };
-
-    const onLoadSystem = async (system) => {
-        setCoords(system.position);
+        await props.facade.discoverSystem(isFree);
+        reload();
     };
 
     const teleportGateway = async (newCoords) => {
@@ -229,42 +237,56 @@ export const Universe = (props) => {
     const embassyOpen = () => {
         setIsEmbassyOpen(true);
         setIsShipProductionOpen(false);
+        setIsMapOpen(false);
         setPlanetExpanded(false);
         setShipExpanded(false);
+        setMineralExpanded(false);
     };
 
     const planetsOpen = () => {
         setIsEmbassyOpen(false);
         setIsShipProductionOpen(false);
+        setIsMapOpen(false);
+        setPlanetExpanded(false);
         setMineralExpanded(false);
         setShipExpanded(false);
+    };
+
+    const mapOpen = () => {
+        setIsEmbassyOpen(false);
+        setIsShipProductionOpen(false);
+        setMineralExpanded(false);
+        setShipExpanded(false);  
+        setPlanetExpanded(false);
+        setIsMapOpen(true);      
     };
 
     const shipProductionOpen = () => {
         setIsShipProductionOpen(true);
         setIsEmbassyOpen(false);
+        setIsMapOpen(false);
         setPlanetExpanded(false);
         setMineralExpanded(false);
     };
 
     const tourSteps = [
         {
-            selector: '.universeModeShips',
+            selector: '.universeModeMap',
             content: ({ goTo, step }) => (
                 <div>
                     <h3>
-                        Ships View
+                        Map View
                     </h3>
                     <h5>
-                        Universe has 3 main view modes, Ships, System and Minerals, and you can change them here.
+                        Universe has 4 main view modes, Map, System, Minerals and Ships, and you can change them here.
                     </h5>
                     <h4>
-                        Ships view shows all the ships you have, and you can produce them here using minerals.
+                        Map view shows the area you discovered so far. Since Universe is infinite, you can keep discovering Systems, adding to your territory. You can view any System you control by tapping on it on the map.
                     </h4>
                     <div className="tourButton" onClick={() => goTo(step)}>Next</div>
                 </div>
             ),
-            action: shipProductionOpen,
+            action: mapOpen,
         },
         {
             selector: '.universeModePlanets',
@@ -274,7 +296,7 @@ export const Universe = (props) => {
                         System View
                     </h3>
                     <h5>
-                        Universe has 3 main view modes, Ships, System and Minerals, and you can change them here.
+                        Universe has 4 main view modes, Ships, System and Minerals, and you can change them here.
                     </h5>
                     <h4>
                         System view shows the planets in the current System you're viewing. All Planet related actions you perform here.
@@ -292,7 +314,7 @@ export const Universe = (props) => {
                         Minerals View
                     </h3>
                     <h5>
-                        Universe has 3 main view modes, Ships, System and Minerals, and you can change them here.
+                        Universe has 4 main view modes, Ships, System and Minerals, and you can change them here.
                     </h5>
                     <h4>
                         Minerals view shows all the minerals you have, and you can trade them with other players here.
@@ -303,22 +325,22 @@ export const Universe = (props) => {
             action: embassyOpen,
         },
         {
-            selector: '.UniverseMap',
+            selector: '.universeModeShips',
             content: ({ goTo, step }) => (
                 <div>
                     <h3>
-                        Universe Map
+                        Ships View
                     </h3>
                     <h5>
-                        Each player in New Omega starts with their own Universe. Each box on the Map represents a System. Green box means you control it.
+                        Universe has 4 main view modes, Ships, System and Minerals, and you can change them here.
                     </h5>
                     <h4>
-                        Discover Systems by tapping + on the Map. With every discovery, your territory grows, but you need to fight over Planets to harvest them for Minerals.
+                        Ships view shows all the ships you have, and you can produce them here using minerals.
                     </h4>
                     <div className="tourButton" onClick={() => goTo(step)}>Next</div>
                 </div>
             ),
-            action: planetsOpen,
+            action: shipProductionOpen,
         },
         {
             selector: '.SystemActions',
@@ -356,25 +378,21 @@ export const Universe = (props) => {
     ];    
 
     useEffect(() => {
+        props.startWithSystem && setCoords(props.startWithSystem);
+    }, [props.startWithSystem]);
+
+    useEffect(() => {
         async function fetchData() {
             setLoading(true);
 
-            let _system;
-            let _isAttackable;
-            try {
-                const result = await loadSystem();
-                _system = result[0];
-                _isAttackable = result[1];
-            } catch (error) {
-                await props.facade.universeRegisterPlayer(props.playerName);
-                const result = await loadSystem();
-                _system = result[0];
-                _isAttackable = result[1];
-            }
+            const result = await loadSystem();
+            const _system = result[0];
+            const _isAttackable = result[1];
 
             const _universe = await loadUniverse(_system);
             const accountsToTranslate = _.pluck(_system.planets, 'owner');
             accountsToTranslate.push(_system.position.root);
+
             if (_system.gateway_in.built) {
                 accountsToTranslate.push(_system.gateway_in.target.root);
             }
@@ -382,25 +400,34 @@ export const Universe = (props) => {
                 accountsToTranslate.push(_system.gateway_out.target.root);
             }
 
-            const _names = await loadNames(accountsToTranslate);
+            const uniqueAccountsToTranslate = _.uniq(accountsToTranslate);
+
+            const _names = await loadNames(uniqueAccountsToTranslate);
             const _minerals = await loadPlayerMinerals();
             const _trades = await loadTrades(props.facade.alice.address);
             const _systemTrades = await loadTrades(_system.position.root);
             const _ships = await loadPlayerShips();
             const _freeActions = await loadFreeActions();
+            const _playerModules = await loadPlayerModules();
 
+            setUniverse(_universe);
             setSystem(_system);
             setIsAttackable(_isAttackable);
-            setUniverse(_universe);
-            setNames(_.object(accountsToTranslate, _names));
+            setNames(_.object(uniqueAccountsToTranslate, _names));
             setMinerals(_minerals);
             setOwnTrades(_trades);
             setSystemTrades(_systemTrades);
             setPlayerShips(_ships);
             setFreeActions(_freeActions);
+            setPlayerModules(_playerModules);
 
             setInitialLoading(false);
             setLoading(false);
+
+            if (needsPlanetsOpen) {
+                planetsOpen();
+                setNeedsPlanetsOpen(false);
+            }    
         }
 
         fetchData();
@@ -409,15 +436,16 @@ export const Universe = (props) => {
     const loadableComponentClassName = 'loadableComponent' +
         (loading ? ' loading' : '');
     const getExpandableClassName = (cl) => {
-        return cl + (planetExpanded || mineralExpanded || shipExpanded ? ' expanded' : '');
+        return cl + (planetExpanded || mineralExpanded || shipExpanded || isMapOpen ? ' expanded' : '');
     };
     const getShrankClassName = (cl) => {
-        return cl + (planetExpanded || mineralExpanded || shipExpanded ? ' shrank' : '');
+        return cl + (planetExpanded || mineralExpanded || shipExpanded || isMapOpen ? ' shrank' : '');
     };
     const mainClassName = 'Universe' 
         + (initialLoading ? ' loading' : '')
         + (isEmbassyOpen ? ' withMinerals' : '')
         + (isShipProductionOpen ? ' withShipProduction' : '')
+        + (isMapOpen ? ' withMap' : '')
         + (reinforcingSystem || attackingSystem || replayingCombat ? ' fullScreen' : '');
 
     return (
@@ -444,18 +472,22 @@ export const Universe = (props) => {
                 }
                 {!initialLoading &&
                     <div className="universeModes">
-                        <GiSpaceship
-                            onClick={shipProductionOpen}
-                            className={'universeModeChange universeModeShips ' + (isShipProductionOpen ? 'active' : '')}
+                        <ImMap
+                            onClick={mapOpen}
+                            className={'universeModeChange universeModeMap ' + (isMapOpen ? 'active' : '')}
                         />
                         <GiRingedPlanet 
                             onClick={planetsOpen}
-                            className={'universeModeChange universeModePlanets ' + (!isEmbassyOpen && !isShipProductionOpen ? 'active' : '')}
+                            className={'universeModeChange universeModePlanets ' + (!isEmbassyOpen && !isShipProductionOpen && !isMapOpen ? 'active' : '')}
                             />
                         <GiMinerals 
                             onClick={embassyOpen}
                             className={'universeModeChange universeModeResources '+ (isEmbassyOpen ? 'active' : '')}
                             />
+                        <GiSpaceship
+                            onClick={shipProductionOpen}
+                            className={'universeModeChange universeModeShips ' + (isShipProductionOpen ? 'active' : '')}
+                        />
                     </div>
                 }
                 {!initialLoading &&
@@ -515,19 +547,18 @@ export const Universe = (props) => {
                 {!initialLoading &&
                     <div className={loadableComponentClassName}>
                         <UniverseMap
-                            universe={universe}
-                            system={system}
-                            names={names}
-                            alice={props.facade.alice.address}
-                            onDiscoverSystem={discoverSystem}
-                            onLoadSystem={onLoadSystem}
                             blockNumber={props.blockNumber}
-                            balance={props.balance}
                             freeActions={freeActions}
-                            planetExpanded={planetExpanded || mineralExpanded || shipExpanded}
+                            alice={props.facade.alice.address}
+                            balance={props.balance}
+                            system={system}
+                            systemCoords={coords}
+                            universe={universe}
+                            onLoadSystem={changeSystem}
+                            onDiscoverSystem={discoverSystem}
                         />
                         {loading && <LoadingMask
-                            emulateClassName={getShrankClassName('UniverseMap')}/>}
+                            emulateClassName={getExpandableClassName('UniverseMap')}/>}
                     </div>
                 }
                 {!initialLoading &&
@@ -538,7 +569,7 @@ export const Universe = (props) => {
                             alice={props.facade.alice.address}
                             onTeleportGateway={teleportGateway}
                             onBuildGateway={buildGateway}
-                            planetExpanded={planetExpanded || mineralExpanded || shipExpanded}
+                            planetExpanded={planetExpanded || mineralExpanded || shipExpanded || isMapOpen}
                         />
                         {loading && <LoadingMask
                             emulateClassName={getShrankClassName('SystemActions')}/>}
@@ -548,6 +579,7 @@ export const Universe = (props) => {
             {attackingSystem &&
                 <CompactShipSelection
                     enemyShips={attackingSystem.planets[attackingPlanetId].selection}
+                    playerModules={playerModules}
                     playerShips={playerShips}
                     onDone={attackPlanetAfterSelection}
                     onCancel={cancelAttackingPlanet}
@@ -558,6 +590,7 @@ export const Universe = (props) => {
                     onDone={reinforcePlanetAfterSelection}
                     onCancel={cancelReinforcingPlanet}
                     defaultShips={reinforcingSystem.planets[reinforcingPlanetId].selection}
+                    playerModules={playerModules}
                     defaultModules={reinforcingSystem.planets[reinforcingPlanetId].modules}
                     defaultTargeting={reinforcingSystem.planets[reinforcingPlanetId].targeting}
                     playerShips={playerShips}

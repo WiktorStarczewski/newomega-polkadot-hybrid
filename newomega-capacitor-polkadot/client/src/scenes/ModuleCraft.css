@@ -1,0 +1,113 @@
+.ModuleCraft {
+    height: 100%;
+    width: 100%;
+}
+
+.ModuleCraft canvas {
+    background: transparent;
+}
+
+.ModuleCraft .craftButton {
+    position: absolute;
+    bottom: 2rem;
+    left: calc(50% - 6rem);
+    text-transform: uppercase;
+    width: 12rem;
+    height: 3rem;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 0.5rem;
+    border: 2px solid #73ffbe;
+    color: #73ffbe;
+    display: flex;
+    justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    flex-direction: column;
+}
+
+.ModuleCraft .craftButton.disabled {
+    filter: blur(1px);
+}
+
+.ModuleCraft .cost {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.ModuleCraft .warningIcon {
+    font-size: 0.75rem;
+    color: #EF9A9A;
+}
+
+.ModuleCraft .craftPanel {
+    position: absolute;
+    height: 80%;
+    top: 10%;
+    width: calc(25% - 1rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    user-select: none;
+}
+
+.ModuleCraft .craftPanel.leftPanel {
+    left: 0.5rem;
+}
+
+.ModuleCraft .craftPanel.rightPanel {
+    right: 0.5rem;
+}
+
+.ModuleCraft .mineralButton {
+    width: 10rem;
+    height: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 0.5rem;
+    padding: 0 1rem;
+}
+
+.ModuleCraft .mineralButton img {
+    height: calc(100% - 2rem);
+}
+
+.ModuleCraft .craftButton .iconWrapper {
+    position: absolute;
+    top: 0.25rem;
+    left: 0.2rem;
+    display: flex;
+    flex-direction: row;
+    line-height: 1.5rem;
+    font-size: 1rem;
+}
+
+.ModuleCraft .craftButton .iconWrapper svg {
+    margin-right: 0.1rem;
+}
+
+.ModuleCraft .owned,
+.ModuleCraft .cost {
+    color: white;
+    font-size: 0.75rem;
+}
+
+.ModuleCraft .craftResult {
+    position: absolute;
+    top: -75%;
+    height: 75%;
+    opacity: 0;
+    width: 50%;
+    left: 25%;
+    transition: top 0.3s ease-out, opacity 0.3s ease-out;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.ModuleCraft .craftResult.active {
+    top: 4rem;
+    opacity: 1;
+}

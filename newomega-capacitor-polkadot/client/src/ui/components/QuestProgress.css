@@ -1,0 +1,67 @@
+.QuestProgress {
+    text-align: center;
+    color: white;
+    overflow-x: hidden;
+    width: 22rem;
+}
+
+.QuestProgress .title {
+    font-size: 2rem;
+    padding-top: 2rem;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.QuestProgress .explanation {
+    font-size: 0.75rem;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding-bottom: 2rem;
+}
+
+.QuestProgress .currentProgress {
+    padding: 0.5rem;
+}
+
+.QuestProgress .progressItem {
+    margin: 0.5rem 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 0.5rem;
+    padding: 2rem 0;
+}
+
+.QuestProgress .progressItem.done {
+    background-color: rgba(115, 255, 190, 0.6);
+    color: black;
+}
+
+.QuestProgress .claimButton {
+    height: 3rem;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 0.5rem;
+    border: 2px solid #73ffbe;
+    color: #73ffbe;
+    display: flex;
+    justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    flex-direction: row;   
+    text-transform: uppercase;
+    text-align: center;
+    align-items: center;
+    margin: 0.5rem;
+}
+
+.QuestProgress .claimButton.disabled {
+    filter: blur(1px);
+}
+
+.QuestProgress .claimButton svg {
+    margin-left: 0.5rem;
+}
+
+.QuestProgress .progressItemProgress {
+    font-size: 2rem;
+}
+
+.QuestProgress .lastClaimed {
+    font-size: 0.75rem;
+}

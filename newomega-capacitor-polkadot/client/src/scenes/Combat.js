@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import _ from 'underscore';
 import { Engine, Scene, Vector3, Color3, Mesh, AssetsManager, StandardMaterial, Texture, Layer,
-    Animation, ArcRotateCamera, HighlightLayer, HemisphericLight } from '@babylonjs/core';
+    Animation, ArcRotateCamera, HighlightLayer, HemisphericLight, Color4 } from '@babylonjs/core';
 import '@babylonjs/loaders';
 import { OBJFileLoader } from '@babylonjs/loaders';
 import { Ships, GOLD_PER_CP } from '../definitions/Ships';
@@ -409,11 +409,13 @@ export const Combat = (props) => {
         const light = new HemisphericLight('light1', new Vector3(0, 0, 1), scene);
         light.intensity = 0.7;
 
-        const background = new Layer('background',
-            '/assets/images/sector.jpg', scene);
-        background.isBackground = true;
-        background.texture.level = 0;
-        background.texture.wAng = 0;
+        scene.clearColor = new Color4(0, 0, 0, 0);
+
+        // const background = new Layer('background',
+        //     '/assets/images/sector.jpg', scene);
+        // background.isBackground = true;
+        // background.texture.level = 0;
+        // background.texture.wAng = 0;
 
         scene.getEngine().runRenderLoop(() => {
             scene.render();
@@ -540,7 +542,7 @@ export const Combat = (props) => {
                 return (
                     <div className="effect" key={effIndex}>
                         <div className="effectName">
-                            {EffectNamesLookup[Effects[effect.toUpperCase()]]}
+                            {EffectNamesLookup[effIndex]}
                         </div>
                     </div>
                 );
@@ -564,9 +566,10 @@ export const Combat = (props) => {
     }
 
     const resultDialogClassName = `resultDialog ${props.result.rhs_dead ? 'victory' : ''}`;
+    const mainClassName = 'Combat' + (resourcesLoaded ? ' loaded' : '');
 
     return (
-        <div className="Combat">
+        <div className={mainClassName}>
             <div ref={reactCanvas}>
             </div>
             {resourcesLoaded &&

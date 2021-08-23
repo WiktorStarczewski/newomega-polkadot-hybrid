@@ -5,8 +5,8 @@ use ink_lang as ink;
 
 /// The Delegator Contract
 ///
-/// Instantiates all the other contracts, and acts as a facade to interact with them.
-#[ink::contract]
+/// Manages all the other contracts, and acts as a facade to interact with them.
+#[ink::contract(dynamic_storage_allocator = true)]
 mod newomegadelegator {
     use newomega::NewOmega;
     use newomega::FightResult;
@@ -19,16 +19,22 @@ mod newomegadelegator {
     use newomegaranked::NewOmegaRanked;
     use newomegaranked::PlayerDefence;
     use newomegauniverse::NewOmegaUniverse;
-    use newomegauniverse::System;
-    use newomegauniverse::SystemCoordinate;
-    use newomegauniverse::PlayerAssets;
-    use newomegauniverse::Planet;
-    use newomegauniverse::GameStats;
+    use newomegauniversestorage::System;
+    use newomegauniversestorage::SystemCoordinate;
+    use newomegauniversestorage::PlayerAssets;
+    use newomegauniversestorage::Planet;
+    use newomegauniversestorage::GameStats;
+    use newomegauniversestorage::SystemId;
     use newomegastorage::NewOmegaStorage;
     use newomegastorage::PlayerData;
     use newomegastorage::MAX_MINERALS;
     use newomegastorage::RegisteredTrade;
+    use newomegastorage::ModuleDefinition;
     use newomegaindustrial::NewOmegaIndustrial;
+    use newomegatokens::TokenId;
+    use newomegamarket::NewOmegaMarket;
+    use newomegaquests::NewOmegaQuests;
+    use newomegaquests::QuestProgress;
     use ink_prelude::vec::Vec;
     use ink_prelude::string::String;
     use ink_storage::{
@@ -67,6 +73,7 @@ mod newomegadelegator {
     )]
     pub struct FreeActions {
         discovery: BlockNumber,
+        task_claim: BlockNumber,
     }
 
     #[ink(storage)]
@@ -78,7 +85,10 @@ mod newomegadelegator {
         new_omega_ranked: NewOmegaRanked,
         new_omega_universe: NewOmegaUniverse,
         new_omega_industrial: NewOmegaIndustrial,
+        new_omega_market: NewOmegaMarket,
+        new_omega_quests: NewOmegaQuests,
         free_discovery: StorageHashMap<AccountId, BlockNumber>,
+        task_claim: StorageHashMap<AccountId, BlockNumber>,
     }
 
     #[ink(event)]
@@ -98,10 +108,20 @@ mod newomegadelegator {
         #[ink(topic)]
         defender: AccountId,
         result: FightResult,
+        location: SystemCoordinate,
     }
 
-    const LOOT_CRATE_PRICE: u128 = 1;
+    #[ink(event)]
+    pub struct ModuleCrafted {
+        #[ink(topic)]
+        player: AccountId,
+        #[ink(topic)]
+        token_id: TokenId,
+        definition: ModuleDefinition,
+    }
+
     const FREE_DISCOVERY_FREQUENCY_BLOCKS: BlockNumber = 1000;
+    const TASK_CLAIM_FREQUENCY_BLOCKS: BlockNumber = 28800;
 
     impl NewOmegaDelegator {
         /// Instantiates the Delegator.
@@ -120,7 +140,9 @@ mod newomegadelegator {
             new_omega_game: NewOmegaGame,
             new_omega_ranked: NewOmegaRanked,
             new_omega_universe: NewOmegaUniverse,
-            new_omega_industrial: NewOmegaIndustrial) -> Self {
+            new_omega_industrial: NewOmegaIndustrial,
+            new_omega_market: NewOmegaMarket,
+            new_omega_quests: NewOmegaQuests) -> Self {
 
             Self {
                 owner: Self::env().caller(),
@@ -130,70 +152,17 @@ mod newomegadelegator {
                 new_omega_ranked,
                 new_omega_universe,
                 new_omega_industrial,
+                new_omega_market,
+                new_omega_quests,
                 free_discovery: StorageHashMap::default(),
+                task_claim: StorageHashMap::default(),
             }
         }
 
-        pub fn ensure_free_discovery(&mut self, caller: AccountId) {
+        pub fn ensure_free_actions(&mut self, caller: AccountId) {
             self.free_discovery.entry(caller).or_insert(0);
+            self.task_claim.entry(caller).or_insert(0);
         }
-
-
-        // /// Instantiates the Delegator.
-        // ///
-        // /// # Arguments
-        // ///
-        // /// * `version` - Contract version
-        // /// * `newomega_code_hash` - Contract code hash: NewOmega
-        // /// * `newomega_storage_code_hash` - Contract code hash: NewOmegaStorage
-        // /// * `newomega_game_code_hash` - Contract code hash: NewOmegaGame
-        // /// * `newomega_ranked_code_hash` - Contract code hash: NewOmegaRanked
-        // #[ink(constructor)]
-        // pub fn new(
-        //     version: u32,
-        //     newomega_code_hash: Hash,
-        //     newomega_storage_code_hash: Hash,
-        //     newomega_game_code_hash: Hash,
-        //     newomega_ranked_code_hash: Hash,
-        // ) -> Self {
-        //     let total_balance = Self::env().balance();
-        //     let salt = version.to_le_bytes();
-        //     let new_omega = NewOmega::new()
-        //         .endowment(total_balance / 8)
-        //         .code_hash(newomega_code_hash)
-        //         .salt_bytes(salt)
-        //         .instantiate()
-        //         .expect("Failed instantiating NewOmega");
-        //     let new_omega_game = NewOmegaGame::new(new_omega.clone())
-        //         .endowment(total_balance / 8)
-        //         .code_hash(newomega_game_code_hash)
-        //         .salt_bytes(salt)
-        //         .instantiate()
-        //         .expect("Failed instantiating NewOmegaGame");
-        //     let mut new_omega_storage = NewOmegaStorage::new()
-        //         .endowment(total_balance / 8)
-        //         .code_hash(newomega_storage_code_hash)
-        //         .salt_bytes(salt)
-        //         .instantiate()
-        //         .expect("Failed instantiating NewOmegaStorage");
-        //     let new_omega_ranked = NewOmegaRanked::new(new_omega_game.clone(), new_omega_storage.clone())
-        //         .endowment(total_balance / 8)
-        //         .code_hash(newomega_ranked_code_hash)
-        //         .salt_bytes(salt)
-        //         .instantiate()
-        //         .expect("Failed instantiating NewOmegaRanked");
-
-        //     // Authorise the Ranked contract to use the Storage contract
-        //     new_omega_storage.authorise_contract(new_omega_ranked.to_account_id());
-
-        //     Self {
-        //         owner: Self::env().caller(),
-        //         new_omega: Lazy::new(new_omega),
-        //         new_omega_storage: Lazy::new(new_omega_storage),
-        //         new_omega_game: Lazy::new(new_omega_game),
-        //         new_omega_ranked: Lazy::new(new_omega_ranked),
-        //     }
-        // }
 
         /// Returns a fight replay (detailed fight description).
         ///
@@ -276,7 +245,7 @@ mod newomegadelegator {
         /// * `name` - The defender name
         #[ink(message, payable)]
         pub fn register_defence(&mut self, selection: [u8; MAX_SHIPS],
-            modules: [ShipModule; MAX_SHIPS], name: String, targeting: TargetingType) {
+            modules: [Option<TokenId>; MAX_SHIPS], name: String, targeting: TargetingType) {
 
             let caller: AccountId = self.env().caller();
             let value: Balance = self.env().transferred_balance();
@@ -360,7 +329,7 @@ mod newomegadelegator {
         /// * RankedFightComplete - when fight is complete
         #[ink(message, payable)]
         pub fn attack(&mut self, target: AccountId, selection: [u8; MAX_SHIPS],
-            modules: [ShipModule; MAX_SHIPS], targeting: TargetingType) {
+            modules: [Option<TokenId>; MAX_SHIPS], targeting: TargetingType) {
 
             let caller: AccountId = self.env().caller();
             let result: FightResult;
@@ -370,6 +339,24 @@ mod newomegadelegator {
             (result, payout) = self.new_omega_ranked.attack(
                 caller, target, selection, modules,
                 transferred_balance, targeting);
+
+            if result.rhs_dead && !result.lhs_dead {
+                self.new_omega_quests.mark_ranked_win(caller);
+
+                let self_balance: Balance = self.env().balance();
+                assert!(transferred_balance <= self_balance, "Insufficient funds!");
+    
+                match self.env().transfer(caller, transferred_balance) {
+                    Err(ink_env::Error::BelowSubsistenceThreshold) => {
+                        panic!(
+                            "Requested transfer would have brought contract\
+                            below subsistence threshold!"
+                        )
+                    }
+                    Err(_) => panic!("Transfer failed!"),
+                    Ok(_) => {}
+                }
+            }
 
             self.env().emit_event(RankedFightComplete {
                 attacker: caller,
@@ -405,14 +392,20 @@ mod newomegadelegator {
         }
 
         #[ink(message)]
+        pub fn ensure_discovery(&mut self) {
+            let caller: AccountId = self.env().caller();
+            self.ensure_free_actions(caller);
+        }
+
+        #[ink(message)]
         pub fn universe_register_player(&mut self, name: String) {
             let caller: AccountId = self.env().caller();
             let self_balance: Balance = self.env().balance();
 
             self.new_omega_universe.register_player(caller, name);
-            self.ensure_free_discovery(caller);
+            self.ensure_free_actions(caller);
 
-            let value: Balance = 10 * 1000000 * 1000000; // 10 units
+            let value: Balance = 20 * 1000000 * 1000000; // 20 units
             assert!(value <= self_balance, "Insufficient funds!");
 
             match self.env().transfer(caller, value) {
@@ -428,10 +421,10 @@ mod newomegadelegator {
         }
 
         #[ink(message, payable)]
-        pub fn discover_system(&mut self, target: SystemCoordinate) {
+        pub fn discover_system(&mut self) {
             let caller = self.env().caller();
             let block_number = self.env().block_number();
-            self.ensure_free_discovery(caller);
+            self.ensure_free_actions(caller);
 
             let free_discovery = self.free_discovery.get(&caller).unwrap();
             if block_number - free_discovery > FREE_DISCOVERY_FREQUENCY_BLOCKS {
@@ -441,16 +434,20 @@ mod newomegadelegator {
                 assert_eq!(value, 1 * 1000000 * 1000000); // 1 Unit    
             }
 
-            self.new_omega_universe.discover_system(caller, target);
+            self.new_omega_universe.discover_system(caller);
+            self.new_omega_quests.mark_discover(caller);
         }
 
         #[ink(message)]
         pub fn get_free_actions(&self) -> FreeActions {
             let caller = self.env().caller();
+
             assert!(self.free_discovery.get(&caller).is_some());
+            assert!(self.task_claim.get(&caller).is_some());
 
             FreeActions {
                 discovery: *self.free_discovery.get(&caller).unwrap(),
+                task_claim: *self.task_claim.get(&caller).unwrap(),
             }
         }
 
@@ -461,11 +458,13 @@ mod newomegadelegator {
 
         #[ink(message)]
         pub fn attack_planet(&mut self, target: SystemCoordinate, planet_id: u8,
-            selection: [u8; MAX_SHIPS], modules: [ShipModule; MAX_SHIPS], targeting: TargetingType) {
+            selection: [u8; MAX_SHIPS], modules: [Option<TokenId>; MAX_SHIPS], targeting: TargetingType) {
 
             let caller: AccountId = self.env().caller();
             let self_balance: Balance = self.env().balance();
-            let result: FightResult = self.new_omega_universe.attack_planet(
+            let result: FightResult;
+            let previous_owner: AccountId;
+            let (result, previous_owner) = self.new_omega_universe.attack_planet(
                 caller,
                 target,
                 planet_id,
@@ -474,6 +473,8 @@ mod newomegadelegator {
                 targeting);
 
             if result.rhs_dead && !result.lhs_dead {
+                self.new_omega_quests.mark_planet_capture(caller);
+
                 let value: Balance = 1 * 1000000 * 100000; // 0.1 units
                 assert!(value <= self_balance, "Insufficient funds!");
     
@@ -491,8 +492,9 @@ mod newomegadelegator {
 
             self.env().emit_event(UniverseFightComplete {
                 attacker: caller,
-                defender: target.root,
+                defender: previous_owner,
                 result,
+                location: target,
             });
         }
 
@@ -508,7 +510,9 @@ mod newomegadelegator {
 
         #[ink(message)]
         pub fn build_gateway(&mut self, source: SystemCoordinate) {
-            self.new_omega_universe.build_gateway(self.env().caller(), source);
+            let caller = self.env().caller();
+            self.new_omega_universe.build_gateway(caller, source);
+            self.new_omega_quests.mark_build_gateway(caller);
         }
 
         #[ink(message)]
@@ -518,7 +522,7 @@ mod newomegadelegator {
 
         #[ink(message)]
         pub fn reinforce_planet(&mut self, target: SystemCoordinate,
-            planet_id: u8, selection: [u8; MAX_SHIPS], modules: [ShipModule; MAX_SHIPS],
+            planet_id: u8, selection: [u8; MAX_SHIPS], modules: [Option<TokenId>; MAX_SHIPS],
             targeting: TargetingType) {
 
             let caller = self.env().caller();
@@ -527,20 +531,24 @@ mod newomegadelegator {
         }
 
         #[ink(message)]
-        pub fn get_player_minerals(&self) -> [u32; MAX_MINERALS] {
+        pub fn get_player_minerals(&self) -> Vec<Balance> {
             self.new_omega_storage.get_player_minerals(self.env().caller())
         }
 
         #[ink(message, payable)]
         pub fn harvest(&mut self) {
+            let caller = self.env().caller();
             let value: Balance = self.env().transferred_balance();
             assert_eq!(value, 1 * 1000000 * 1000000); // 1 Unit
-            self.new_omega_universe.harvest(self.env().caller());
+            self.new_omega_universe.harvest(caller);
+            self.new_omega_quests.mark_planet_harvest(caller);
         }
 
         #[ink(message)]
         pub fn harvest_planet(&mut self, target: SystemCoordinate, planet_id: u8) {
-            self.new_omega_universe.harvest_planet(self.env().caller(), target, planet_id);
+            let caller = self.env().caller();
+            self.new_omega_universe.harvest_planet(caller, target, planet_id);
+            self.new_omega_quests.mark_planet_harvest(caller);
         }
 
         #[ink(message)]
@@ -550,7 +558,9 @@ mod newomegadelegator {
 
         #[ink(message)]
         pub fn register_trade(&mut self, resource_id: u8, trade: RegisteredTrade) {
-            self.new_omega_storage.register_trade(self.env().caller(), resource_id, trade);
+            let caller = self.env().caller();
+            self.new_omega_storage.register_trade(caller, resource_id, trade);
+            self.new_omega_quests.mark_register_mineral_trade(caller);
         }
 
         #[ink(message)]
@@ -559,12 +569,14 @@ mod newomegadelegator {
         }
 
         #[ink(message)]
-        pub fn produce_ships(&mut self, ship_id: u8, amount: u32) {
-            self.new_omega_industrial.produce_ships(self.env().caller(), ship_id, amount);
+        pub fn produce_ships(&mut self, ship_id: u8, amount: Balance) {
+            let caller = self.env().caller();
+            self.new_omega_industrial.produce_ships(caller, ship_id, amount);
+            self.new_omega_quests.mark_produce_ships(caller);
         }
 
         #[ink(message)]
-        pub fn get_player_ships(&self) -> [u32; MAX_SHIPS] {
+        pub fn get_player_ships(&self) -> Vec<Balance> {
             self.new_omega_storage.get_player_ships(self.env().caller())
         }
 
@@ -578,8 +590,127 @@ mod newomegadelegator {
         #[ink(message, payable)]
         pub fn upgrade_planet(&mut self, target: SystemCoordinate, planet_id: u8) {
             let value: Balance = self.env().transferred_balance();
-            assert_eq!(value, 2 * 1000000 * 1000000); // 1 Unit
-            self.new_omega_universe.upgrade_planet(self.env().caller(), target, planet_id);
+            assert_eq!(value, 2 * 1000000 * 1000000); // 2 Units
+            self.new_omega_universe.upgrade_planet(target, planet_id);
+            self.new_omega_quests.mark_upgrade_planet(target.root);
+        }
+
+        #[ink(message, payable)]
+        pub fn craft_module(&mut self) {
+            let caller = self.env().caller();
+            let value: Balance = self.env().transferred_balance();
+            assert_eq!(value, 1 * 1000000 * 1000000); // 1 Units
+            
+            let (token_id, definition) = self.new_omega_industrial.craft_module(caller);
+            self.new_omega_quests.mark_module_craft(caller);
+
+            self.env().emit_event(ModuleCrafted {
+                player: caller,
+                token_id,
+                definition,
+            });
+        }
+
+        #[ink(message)] 
+        pub fn get_player_modules(&self) -> Vec<(TokenId, ModuleDefinition)> {
+            self.new_omega_industrial.get_player_modules(self.env().caller())
+        }
+
+        #[ink(message)]
+        pub fn register_module_sale(&mut self, token_id: TokenId, price: Balance) {
+            self.new_omega_industrial.register_module_sale(self.env().caller(), token_id, price);
+        }
+
+        #[ink(message)]
+        pub fn cancel_module_sale(&mut self, token_id: TokenId) {
+            self.new_omega_industrial.cancel_module_sale(self.env().caller(), token_id);
+        }
+
+        #[ink(message)]
+        pub fn get_all_auctions(&self) -> Vec<(AccountId, TokenId, Balance, ModuleDefinition)> {
+            self.new_omega_industrial.get_all_auctions()
+        }
+
+        #[ink(message)]
+        pub fn get_token_count(&self) -> TokenId {
+            self.new_omega_industrial.get_token_count()
+        }
+
+        #[ink(message)]
+        pub fn get_player_quest_progress(&self) -> QuestProgress {
+            let caller = self.env().caller();
+            self.new_omega_quests.get_player_progress(caller)
+        }
+
+        #[ink(message)]
+        pub fn claim_quest(&mut self) {
+            let caller = self.env().caller();
+            let self_balance: Balance = self.env().balance();
+            let block_number = self.env().block_number();
+            let claim_available = self.task_claim.get(&caller).unwrap();
+
+            assert!(block_number - claim_available > TASK_CLAIM_FREQUENCY_BLOCKS);
+
+            self.task_claim.insert(caller, block_number);
+            self.new_omega_quests.claim_quest(caller);
+
+            let value: Balance = 5 * 1000000 * 1000000; // 5 units
+            assert!(value <= self_balance, "Insufficient funds!");
+
+            match self.env().transfer(caller, value) {
+                Err(ink_env::Error::BelowSubsistenceThreshold) => {
+                    panic!(
+                        "Requested transfer would have brought contract\
+                        below subsistence threshold!"
+                    )
+                }
+                Err(_) => panic!("Transfer failed!"),
+                Ok(_) => {}
+            }    
+        }
+
+        #[ink(message)]
+        pub fn destroy_module(&mut self, token_id: TokenId) {
+            let caller = self.env().caller();
+            self.new_omega_industrial.destroy_module(caller, token_id);
+        }
+
+        #[ink(message, payable)]
+        pub fn buy_module_from_market(&mut self, seller: AccountId, token_id: TokenId) {
+            let value = self.env().transferred_balance();
+            let caller = self.env().caller();
+
+            match self.new_omega_industrial.buy_module_from_market(
+                caller, seller, token_id, value) {
+
+                Err(_) => {
+                    // Return the value
+                    match self.env().transfer(caller, value) {
+                        Err(ink_env::Error::BelowSubsistenceThreshold) => {
+                            panic!(
+                                "Requested transfer would have brought contract\
+                                below subsistence threshold!"
+                            )
+                        }
+                        Err(_) => panic!("Transfer failed!"),
+                        Ok(_) => {}
+                    }
+
+                    panic!("Module purchase failed!");
+                },
+                Ok(_) => {}
+            }
+
+            match self.env().transfer(seller, value) {
+                Err(ink_env::Error::BelowSubsistenceThreshold) => {
+                    panic!(
+                        "Requested transfer would have brought contract\
+                        below subsistence threshold!"
+                    )
+                }
+                Err(_) => panic!("Transfer failed!"),
+                Ok(_) => {}
+            }
         }
     }
 }

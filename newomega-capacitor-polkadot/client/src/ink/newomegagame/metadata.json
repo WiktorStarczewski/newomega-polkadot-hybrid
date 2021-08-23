@@ -1,8 +1,8 @@
 {
   "metadataVersion": "0.1.0",
   "source": {
-    "hash": "0x145f45171f361a75462890d6a7a13107d2804fc53debb6893c8ecb4ba3ded3ce",
-    "language": "ink! 3.0.0-rc3",
+    "hash": "0xe0b3779894eee78d7dc0d9cff8a4fb8c2e581cab9053c656aecafffd8cbbfbc0",
+    "language": "ink! 3.0.0-rc4",
     "compiler": "rustc 1.55.0-nightly"
   },
   "contract": {
@@ -52,7 +52,13 @@
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Authorises the Delegator contract to fire methods on this one.",
+          "",
+          " # Arguments",
+          "",
+          " * `delegator_address` - AccountId of the Delegator contract"
+        ],
         "mutates": true,
         "name": [
           "authorise_delegator"

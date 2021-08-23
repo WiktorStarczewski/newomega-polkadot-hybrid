@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import './DefenceFleet.css';
-import { BiShield } from 'react-icons/bi';
+import { GiPodium } from 'react-icons/gi';
 import { balanceToDisplay } from '../../definitions/OmegaDefaults';
 import OfflineBoltIcon from '@material-ui/icons/OfflineBolt';
+import { Modal } from '@material-ui/core';
+import { Leaderboard } from './Leaderboard';
+import CloseIcon from '@material-ui/icons/Close';
 
 // props: facade, onRegisterFleet, onUnregisterFleet, onFleetLoaded, loading, setLoading
 export const DefenceFleet = (props) => {
     const [defence, setDefence] = useState(null);
     const [ownStanding, setOwnStanding] = useState(null);
+    const [leaderboardOpen, setLeaderboardOpen] = useState(false);
 
     useEffect(() => {
         async function fetchData() {
@@ -39,24 +43,27 @@ export const DefenceFleet = (props) => {
         props.onUnregisterFleet();
     };
 
+    const openLeaderboard = () => {
+        setLeaderboardOpen(true);
+    };
+
+    const closeLeaderboard = () => {
+        setLeaderboardOpen(false);
+    };
+
     const rankedWins = ownStanding ? ownStanding.ranked_wins : 0;
     const rankedLosses = ownStanding ? ownStanding.ranked_losses : 0;
 
     return (
         <div className="DefenceFleet">
-            <div className="iconTitle">
-                Home Fleet
-            </div>
-            <BiShield className="defenceIcon"/>
-            {!props.loading && !defence &&
-                <div className="registerFleet">
-                    <div className="registerButton" onClick={registerFleet}>
-                        Register Fleet
-                    </div>
+            <div className="homeFleetIcon" onClick={openLeaderboard}>
+                <GiPodium className="defenceIcon"/>
+                <div className="iconTitle">
+                    Leaderboard
                 </div>
-            }
-            {!props.loading && defence &&
-                <div className="fleetStatus">
+            </div>
+            <div className="fleetStatus">
+                {!props.loading && defence && <React.Fragment>
                     <div>
                         Global: {rankedWins} Wins {rankedLosses} Losses
                     </div>
@@ -67,6 +74,14 @@ export const DefenceFleet = (props) => {
                         <OfflineBoltIcon/>
                         {balanceToDisplay(defence.value)}
                     </div>
+                    </React.Fragment>
+                }
+            </div>
+            {!props.loading && !defence &&
+                <div className="registerFleet">
+                    <div className="registerButton" onClick={registerFleet}>
+                        Register Fleet
+                    </div>
                 </div>
             }
             {!props.loading && defence &&
@@ -76,6 +91,16 @@ export const DefenceFleet = (props) => {
                     </div>
                 </div>
             }
+            <Modal 
+                open={leaderboardOpen}
+                onClose={closeLeaderboard}
+            >
+                <Leaderboard facade={props.facade}>
+                    <div className="modalCloseIcon" onClick={closeLeaderboard}>
+                        <CloseIcon fontSize="large"/>
+                    </div>
+                </Leaderboard>
+            </Modal>
         </div>
     );
 };

@@ -3,13 +3,13 @@ import { decodeAddress } from '@polkadot/keyring';
 import { hexToU8a } from '@polkadot/util';
 import { ContractPromise } from '@polkadot/api-contract';
 import { OmegaDefaults, unitsToPico } from '../definitions/OmegaDefaults';
-import { plasmDefinitions } from '@plasm/types';
+// import { plasmDefinitions } from '@plasm/types';
 import delegatorAbi from '../ink/metadata.json';
 import config from '../config/config.json';
 import _ from 'underscore';
 
 
-const GAS_LIMIT = 0; // 30000n * 1000000n;
+const GAS_LIMIT = -1; // 30000n * 1000000n;
 
 
 export class ContractFacade {
@@ -87,9 +87,12 @@ export class ContractFacade {
                     modules,
                     name,
                     targeting)
-                .signAndSend(this.alice, (result) => {
-                    if (result.status.isInBlock || result.status.isFinalized) {
-                        resolve(result);
+                .signAndSend(this.alice, ({status, dispatchError}) => {
+                    if (dispatchError) {
+                        return reject(dispatchError);
+                    }
+                    if (status.isInBlock || status.isFinalized) {
+                        resolve();
                     }
                 });
         });
@@ -102,21 +105,41 @@ export class ContractFacade {
         return new Promise(async (resolve, reject) => {
             await this.contracts.delegator.tx
                 .unregisterDefence({ value: 0, gasLimit: GAS_LIMIT })
-                .signAndSend(this.alice, (result) => {
-                    if (result.status.isInBlock || result.status.isFinalized) {
-                        resolve(result);
+                .signAndSend(this.alice, ({status, dispatchError}) => {
+                    if (dispatchError) {
+                        return reject(dispatchError);
+                    }
+                    if (status.isInBlock || status.isFinalized) {
+                        resolve();
                     }
                 });
         });
     }
 
     /**
+     * Ensures discovery registration
+     */
+    async ensureDiscovery() {
+        return new Promise(async (resolve, reject) => {
+            await this.contracts.delegator.tx
+                .ensureDiscovery({ value: 0, gasLimit: GAS_LIMIT })
+                .signAndSend(this.alice, ({status, dispatchError}) => {
+                    if (dispatchError) {
+                        return reject(dispatchError);
+                    }
+                    if (status.isInBlock || status.isFinalized) {
+                        resolve();
+                    }
+                });
+        });
+    }
+    
+    /**
      * Registers the registered defence for current player.
      */
     async getOwnDefence() {
         return new Promise(async (resolve, reject) => {
-            //eslint-disable-next-line no-unused-vars
-            const { _gasConsumed, result, output } =
+            const { result, output } =
                 await this.contracts.delegator.query
                     .getOwnDefence(this.alice.address, { value: 0, gasLimit: GAS_LIMIT });
 
@@ -136,8 +159,7 @@ export class ContractFacade {
      */    
     async getFreeActions() {
         return new Promise(async (resolve, reject) => {
-            //eslint-disable-next-line no-unused-vars
-            const { _gasConsumed, result, output } =
+            const { result, output } =
                 await this.contracts.delegator.query
                     .getFreeActions(this.alice.address, { value: 0, gasLimit: GAS_LIMIT });
 
@@ -155,8 +177,7 @@ export class ContractFacade {
      */
     async getAllDefenders() {
         return new Promise(async (resolve, reject) => {
-            //eslint-disable-next-line no-unused-vars
-            const { _gasConsumed, result, output } =
+            const { result, output } =
                 await this.contracts.delegator.query
                     .getAllDefenders(this.alice.address, { value: 0, gasLimit: GAS_LIMIT });
 
@@ -194,9 +215,12 @@ export class ContractFacade {
                     this.ensureUint8Array(selection),
                     modules,
                     targeting)
-                .signAndSend(this.alice, (result) => {
-                    if (result.status.isInBlock || result.status.isFinalized) {
-                        resolve(result);
+                .signAndSend(this.alice, ({status, dispatchError}) => {
+                    if (dispatchError) {
+                        return reject(dispatchError);
+                    }
+                    if (status.isInBlock || status.isFinalized) {
+                        resolve();
                     }
                 });
         });
@@ -224,12 +248,17 @@ export class ContractFacade {
                     selection,
                     modules,
                     targeting)
-                .signAndSend(this.alice, (result) => {
-                    if (result.status.isInBlock || result.status.isFinalized) {
-                        const event = result.contractEvents && result.contractEvents[0];
+                .signAndSend(this.alice, ({status, dispatchError, contractEvents}) => {
+                    if (dispatchError) {
+                        return reject(dispatchError);
+                    }
+                    if (status.isInBlock || status.isFinalized) {
+                        const event = _.find(contractEvents, (contractEvent) => {
+                            return contractEvent.event.identifier === 'RankedFightComplete';
+                        });
                         const resultMap = event && event.args && event.args[2];
                         const payout = event && event.args && event.args[3];
-                        resolve([resultMap, payout.toNumber()]);
+                        resolve([resultMap, payout && payout.toNumber()]);
                     }
                 });
         });
@@ -242,8 +271,11 @@ export class ContractFacade {
         return new Promise(async (resolve, reject) => {
             this.contracts.delegator.tx
                 .harvest({ value: unitsToPico(1), gasLimit: GAS_LIMIT })
-                .signAndSend(this.alice, (result) => {
-                    if (result.status.isInBlock || result.status.isFinalized) {
+                .signAndSend(this.alice, ({status, dispatchError}) => {
+                    if (dispatchError) {
+                        return reject(dispatchError);
+                    }
+                    if (status.isInBlock || status.isFinalized) {
                         resolve();
                     }
                 });
@@ -257,8 +289,11 @@ export class ContractFacade {
         return new Promise(async (resolve, reject) => {
             this.contracts.delegator.tx
                 .renamePlanet({ value: unitsToPico(1), gasLimit: GAS_LIMIT }, target, planet_id, name)
-                .signAndSend(this.alice, (result) => {
-                    if (result.status.isInBlock || result.status.isFinalized) {
+                .signAndSend(this.alice, ({status, dispatchError}) => {
+                    if (dispatchError) {
+                        return reject(dispatchError);
+                    }
+                    if (status.isInBlock || status.isFinalized) {
                         resolve();
                     }
                 });
@@ -272,8 +307,11 @@ export class ContractFacade {
         return new Promise(async (resolve, reject) => {
             this.contracts.delegator.tx
                 .upgradePlanet({ value: unitsToPico(2), gasLimit: GAS_LIMIT }, target, planet_id)
-                .signAndSend(this.alice, (result) => {
-                    if (result.status.isInBlock || result.status.isFinalized) {
+                .signAndSend(this.alice, ({status, dispatchError}) => {
+                    if (dispatchError) {
+                        return reject(dispatchError);
+                    }
+                    if (status.isInBlock || status.isFinalized) {
                         resolve();
                     }
                 });
@@ -287,8 +325,11 @@ export class ContractFacade {
         return new Promise(async (resolve, reject) => {
             this.contracts.delegator.tx
                 .harvestPlanet({ value: 0, gasLimit: GAS_LIMIT }, coords, planet_id)
-                .signAndSend(this.alice, (result) => {
-                    if (result.status.isInBlock || result.status.isFinalized) {
+                .signAndSend(this.alice, ({status, dispatchError}) => {
+                    if (dispatchError) {
+                        return reject(dispatchError);
+                    }
+                    if (status.isInBlock || status.isFinalized) {
                         resolve();
                     }
                 });
@@ -300,8 +341,7 @@ export class ContractFacade {
      */
     async getPlayerMinerals() {
         return new Promise(async (resolve, reject) => {
-            //eslint-disable-next-line no-unused-vars
-            const { _gasConsumed, result, output } =
+            const { result, output } =
                 await this.contracts.delegator.query
                     .getPlayerMinerals(this.alice.address, { value: 0, gasLimit: GAS_LIMIT });
 
@@ -319,8 +359,7 @@ export class ContractFacade {
      */
     async getPlayerTrades(account) {
         return new Promise(async (resolve, reject) => {
-            //eslint-disable-next-line no-unused-vars
-            const { _gasConsumed, result, output } =
+            const { result, output } =
                 await this.contracts.delegator.query
                     .getTrades(this.alice.address, { value: 0, gasLimit: GAS_LIMIT }, account);
 
@@ -340,8 +379,11 @@ export class ContractFacade {
         return new Promise(async (resolve, reject) => {
             this.contracts.delegator.tx
                 .registerTrade({ value: 0, gasLimit: GAS_LIMIT }, resource_id, trade)
-                .signAndSend(this.alice, (result) => {
-                    if (result.status.isInBlock || result.status.isFinalized) {
+                .signAndSend(this.alice, ({status, dispatchError}) => {
+                    if (dispatchError) {
+                        return reject(dispatchError);
+                    }
+                    if (status.isInBlock || status.isFinalized) {
                         resolve();
                     }
                 });
@@ -355,8 +397,11 @@ export class ContractFacade {
         return new Promise(async (resolve, reject) => {
             this.contracts.delegator.tx
                 .trade({ value: 0, gasLimit: GAS_LIMIT }, target, resource_id, trade)
-                .signAndSend(this.alice, (result) => {
-                    if (result.status.isInBlock || result.status.isFinalized) {
+                .signAndSend(this.alice, ({status, dispatchError}) => {
+                    if (dispatchError) {
+                        return reject(dispatchError);
+                    }
+                    if (status.isInBlock || status.isFinalized) {
                         resolve();
                     }
                 });
@@ -370,8 +415,11 @@ export class ContractFacade {
         return new Promise(async (resolve, reject) => {
             this.contracts.delegator.tx
                 .produceShips({ value: 0, gasLimit: GAS_LIMIT }, ship_id, amount)
-                .signAndSend(this.alice, (result) => {
-                    if (result.status.isInBlock || result.status.isFinalized) {
+                .signAndSend(this.alice, ({status, dispatchError}) => {
+                    if (dispatchError) {
+                        return reject(dispatchError);
+                    }
+                    if (status.isInBlock || status.isFinalized) {
                         resolve();
                     }
                 });
@@ -383,8 +431,7 @@ export class ContractFacade {
      */
     async getPlayerShips() {
         return new Promise(async (resolve, reject) => {
-            //eslint-disable-next-line no-unused-vars
-            const { _gasConsumed, result, output } =
+            const { result, output } =
                 await this.contracts.delegator.query
                     .getPlayerShips(this.alice.address, { value: 0, gasLimit: GAS_LIMIT });
 
@@ -402,8 +449,7 @@ export class ContractFacade {
      */
     async getOwnStanding() {
         return new Promise(async (resolve, reject) => {
-            //eslint-disable-next-line no-unused-vars
-            const { _gasConsumed, result, output } =
+            const { result, output } =
                 await this.contracts.delegator.query
                     .getOwnStanding(this.alice.address, { value: 0, gasLimit: GAS_LIMIT });
 
@@ -421,8 +467,7 @@ export class ContractFacade {
      */
     async getLeaderboard() {
         return new Promise(async (resolve, reject) => {
-            //eslint-disable-next-line no-unused-vars
-            const { _gasConsumed, result, output } =
+            const { result, output } =
                 await this.contracts.delegator.query
                     .getLeaderboard(this.alice.address, { value: 0, gasLimit: GAS_LIMIT });
 
@@ -443,37 +488,6 @@ export class ContractFacade {
         });
     }
 
-
-
-    // _humanizeFightResult(fightResult) {
-    //     const _humanizeEffects = (effects) => {
-    //         return _.map(effects, (effect) => {
-    //             return {
-    //                 snare: parseInt(effect.snare, 10),
-    //                 root: parseInt(effect.root, 10),
-    //                 blind: parseInt(effect.blind, 10),
-    //                 attack_debuff: parseInt(effect.attack_debuff, 10),
-    //                 defence_debuff: parseInt(effect.defence_debuff, 10),
-    //                 range_debuff: parseInt(effect.range_debuff, 10),
-    //             };
-    //         });
-    //     };
-
-    //     _.each(['lhs_moves', 'rhs_moves'], (movesType) => {
-    //         _.each(fightResult[movesType], (move) => {
-    //             _.each(['move_type', 'round', 'source', 'target',
-    //                 'target_position', 'damage'], (prop) => {
-    //                 move[prop] = parseInt(move[prop].replace(/,/g, ''), 10);
-    //             });
-
-    //             move['effects_lhs'] = _humanizeEffects(move['effects_lhs']);
-    //             move['effects_rhs'] = _humanizeEffects(move['effects_rhs']);
-    //         });
-    //     });
-
-    //     return fightResult;
-    // }
-
     /**
      * Replays a fight according to a seed.
      */
@@ -481,8 +495,7 @@ export class ContractFacade {
         targetingLhs, targetingRhs) {
 
         return new Promise(async (resolve, reject) => {
-            //eslint-disable-next-line no-unused-vars
-            const { _gasConsumed, result, output } =
+            const { result, output } =
                 await this.contracts.delegator.query
                     .replay(this.alice.address, { value: 0, gasLimit: GAS_LIMIT },
                         seed,
@@ -520,8 +533,7 @@ export class ContractFacade {
      */
     async getSystem(coords) {
         return new Promise(async (resolve, reject) => {
-            //eslint-disable-next-line no-unused-vars
-            const { _gasConsumed, result, output } =
+            const { result, output } =
                 await this.contracts.delegator.query
                     .getSystem(this.alice.address, { value: 0, gasLimit: GAS_LIMIT }, coords);
 
@@ -542,8 +554,11 @@ export class ContractFacade {
         return new Promise(async (resolve, reject) => {
             this.contracts.delegator.tx
                 .universeRegisterPlayer({ value: 0, gasLimit: GAS_LIMIT }, name)
-                .signAndSend(this.alice, (result) => {
-                    if (result.status.isInBlock || result.status.isFinalized) {
+                .signAndSend(this.alice, ({status, dispatchError}) => {
+                    if (dispatchError) {
+                        reject(dispatchError);
+                    }
+                    if (status.isInBlock || status.isFinalized) {
                         resolve();
                     }
                 });
@@ -553,12 +568,15 @@ export class ContractFacade {
     /**
      * Discovers a system according to its coordinates
      */
-    async discoverSystem(coords, isFree) {
+    async discoverSystem(isFree) {
         return new Promise(async (resolve, reject) => {
             this.contracts.delegator.tx
-                .discoverSystem({ value: isFree ? 0 : unitsToPico(1), gasLimit: GAS_LIMIT }, coords)
-                .signAndSend(this.alice, (result) => {
-                    if (result.status.isInBlock || result.status.isFinalized) {
+                .discoverSystem({ value: isFree ? 0 : unitsToPico(1), gasLimit: GAS_LIMIT })
+                .signAndSend(this.alice, ({status, dispatchError}) => {
+                    if (dispatchError) {
+                        reject(dispatchError);
+                    }
+                    if (status.isInBlock || status.isFinalized) {
                         resolve();
                     }
                 });
@@ -572,8 +590,11 @@ export class ContractFacade {
         return new Promise(async (resolve, reject) => {
             this.contracts.delegator.tx
                 .buildGateway({ value: 0, gasLimit: GAS_LIMIT }, coords)
-                .signAndSend(this.alice, (result) => {
-                    if (result.status.isInBlock || result.status.isFinalized) {
+                .signAndSend(this.alice, ({status, dispatchError}) => {
+                    if (dispatchError) {
+                        reject(dispatchError);
+                    }
+                    if (status.isInBlock || status.isFinalized) {
                         resolve();
                     }
                 });
@@ -593,17 +614,12 @@ export class ContractFacade {
      */
     async getUniverseMap(root) {
         return new Promise(async (resolve, reject) => {
-            //eslint-disable-next-line no-unused-vars
-            const { _gasConsumed, result, output } =
+            const { result, output } =
                 await this.contracts.delegator.query
                     .getUniverseMap(this.alice.address, { value: 0, gasLimit: GAS_LIMIT }, root);
 
             if (result.isOk) {
-                const map = output && output.toJSON();
-                _.each(map, (mapEntry) => {
-                    this.parseSystem(mapEntry);
-                });
-                resolve(map);
+                resolve(output && output.toJSON());
             } else {
                 reject(result.asErr);
             }
@@ -615,8 +631,7 @@ export class ContractFacade {
      */
     async getPlayerAssets() {
         return new Promise(async (resolve, reject) => {
-            //eslint-disable-next-line no-unused-vars
-            const { _gasConsumed, result, output } =
+            const { result, output } =
                 await this.contracts.delegator.query
                     .getPlayerAssets(this.alice.address, { value: 0, gasLimit: GAS_LIMIT });
 
@@ -634,8 +649,7 @@ export class ContractFacade {
      */
     async getPlayerNames(players) {
         return new Promise(async (resolve, reject) => {
-            //eslint-disable-next-line no-unused-vars
-            const { _gasConsumed, result, output } =
+            const { result, output } =
                 await this.contracts.delegator.query
                     .getPlayerNames(this.alice.address, { value: 0, gasLimit: GAS_LIMIT }, players);
 
@@ -653,8 +667,7 @@ export class ContractFacade {
      */
     async getGameStats() {
         return new Promise(async (resolve, reject) => {
-            //eslint-disable-next-line no-unused-vars
-            const { _gasConsumed, result, output } =
+            const { result, output } =
                 await this.contracts.delegator.query
                     .getGameStats(this.alice.address, { value: 0, gasLimit: GAS_LIMIT });
 
@@ -679,9 +692,14 @@ export class ContractFacade {
                     this.ensureUint8Array(selection),
                     modules,
                     targeting)
-                .signAndSend(this.alice, (result) => {
-                    if (result.status.isInBlock || result.status.isFinalized) {
-                        const event = result.contractEvents && result.contractEvents[0];
+                .signAndSend(this.alice, ({status, dispatchError, contractEvents}) => {
+                    if (dispatchError) {
+                        reject(dispatchError);
+                    }
+                    if (status.isInBlock || status.isFinalized) {
+                        const event = _.find(contractEvents, (contractEvent) => {
+                            return contractEvent.event.identifier === 'UniverseFightComplete';
+                        });
                         const resultMap = event && event.args && event.args[2];
                         resolve(resultMap);
                     }
@@ -689,46 +707,237 @@ export class ContractFacade {
         });
     }
 
-    // // Under development.
-    // // Currently blocked by the events data not being
-    // // correctly deserialized by polkadot.js.
-    // async getRankedFightCompleteEvents() {
-    //     console.log(this.contracts.delegator.query);
+    /**
+     * Attack a planet according to the System coordinates
+     */
+    async craftModule() {
+        return new Promise(async (resolve, reject) => {
+            this.contracts.delegator.tx
+                .craftModule({ value: unitsToPico(1), gasLimit: GAS_LIMIT })
+                .signAndSend(this.alice, ({status, dispatchError, contractEvents}) => {
+                    if (dispatchError) {
+                        return reject(dispatchError);
+                    }
+                    if (status.isInBlock || status.isFinalized) {
+                        const event = _.find(contractEvents, (contractEvent) => {
+                            return contractEvent.event.identifier === 'ModuleCrafted';
+                        });
 
-    //     const lastHdr = await this.api.rpc.chain.getHeader();
-    //     const delta = 150;
-    //     const startHdr = await this.api.rpc.chain.getBlockHash(lastHdr.number.unwrap().subn(delta));
-    //     const events = await this.contracts.delegator.api.query.system.events.range([startHdr]);
+                        const tokenId = event && event.args && event.args[1];
+                        const resultMap = event && event.args && event.args[2];
+                        resolve([tokenId.toHuman(), resultMap.toJSON()]);
+                    }
+                });
+        });
+    }
 
-    //     console.log('rangeEvents ', events);
+    /**
+     * Returns game statistics, number of players
+     */
+    async getPlayerModules() {
+        return new Promise(async (resolve, reject) => {
+            const { result, output } =
+                await this.contracts.delegator.query
+                    .getPlayerModules(this.alice.address, { value: 0, gasLimit: GAS_LIMIT });
 
-    //     // events.forEach(([hash, values]) => {
-    //     //     _.each(values, (value) => {
-    //     //         const event = value.event.toJSON();
-    //     //         if (event.method === 'ContractEmitted') {
-    //     //             console.log(event.data[1], value);
-    //     //         }
-    //     //     })
-    //     // });
+            if (result.isOk) {
+                const playerModules = output && output.toJSON();
+                resolve(playerModules);
+            } else {
+                reject(result.asErr);
+            }
+        });
+    }
 
-    //     this.contracts.delegator.api.query.system.events((events) => {
-    //         console.log(`\nReceived ${events.length} events:`);
-        
-    //         // Loop through the Vec<EventRecord>
-    //         events.forEach((record) => {
-    //           // Extract the phase, event and the event types
-    //           const { event, phase } = record;
-    //           const types = event.typeDef;
-        
-    //           // Show what we are busy with
-    //           console.log(`\t${event.section}:${event.method}:: (phase=${phase.toString()})`);
-    //           console.log(`\t\t${event.meta.documentation.toString()}`);
-        
-    //           // Loop through each of the parameters, displaying the type and data
-    //           event.data.forEach((data, index) => {
-    //             console.log(`\t\t\t${types[index].type}: ${data.toString()}`);
-    //           });
-    //         });
-    //       });
-    // }
+    async getTokenCount() {
+        return new Promise(async (resolve, reject) => {
+            const { result, output } =
+                await this.contracts.delegator.query
+                    .getTokenCount(this.alice.address, { value: 0, gasLimit: GAS_LIMIT });
+
+            if (result.isOk) {
+                resolve(output.toNumber());
+            } else {
+                reject(result.asErr);
+            }
+        });
+    }
+
+    async getAllAuctions() {
+        return new Promise(async (resolve, reject) => {
+            const { result, output } =
+                await this.contracts.delegator.query
+                    .getAllAuctions(this.alice.address, { value: 0, gasLimit: GAS_LIMIT });
+
+            if (result.isOk) {
+                const auctions = output && output.toJSON();
+                resolve(auctions);
+            } else {
+                reject(result.asErr);
+            }
+        });
+    }
+
+    async getPlayerQuestProgress() {
+        return new Promise(async (resolve, reject) => {
+            const { result, output } =
+                await this.contracts.delegator.query
+                    .getPlayerQuestProgress(this.alice.address, { value: 0, gasLimit: GAS_LIMIT });
+
+            if (result.isOk) {
+                const progress = output && output.toJSON();
+                resolve(progress);
+            } else {
+                reject(result.asErr);
+            }
+        });
+    }
+
+    async claimQuest() {
+        return new Promise(async (resolve, reject) => {
+            this.contracts.delegator.tx
+                .claimQuest({ value: 0, gasLimit: GAS_LIMIT })
+                .signAndSend(this.alice, ({status, dispatchError}) => {
+                    if (dispatchError) {
+                        reject(dispatchError);
+                    }
+                    if (status.isInBlock || status.isFinalized) {
+                        resolve();
+                    }
+                });
+        });
+    }
+
+    async registerModuleSale(tokenId, price) {
+        return new Promise(async (resolve, reject) => {
+            this.contracts.delegator.tx
+                .registerModuleSale({ value: 0, gasLimit: GAS_LIMIT }, tokenId, price)
+                .signAndSend(this.alice, ({status, dispatchError}) => {
+                    if (dispatchError) {
+                        reject(dispatchError);
+                    }
+                    if (status.isInBlock || status.isFinalized) {
+                        resolve();
+                    }
+                });
+        });
+    }
+
+    async cancelModuleSale(tokenId) {
+        return new Promise(async (resolve, reject) => {
+            this.contracts.delegator.tx
+                .cancelModuleSale({ value: 0, gasLimit: GAS_LIMIT }, tokenId)
+                .signAndSend(this.alice, ({status, dispatchError}) => {
+                    if (dispatchError) {
+                        reject(dispatchError);
+                    }
+                    if (status.isInBlock || status.isFinalized) {
+                        resolve();
+                    }
+                });
+        });
+    }
+
+    async buyModuleFromMarket(seller, tokenId, price) {
+        return new Promise(async (resolve, reject) => {
+            this.contracts.delegator.tx
+                .buyModuleFromMarket({ value: price, gasLimit: GAS_LIMIT }, seller, tokenId)
+                .signAndSend(this.alice, ({status, dispatchError}) => {
+                    if (dispatchError) {
+                        reject(dispatchError);
+                    }
+                    if (status.isInBlock || status.isFinalized) {
+                        resolve();
+                    }
+                });
+        });
+    }
+
+    async destroyModule(tokenId) {
+        return new Promise(async (resolve, reject) => {
+            this.contracts.delegator.tx
+                .destroyModule({ value: 0, gasLimit: GAS_LIMIT }, tokenId)
+                .signAndSend(this.alice, ({status, dispatchError}) => {
+                    if (dispatchError) {
+                        reject(dispatchError);
+                    }
+                    if (status.isInBlock || status.isFinalized) {
+                        resolve();
+                    }
+                });
+        });
+    }
+
+    _eventDataToFightsComplete(data, accountId) {
+        let fightComplete = null;
+
+        try {
+            const decoded = this.contracts.delegator.abi.decodeEvent(data);
+            const attacker = decoded.args[0].toJSON();
+            const defender = decoded.args[1].toJSON();
+            const fightResult = decoded.args[2].toJSON();
+            const payoutOrLocation = decoded.args[3].toJSON();
+
+            fightResult.selection_lhs = Array.from(Uint8Array.from(hexToU8a(fightResult.selection_lhs)));
+            fightResult.selection_rhs = Array.from(Uint8Array.from(hexToU8a(fightResult.selection_rhs)));
+            fightResult.ships_lost_lhs = Array.from(Uint8Array.from(hexToU8a(fightResult.ships_lost_lhs)));
+            fightResult.ships_lost_rhs = Array.from(Uint8Array.from(hexToU8a(fightResult.ships_lost_rhs)));
+
+            if (attacker === accountId || defender === accountId) {
+                fightComplete = {
+                    identifier: decoded.event.identifier,
+                    attackerAddress: attacker,
+                    defenderAddress: defender,
+                    fightResult,
+                    payoutOrLocation,
+                };
+            }
+        } catch (err) {
+        }
+
+        return fightComplete;
+    }
+
+    async getRankedFightCompleteEvents() {
+        const accountId = this.alice.address;
+        const lastHdr = await this.api.rpc.chain.getHeader();
+        const delta = Math.min(OmegaDefaults.LOGS_LENGTH_BLOCKS, lastHdr.number.unwrap().toNumber());
+        const startHdr = await this.api.rpc.chain.getBlockHash(lastHdr.number.unwrap().subn(delta));
+        const events = await this.api.query.system.events.range([startHdr]);
+        const fightCompleteEvents = [];
+
+        events.forEach((record) => {
+            if (_.isEmpty(record[1])) {
+                return;
+            }       
+
+            _.each(record[1], (potentialEvent) => {
+                const { event } = potentialEvent;
+                event.data.forEach((data) => {
+                    const fightComplete = this._eventDataToFightsComplete(data, accountId);
+                    if (fightComplete) {
+                        fightCompleteEvents.push(fightComplete);
+                    }
+                });
+            });
+        });
+
+        return fightCompleteEvents;
+    }
+
+    async subscribeToFightCompleteEvents(callback) {
+        const accountId = this.alice.address;
+
+        return this.api.query.system.events((events) => {
+            events.forEach((record) => {
+                const { event } = record;
+                event.data.forEach((data) => {
+                    const fightComplete = this._eventDataToFightsComplete(data, accountId);
+                    if (fightComplete) {
+                        callback(fightComplete);
+                    }
+                });
+            });
+        });
+    }
 }

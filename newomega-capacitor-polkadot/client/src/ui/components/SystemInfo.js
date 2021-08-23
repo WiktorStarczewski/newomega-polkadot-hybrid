@@ -27,19 +27,21 @@ export const SystemInfo = (props) => {
         }).join(' | ');
     };
 
+    // console.log('names ', props.names);
+
     return (
         <div className="SystemInfo">
             <div className={ownerClassName}>
                 <div className="status">
-                    <span>System: </span>
+                    <span>System ID: </span>
                     <span className="systemRoot">{props.names[props.system.position.root]}</span>
-                    <span className="systemRoot"> {props.system.position.position_x}:{props.system.position.position_y}</span>
+                    <span className="systemRoot"> {props.system.position.system_id}</span>
                 </div>
                 <div className="status resources">
-                    Resources: {getResources()}
+                    {getResources()}
                 </div>
                 <div className="status ships">
-                    Ships: {getShips()}
+                    {getShips()}
                 </div>
             </div>
         </div>

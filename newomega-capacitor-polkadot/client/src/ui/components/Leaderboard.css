@@ -1,0 +1,103 @@
+.Leaderboard {
+    height: 100%;
+    width: 100%;
+    background: rgb(115,201,255);
+    background: linear-gradient(180deg, rgba(115,201,255,1) 0%, rgba(60,60,61,1) 100%);
+    position: relative;
+    color: white;
+    text-align: center;
+}
+
+.Leaderboard .leaderboard {
+    height: 70%;
+    overflow-y: auto;
+}
+
+.Leaderboard .leaderboardEntry {
+    padding: 0.5rem;
+    margin: 0.5rem;
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 0.5rem;
+}
+
+.Leaderboard .podium {
+    height: 30%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.Leaderboard .podium .podiumIcon {
+    font-size: 8rem;
+}
+
+.Leaderboard .standing {
+    font-size: 2rem;
+    margin: 0 1rem;
+    flex: 1;
+}
+
+.Leaderboard .standing1 {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    margin: 0;
+}
+
+.Leaderboard .standing2 {
+    text-align: right;
+}
+
+.Leaderboard .standing3 {
+    text-align: left;
+}
+
+.Leaderboard .bottomStanding {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.Leaderboard .leaderboardEntry .position {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    font-size: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 2rem;
+}
+
+.Leaderboard .leaderboardEntry .medal {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    font-size: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-right: 2rem;
+}
+
+.Leaderboard .playerName {
+    font-weight: 600;
+    font-size: 2rem;
+}
+
+.Leaderboard .leaderboardEntry:nth-child(1) {
+    color: #FDD835;
+}
+
+.Leaderboard .leaderboardEntry:nth-child(2) {
+    color: #90A4AE;
+}
+
+.Leaderboard .leaderboardEntry:nth-child(3) {
+    color: #996600;
+}

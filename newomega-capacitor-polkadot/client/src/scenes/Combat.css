@@ -1,7 +1,19 @@
 .Combat {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
     height: 100%;
-    background: url("../images/szpieg_01.jpeg") no-repeat center center;
+    background: transparent;
+}
+
+.Combat.loaded {
+    background: url("../assets/sector.jpg") no-repeat center center;
     background-size: cover;
+}
+
+.Combat canvas {
+    background: transparent;
 }
 
 .Combat .ui .currentRound {
@@ -34,7 +46,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.6);
 }
 
 .Combat .payoutInfo {
@@ -45,33 +57,44 @@
 
 .Combat .ui .resultDialog {
     position: absolute;
-    top: 15%;
-    left: 15%;
+    top: 10%;
+    left: 10%;
     background: url("../images/combat-loss.jpg") no-repeat center center;
     background-size: cover;
-    width: 70%;
-    height: 70%;
+    width: 80%;
+    height: 80%;
     color: white;
     padding: 0.5rem;
     border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
+.Combat .ui .resultDialog .exitButton {
+    width: 8rem;
+    height: 3rem;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 0.5rem;
+    border: 2px solid #73ffbe;
+    color: #73ffbe;
+    display: flex;
+    justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    flex-direction: column;
+    position: absolute;
+    bottom: 0.5rem;
+    left: calc(50% - 4rem);
+    text-align: center;
+}
+
 .Combat .ui .resultDialog.victory {
     background: url("../images/combat-victory.jpg") no-repeat center center;
+    background-size: cover;
 }
 
 .Combat .ui .resultDialog .winner {
     font-size: 2.5rem;
-}
-
-.Combat .ui .resultDialog .exitButton {
-    position: absolute;
-    bottom: 0.5rem;
-    left: 0;
-    width: 100%;
-    font-size: 1.5rem;
-    text-align: center;
-    cursor: pointer;
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 0.5rem;
 }
 
 .Combat .ui .commander {

@@ -133,8 +133,8 @@ export const System = (props) => {
                             Level: {selectedPlanet && selectedPlanet.level}
                         </div>
                         <div>
-                            Mineral: {selectedPlanet && MineralsAssets[selectedPlanet.mineral_type].name} 
-                            <span className={gradeClassName}> (Grade {selectedPlanet && selectedPlanet.mineral_proof})</span>
+                            Mineral: {selectedPlanet && MineralsAssets[selectedPlanet.mineral_type].name}&nbsp;
+                            <span className={gradeClassName}>(Grade {selectedPlanet && selectedPlanet.mineral_proof})</span>
                         </div>
                         <div>
                             Harvest/Hour: {selectedPlanet && harvestablePerHour}

@@ -2,13 +2,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import _ from 'underscore';
 import './CompactShipSelection.css';
 import { Engine, Scene, Vector3, AssetsManager, Layer, Color3, Viewport, Frustum, Matrix,
-    HighlightLayer, StandardMaterial, Texture, ArcRotateCamera, HemisphericLight } from '@babylonjs/core';
+    HighlightLayer, StandardMaterial, Texture, ArcRotateCamera, HemisphericLight, Color4 } from '@babylonjs/core';
 import '@babylonjs/loaders';
 import { OBJFileLoader } from '@babylonjs/loaders';
 import { Ships, MAX_OFEACH_SHIP, Targeting, TargetingToIcon, TargetingToDescription,
     TargetingToTitle } from '../definitions/Ships';
-import { Modules, DefaultModule, EffectNamesLookup } from '../definitions/Modules';
-import { BrandColor } from '../definitions/Common';
+import { tokenIdToName } from '../definitions/Modules';
 import { OmegaLoadingScreen } from '../common/OmegaLoadingScreen';
 import { OmegaDefaults } from '../definitions/OmegaDefaults';
 import { BetSelector } from '../ui/components/BetSelector';
@@ -22,6 +21,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Repeatable from 'react-repeatable';
 import Drawer from '@material-ui/core/Drawer';
 import numeral from 'numeral';
+import { ModuleInfo } from '../ui/components/ModuleInfo';
 
 
 const getCurrentCP = (selectedShips) => {
@@ -30,29 +30,7 @@ const getCurrentCP = (selectedShips) => {
     }, 0);
 };
 
-const getDefaultModules = (modules) => {
-    if (!modules) {
-        return null;
-    }
-
-    const transModules = _.map(modules, (module) => {
-        const mod = _.find(Modules, (modDef) => {
-            return modDef.stats.snare === module.snare &&
-                modDef.stats.root === module.root &&
-                modDef.stats.blind === module.blind &&
-                modDef.stats.defence_debuff === module.defence_debuff &&
-                modDef.stats.attack_debuff === module.attack_debuff &&
-                modDef.stats.range_debuff === module.range_debuff;
-        });
-
-        return mod ? mod.type : 0;
-    });
-
-    return transModules;
-};
-
-
-// props: onDone, onCancel, enemyShips, enemyModules, playerShips, modules, balance, selfSelection, selfModules, maxBet,
+// props: onDone, onCancel, enemyShips, enemyModules, playerShips, modules, balance, selfSelection, maxBet,
 //  defaultTargeting
 export const CompactShipSelection = (props) => {
     const defaultShips = props.defaultShips || [0, 0, 0, 0];
@@ -60,7 +38,7 @@ export const CompactShipSelection = (props) => {
     const currentShipRef = useRef(0);
     const [currentShip, setCurrentShip] = useState(0);
     const [selectedShips, setSelectedShips] = useState(defaultShips);
-    const [selectedModules, setSelectedModules] = useState(getDefaultModules(props.defaultModules) || [0, 0, 0, 0]);
+    const [selectedModules, setSelectedModules] = useState(props.defaultModules || [null, null, null, null]);
     const [selectedTargeting, setSelectedTargeting] = useState(props.defaultTargeting || Targeting.Furthest);
     const [choosingModuleFor, setChoosingModuleFor] = useState(null);
     const [resourcesLoaded, setResourcesLoaded] = useState(false);
@@ -105,12 +83,7 @@ export const CompactShipSelection = (props) => {
     };
 
     const onDone = () => {
-        const modulesToStats = _.map(selectedModules, (moduleId, index) => {
-            const mod = _.findWhere(Modules, { type: moduleId });
-            return mod ? mod.stats : DefaultModule;
-        });
-
-        props.onDone(selectedShips, modulesToStats, bet, selectedTargeting);
+        props.onDone(selectedShips, selectedModules, bet, selectedTargeting);
     };
 
     const ShipToPosition = {
@@ -190,11 +163,13 @@ export const CompactShipSelection = (props) => {
         const light = new HemisphericLight('light1', new Vector3(0, Math.PI / 2, 0), scene);
         light.intensity = 2.0;
 
-        const background = new Layer('background',
-            '/assets/images/bgr_ship_selection_ver2.jpg', scene);
-        background.isBackground = true;
-        background.texture.level = 0;
-        background.texture.wAng = 0;
+        scene.clearColor = new Color4(0, 0, 0, 0);
+
+        // const background = new Layer('background',
+        //     '/assets/images/bgr_ship_selection_ver2.jpg', scene);
+        // background.isBackground = true;
+        // background.texture.level = 0;
+        // background.texture.wAng = 0;
 
         scene.onBeforeRenderObservable.add(() => {
             const deltaTimeInMillis = scene.getEngine().getDeltaTime();
@@ -276,6 +251,7 @@ export const CompactShipSelection = (props) => {
         return _.map(Ships, (ship, index) => {
             const shipCount = isOwn ? selectedShips[index] : props.enemyShips && props.enemyShips[index];
             const selectedModule = selectedModules[index];
+            const selectedModuleName = selectedModule && tokenIdToName(selectedModule);
 
             const onModuleClick = () => {
                 if (!isOwn) {
@@ -291,7 +267,7 @@ export const CompactShipSelection = (props) => {
                 <div key={index} className="shipSelectionBox">
                     {isOwn &&
                         <div className="shipName">
-                            {Ships[index].name}
+                            {ship.name}
                         </div>
                     }
                     <div className="counter">
@@ -318,7 +294,7 @@ export const CompactShipSelection = (props) => {
                     {isOwn &&
                         <div className="modules" onClick={onModuleClick}>
                             <span>
-                                {EffectNamesLookup[selectedModule]}
+                                {selectedModuleName || 'Choose Module..'}
                             </span>
                             <MoreIcon fontSize="small"/>
                         </div>
@@ -334,15 +310,15 @@ export const CompactShipSelection = (props) => {
     }
 
     const showDrawer = () => {
-        const onModuleClick = (moduleIndex) => {
+        const onModuleClick = (tokenId) => {
             const newModules = _.clone(selectedModules);
-            newModules[choosingModuleFor] = moduleIndex;
+            newModules[choosingModuleFor] = tokenId;
             setSelectedModules(newModules);
             setModulesPanelOpen(false);
         };
 
-        const getModuleClassName = (moduleIndex) => {
-            const isSelected = (selectedModules[choosingModuleFor] === moduleIndex);
+        const getModuleClassName = (tokenId) => {
+            const isSelected = (selectedModules[choosingModuleFor] === tokenId);
             return `module ${isSelected ? 'selected' : ''}`;
         };
 
@@ -352,32 +328,33 @@ export const CompactShipSelection = (props) => {
                 open={modulesPanelOpen}
                 onClose={() => { setModulesPanelOpen(false) }}
             >
-                <div className="drawerModules">
-                    {_.map(Modules, (mod, moduleIndex) => (
-                        <div
-                            className={getModuleClassName(mod.type)}
-                            key={moduleIndex}
-                            onClick={() => { onModuleClick(mod.type) }}
-                        >
-                            <div className="moduleIcon">
-                                {mod.icon({ fontSize: 'large' })}
+                {props.playerModules.length === 0 &&
+                    <div className="noModules">
+                        <div className="noModulesInner">
+                            <div>
+                                You do not own any Modules
                             </div>
-                            <div className="moduleInfo">
-                                <div className="moduleName">
-                                    {mod.name}
-                                </div>
-                                <div className="moduleType">
-                                    {EffectNamesLookup[mod.type]}
-                                </div>
-                            </div>
-                            <div className="moduleTech">
-                                Tech Level: {mod.techLevel}
-                            </div>
-                            <div className="moduleDescription">
-                                {mod.description}
+                            <div className="noModulesTip">
+                                TIP: Go back to starting screen to craft them
                             </div>
                         </div>
-                    ))}
+                    </div>
+                }
+                <div className="drawerModules">
+                    {_.map(props.playerModules, (mod, moduleIndex) => {
+                        const tokenId = mod[0];
+                        const moduleDefinition = mod[1];
+
+                        return (
+                            <div
+                                className={getModuleClassName(tokenId)}
+                                key={moduleIndex}
+                                onClick={() => { onModuleClick(tokenId) }}
+                            > 
+                                <ModuleInfo tokenId={tokenId} module={moduleDefinition}/>
+                            </div>                            
+                        );
+                    })}
                 </div>
             </Drawer>
         );
@@ -526,8 +503,10 @@ export const CompactShipSelection = (props) => {
         },
     ]);
 
+    const mainClassName = 'CompactShipSelection' + (resourcesLoaded ? ' loaded' : '');
+
     return (
-        <div className="CompactShipSelection">
+        <div className={mainClassName}>
             <div ref={reactCanvas}>
             </div>
             {resourcesLoaded &&
@@ -591,6 +570,11 @@ export const CompactShipSelection = (props) => {
                         <div className="selectionInner">
                             {showSelection(true)}
                         </div>
+                        {props.enemyShips &&
+                            <div className="currentCp">
+                                Command Power: {getCurrentCP(selectedShips)} / {maxCp}
+                            </div>
+                        }
                     </div>
                     <div className="targetingInfo" onClick={() => {
                         setTargetingPanelOpen(true);
@@ -601,11 +585,6 @@ export const CompactShipSelection = (props) => {
                         </span>
                         <MoreIcon/>
                     </div>
-                    {props.enemyShips &&
-                        <div className="currentCp">
-                            Command Power: {getCurrentCP(selectedShips)} / {maxCp}
-                        </div>
-                    }
                     <div className="uiElement doneBox bottomBox" onClick={onDone}>
                         DONE
                     </div>

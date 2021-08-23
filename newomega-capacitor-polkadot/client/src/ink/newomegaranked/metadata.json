@@ -1,8 +1,8 @@
 {
   "metadataVersion": "0.1.0",
   "source": {
-    "hash": "0xebc8bdea226ca85a412bd527c544b88836e1554f8905ebac10c238123580d67f",
-    "language": "ink! 3.0.0-rc3",
+    "hash": "0x0d3fcd52db60f6b6820ee3532a497e81c33d2132bfa2fecfb718bc48b942f3e8",
+    "language": "ink! 3.0.0-rc4",
     "compiler": "rustc 1.55.0-nightly"
   },
   "contract": {
@@ -61,7 +61,13 @@
             }
           }
         ],
-        "docs": [],
+        "docs": [
+          " Authorises the Delegator contract to fire methods on this one.",
+          "",
+          " # Arguments",
+          "",
+          " * `delegator_address` - AccountId of the Delegator contract"
+        ],
         "mutates": true,
         "name": [
           "authorise_delegator"
@@ -101,7 +107,7 @@
               "displayName": [
                 "String"
               ],
-              "type": 14
+              "type": 15
             }
           },
           {
@@ -110,7 +116,7 @@
               "displayName": [
                 "Balance"
               ],
-              "type": 15
+              "type": 13
             }
           },
           {
@@ -119,7 +125,7 @@
               "displayName": [
                 "TargetingType"
               ],
-              "type": 13
+              "type": 14
             }
           }
         ],
@@ -170,7 +176,7 @@
           "displayName": [
             "Balance"
           ],
-          "type": 15
+          "type": 13
         },
         "selector": "0x4b079dd7"
       },
@@ -273,7 +279,7 @@
               "displayName": [
                 "Balance"
               ],
-              "type": 15
+              "type": 13
             }
           },
           {
@@ -282,7 +288,7 @@
               "displayName": [
                 "TargetingType"
               ],
-              "type": 13
+              "type": 14
             }
           }
         ],
@@ -349,36 +355,70 @@
         },
         {
           "layout": {
-            "struct": {
-              "fields": [
-                {
-                  "layout": {
-                    "cell": {
-                      "key": "0x0200000000000000000000000000000000000000000000000000000000000000",
-                      "ty": 1
+            "enum": {
+              "dispatchKey": "0x0200000000000000000000000000000000000000000000000000000000000000",
+              "variants": {
+                "0": {
+                  "fields": [
+                    {
+                      "layout": {
+                        "struct": {
+                          "fields": [
+                            {
+                              "layout": {
+                                "cell": {
+                                  "key": "0x0300000000000000000000000000000000000000000000000000000000000000",
+                                  "ty": 1
+                                }
+                              },
+                              "name": "account_id"
+                            }
+                          ]
+                        }
+                      },
+                      "name": null
                     }
-                  },
-                  "name": "account_id"
+                  ]
+                },
+                "1": {
+                  "fields": []
                 }
-              ]
+              }
             }
           },
           "name": "new_omega_game"
         },
         {
           "layout": {
-            "struct": {
-              "fields": [
-                {
-                  "layout": {
-                    "cell": {
-                      "key": "0x0300000000000000000000000000000000000000000000000000000000000000",
-                      "ty": 1
+            "enum": {
+              "dispatchKey": "0x0300000000000000000000000000000000000000000000000000000000000000",
+              "variants": {
+                "0": {
+                  "fields": [
+                    {
+                      "layout": {
+                        "struct": {
+                          "fields": [
+                            {
+                              "layout": {
+                                "cell": {
+                                  "key": "0x0400000000000000000000000000000000000000000000000000000000000000",
+                                  "ty": 1
+                                }
+                              },
+                              "name": "account_id"
+                            }
+                          ]
+                        }
+                      },
+                      "name": null
                     }
-                  },
-                  "name": "account_id"
+                  ]
+                },
+                "1": {
+                  "fields": []
                 }
-              ]
+              }
             }
           },
           "name": "new_omega_storage"
@@ -629,21 +669,21 @@
             {
               "name": "modules",
               "type": 11,
-              "typeName": "[ShipModule; MAX_SHIPS]"
+              "typeName": "[Option<TokenId>; MAX_SHIPS]"
             },
             {
               "name": "targeting",
-              "type": 13,
+              "type": 14,
               "typeName": "TargetingType"
             },
             {
               "name": "name",
-              "type": 14,
+              "type": 15,
               "typeName": "String"
             },
             {
               "name": "value",
-              "type": 15,
+              "type": 13,
               "typeName": "Balance"
             },
             {
@@ -683,46 +723,34 @@
     },
     {
       "def": {
-        "composite": {
-          "fields": [
+        "variant": {
+          "variants": [
             {
-              "name": "snare",
-              "type": 3,
-              "typeName": "u8"
+              "name": "None"
             },
             {
-              "name": "root",
-              "type": 3,
-              "typeName": "u8"
-            },
-            {
-              "name": "blind",
-              "type": 3,
-              "typeName": "u8"
-            },
-            {
-              "name": "attack_debuff",
-              "type": 3,
-              "typeName": "u8"
-            },
-            {
-              "name": "defence_debuff",
-              "type": 3,
-              "typeName": "u8"
-            },
-            {
-              "name": "range_debuff",
-              "type": 3,
-              "typeName": "u8"
+              "fields": [
+                {
+                  "type": 13,
+                  "typeName": "T"
+                }
+              ],
+              "name": "Some"
             }
           ]
         }
       },
+      "params": [
+        13
+      ],
       "path": [
-        "newomega",
-        "newomega",
-        "ShipModule"
+        "Option"
       ]
+    },
+    {
+      "def": {
+        "primitive": "u128"
+      }
     },
     {
       "def": {
@@ -784,11 +812,6 @@
     },
     {
       "def": {
-        "primitive": "u128"
-      }
-    },
-    {
-      "def": {
         "composite": {
           "fields": [
             {
@@ -842,7 +865,7 @@
       "def": {
         "tuple": [
           21,
-          15
+          13
         ]
       }
     },
@@ -862,32 +885,32 @@
             },
             {
               "name": "modules_lhs",
-              "type": 11,
+              "type": 22,
               "typeName": "[ShipModule; MAX_SHIPS]"
             },
             {
               "name": "modules_rhs",
-              "type": 11,
+              "type": 22,
               "typeName": "[ShipModule; MAX_SHIPS]"
             },
             {
               "name": "targeting_lhs",
-              "type": 13,
+              "type": 14,
               "typeName": "TargetingType"
             },
             {
               "name": "targeting_rhs",
-              "type": 13,
+              "type": 14,
               "typeName": "TargetingType"
             },
             {
               "name": "lhs_dead",
-              "type": 22,
+              "type": 24,
               "typeName": "bool"
             },
             {
               "name": "rhs_dead",
-              "type": 22,
+              "type": 24,
               "typeName": "bool"
             },
             {
@@ -897,7 +920,7 @@
             },
             {
               "name": "seed",
-              "type": 23,
+              "type": 25,
               "typeName": "u64"
             },
             {
@@ -917,6 +940,57 @@
         "newomega",
         "newomega",
         "FightResult"
+      ]
+    },
+    {
+      "def": {
+        "array": {
+          "len": 4,
+          "type": 23
+        }
+      }
+    },
+    {
+      "def": {
+        "composite": {
+          "fields": [
+            {
+              "name": "snare",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "root",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "blind",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "attack_debuff",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "defence_debuff",
+              "type": 3,
+              "typeName": "u8"
+            },
+            {
+              "name": "range_debuff",
+              "type": 3,
+              "typeName": "u8"
+            }
+          ]
+        }
+      },
+      "path": [
+        "newomega",
+        "newomega",
+        "ShipModule"
       ]
     },
     {

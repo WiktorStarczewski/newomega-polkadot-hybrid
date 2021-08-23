@@ -99,11 +99,10 @@ mod newomega {
     }
 
     /// Describes a ship module definition
-    #[derive(scale::Encode, scale::Decode, SpreadLayout, PackedLayout, Copy, Clone, Default)]
+    #[derive(scale::Encode, scale::Decode, SpreadLayout, PackedLayout, Copy, Clone, Default, Debug)]
     #[cfg_attr(
         feature = "std",
         derive(
-            Debug,
             PartialEq,
             Eq,
             scale_info::TypeInfo,
@@ -112,17 +111,17 @@ mod newomega {
     )]
     pub struct ShipModule {
         /// Power of the snare effect
-        snare: u8,
+        pub snare: u8,
         /// Power of the root effect
-        root: u8,
+        pub root: u8,
         /// Power of the blind effect
-        blind: u8,
+        pub blind: u8,
         /// Power of the attack debuff effect
-        attack_debuff: u8,
+        pub attack_debuff: u8,
         /// Power of the defence debuff effect
-        defence_debuff: u8,
+        pub defence_debuff: u8,
         /// Power of the range debuff effect
-        range_debuff: u8,
+        pub range_debuff: u8,
     }
 
     /// Describes a single Ship on the board
@@ -415,8 +414,8 @@ mod newomega {
         /// * `proposed_move` - The new source ship position (can be unchanged)
         ///
         /// # Algorithm rules:
-        ///     To be considered in range, target ship must be within range+speed from source ship
-        ///     Targets are picked according to their size, ie bigger ships first
+        ///   1. To be considered in range, target ship must be within range+speed from source ship
+        ///   2. Targets are picked according to their size, ie bigger ships first
         fn get_target(&self,
             ships: &Vec<Ship>,
             current_ship: u8,
@@ -643,24 +642,34 @@ mod newomega {
             let target_usize = target as usize;
             let ship_module: ShipModule = modules_source[source_usize];
             let target_effect: &mut RunningEffect = &mut effects_target[target_usize];
-            let dice_roll: u8 = (seed % 100) as u8;
+            let mut dice_roll: u8 = (seed % 100) as u8;
             let effect_length: u8 = 1;
 
             if dice_roll < ship_module.snare {
                 target_effect.snare += effect_length;
             }
+
+            dice_roll = ((seed << 2) % 100) as u8;
             if dice_roll < ship_module.root {
                 target_effect.root += effect_length;
             }
+
+            dice_roll = ((seed << 4) % 100) as u8;
             if dice_roll < ship_module.blind {
                 target_effect.blind += effect_length;
             }
+
+            dice_roll = ((seed << 6) % 100) as u8;
             if dice_roll < ship_module.defence_debuff {
                 target_effect.defence_debuff += effect_length;
             }
+
+            dice_roll = ((seed << 8) % 100) as u8;
             if dice_roll < ship_module.attack_debuff {
                 target_effect.attack_debuff += effect_length;
             }
+
+            dice_roll = ((seed << 12) % 100) as u8;
             if dice_roll < ship_module.range_debuff {
                 target_effect.range_debuff += effect_length;
             }
@@ -685,13 +694,13 @@ mod newomega {
         /// * `moves_rhs` - Logged moves of the defender, if requested. None if not.
         ///
         /// # Algorithm rules:
-        ///     A fight is divided into rounds.
-        ///     Each round, ships perform moves in turns, starting from smallest ships.
-        ///     In each round, the same type of ship, of both the attacker and defender,
-        ///        attacks at the same time.
-        ///     Ships can move, shoot, or both, depending on their Range and Speed.
-        ///     The winner is declared when one player is dead, or when the fight is still not finished
-        ///        after maximum number of rounds.
+        ///   1. A fight is divided into rounds.
+        ///   2. Each round, ships perform moves in turns, starting from smallest ships.
+        ///   3. In each round, the same type of ship, of both the attacker and defender,
+        ///   attacks at the same time.
+        ///   4. Ships can move, shoot, or both, depending on their Range and Speed.
+        ///   5. The winner is declared when one player is dead, or when the fight is still not finished
+        ///   after maximum number of rounds.
         #[ink(message)]
         pub fn fight(&self, seed: u64, log_moves: bool, ships: Vec<Ship>,
             selection_lhs: [u8; MAX_SHIPS], selection_rhs: [u8; MAX_SHIPS],
@@ -783,7 +792,8 @@ mod newomega {
                             ship_positions_rhs[current_ship] += rhs_delta_move as i16;
 
                             self.retire_effects(&mut effects_rhs, current_ship_u8);
-                            self.apply_effects(&modules_rhs, &mut effects_lhs, current_ship_u8, rhs_target, seed);
+                            self.apply_effects(&modules_rhs, &mut effects_lhs, current_ship_u8, 
+                                rhs_target, seed + 77 * (round_u8 as u64 + current_ship_u8 as u64));
 
                             // Log the move, if required
                             match rhs_moves {
@@ -816,7 +826,8 @@ mod newomega {
                             ship_positions_lhs[current_ship] -= lhs_delta_move as i16;
 
                             self.retire_effects(&mut effects_lhs, current_ship_u8);
-                            self.apply_effects(&modules_lhs, &mut effects_rhs, current_ship_u8, lhs_target, seed);
+                            self.apply_effects(&modules_lhs, &mut effects_rhs, current_ship_u8, 
+                                lhs_target, seed + 77 * (round_u8 as u64 + current_ship_u8 as u64));
 
                             // Log the move, if required
                             match lhs_moves {
@@ -876,7 +887,6 @@ mod newomega {
             (result, lhs_moves, rhs_moves)
         }
     }
-
 
     #[cfg(test)]
     mod tests {

@@ -8,7 +8,7 @@
 }
 
 .System:not(.LoadingMask).expanded {
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 .System:not(.LoadingMask):not(.expanded) {
@@ -45,26 +45,6 @@
     width: 100%;
     cursor: pointer;
     color: white;
-}
-
-.System .grade.common {
-    color: white;
-}
-
-.System .grade.rare {
-    color: #1e88e5;
-}
-
-.System .grade.epic {
-    color: #8e24aa;    
-}
-
-.System .grade.legendary {
-    color: #fdd835;
-}
-
-.System .grade.primal {
-    color: #f4511e;
 }
 
 .System .closeDetailPanel {
@@ -176,7 +156,7 @@
 }
 
 .System .planetAction.disabled {
-    filter: blur(2px);
+    filter: blur(1px);
 }
 
 .System .cantAttackExplain {

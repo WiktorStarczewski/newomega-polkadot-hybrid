@@ -16,6 +16,13 @@
     background-size: cover;
 }
 
+.Universe .UniverseMap {
+    position: absolute;
+    top: 15%;
+    left: -100%;
+    transition: left 0.3s ease-out, height 0.3s ease-out, background-color 0.3s ease-out;
+}
+
 .Universe .System {
     position: absolute;
     top: 15%;
@@ -33,49 +40,62 @@
 .Universe .ShipProduction {
     position: absolute;
     top: 15%;
-    left: -100%;
+    left: 200%;
     transition: left 0.3s ease-out, height 0.3s ease-out, background-color 0.3s ease-out;
+}
+
+.Universe.withMap .UniverseMap {
+    left: 0
+}
+
+.Universe.withMap .System {
+    left: 100%;
+}
+
+.Universe.withMap .Minerals {
+    left: 200%;
+}
+
+.Universe.withMap .ShipProduction {
+    left: 300%;
+}
+
+.Universe.withMinerals .UniverseMap {
+    left: -200%;
 }
 
 .Universe.withMinerals .System {
     left: -100%;
 }
 
-.Universe.withMinerals .ShipProduction {
-    left: -200%;
-}
-
 .Universe.withMinerals .Minerals {
     left: 0;
 }
 
-.Universe.withShipProduction .System {
+.Universe.withMinerals .ShipProduction {
     left: 100%;
+}
+
+.Universe.withShipProduction .UniverseMap {
+    left: -300%;
+}
+
+.Universe.withShipProduction .System {
+    left: -200%;
+}
+
+.Universe.withShipProduction .Minerals {
+    left: -100%;
 }
 
 .Universe.withShipProduction .ShipProduction {
     left: 0;
 }
 
-.Universe.withShipProduction .Minerals {
-    left: 200%;
-}
-
-.Universe .UniverseMap {
-    position: absolute;
-    top: 55%;
-    left: 0;
-    transition: top 0.3s ease-out;
-}
-
-.Universe .UniverseMap.shrank {
-    top: 100%;
-}
-
 .Universe .SystemActions {
     position: absolute;
     top: 55%;
-    left: 50%;
+    left: 0;
     transition: top 0.3s ease-out;
 }
 

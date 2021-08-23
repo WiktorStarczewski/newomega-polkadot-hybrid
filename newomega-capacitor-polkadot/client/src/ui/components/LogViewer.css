@@ -1,0 +1,99 @@
+.LogViewer {
+    text-align: center;
+    color: white;
+    overflow-x: hidden;
+    width: 22rem;
+}
+
+.LogViewer .title {
+    font-size: 2rem;
+    padding-top: 2rem;
+    background-color: rgba(0, 0, 0, 0.6);
+}
+
+.LogViewer .explanation {
+    font-size: 0.75rem;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding-bottom: 2rem;
+}
+
+.LogViewer .logItem {
+    margin: 0.5rem 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 0.5rem;
+    padding: 0.5rem 0;
+    cursor: pointer;
+}
+
+.LogViewer .logItem .type {
+    font-size: 1.5rem;
+}
+
+.LogViewer .logItem.done {
+    background-color: rgba(115, 255, 190, 0.6);
+    color: black;
+}
+
+.LogViewer .currentLogs {
+    padding: 0.5rem;
+}
+
+.LogViewer .participants {
+    font-size: 0.75rem;
+}
+
+.LogViewer .actionButton {
+    height: 3rem;
+    padding: 0 1rem;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 0.5rem;
+    border: 2px solid #73ffbe;
+    color: #73ffbe;
+    display: flex;
+    justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    flex-direction: row;   
+    text-transform: uppercase;
+    text-align: center;
+    align-items: center;
+}
+
+.MuiDrawer-modal .noLogs {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 1.5rem;
+    text-align: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+.MuiDrawer-modal .noLogsTip {
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
+}
+
+.MuiDrawer-modal .noLogsInner {
+    padding: 0.5rem;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 0.5rem;
+    width: 100%;
+    margin: 0 0.5rem;
+}
+
+.MuiDrawer-modal .actions {
+    display: flex;
+    justify-content: center;
+    padding: 0 0.5rem;
+    margin-top: 2rem;
+}
+
+.MuiDrawer-modal .actionButton:not(:first-child) {
+    margin-left: 0.5rem;
+}

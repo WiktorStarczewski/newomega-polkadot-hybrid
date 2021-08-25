@@ -11,6 +11,7 @@ const MNEMONIC = '//Alice';
 jest.setTimeout(600000);
 
 let delegatorAddress;
+let testStartBlockNumber = 0;
 
 const { Deployer } = require('./facades/Deployer');
 test('Deploy', async () => {
@@ -46,6 +47,9 @@ test('Initialize', async () => {
         const blockNumber = parseInt(header.number, 10);
         oldBlockNumber !== null && expect(blockNumber).toEqual(oldBlockNumber + 1);
         oldBlockNumber = blockNumber;
+        if (timesTried === 0) {
+            testStartBlockNumber = blockNumber;
+        }
         ++timesTried;
         if (timesTried >= 5) {
             unsubHeads();
@@ -115,7 +119,11 @@ test('Universe', async () => {
     expect(discoveredSystem.gateway_in.built).toBeFalsy();
 
     const freeActionsAfterDiscovery = await facade.getFreeActions();
-    expect(freeActionsAfterDiscovery.discovery).not.toEqual(0);
+    if (testStartBlockNumber > OmegaDefaults.FREE_DISCOVERY_FREQUENCY_BLOCKS) {
+        expect(freeActionsAfterDiscovery.discovery).not.toEqual(0);
+    } else {
+        expect(freeActionsAfterDiscovery.discovery).toEqual(0);
+    }
 
     const facadeBob = new ContractFacade();
     await facadeBob.initialize('//Bob', delegatorAddress);
@@ -369,7 +377,7 @@ test('Quests', async () => {
         [tokenIdInt, tokenIdInt, tokenIdInt, tokenIdInt], Targeting.Closest);
     const progressAfterAttack = await facade.getPlayerQuestProgress();
     expect(progressAfterAttack.planet_capture).toEqual(progressStart.planet_capture + 1);
-    
+
     await facade.harvestPlanet(workSystem.position, 0);
     const progressAfterHarvest = await facade.getPlayerQuestProgress();
     expect(progressAfterHarvest.planet_harvest).toEqual(progressStart.planet_harvest + 1);
